@@ -12,7 +12,7 @@ For photo junkies – everyone is welcome to register and to participate in cont
 ### Public Part
 The public part must be accessible without authentication i.e. for anonymous users.
 
-**Landing page** (must) – you can show the latest winning photos or something else that might be compelling for people to register.
+**Landing page** (_**must**_) – you can show the latest winning photos or something else that might be compelling for people to register.
 
 **Login form** (must) – redirects to the private area of the application. Login requires username and password.
 
