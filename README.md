@@ -35,10 +35,8 @@ For **Organizers**: (any of the below can be either a new page, or directly on t
     - (If scoring is implemented) ordered by ranking (should)
 
 For **Photo Junkies**:
-
 - There must be a way to view active Open contests.
 - There must be a way to view contests that the junkie currently participates in.
-
 - There should be a way to view finished contests that the junkie participated in.
 - (If scoring is implemented) Display current points and ranking and how much until next ranking at a visible place (should)
 
