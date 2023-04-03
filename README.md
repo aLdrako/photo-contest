@@ -12,17 +12,17 @@ For photo junkies – everyone is welcome to register and to participate in cont
 ### Public Part
 The public part must be accessible without authentication i.e. for anonymous users.
 
-**Landing page** (_**must**_) – you can show the latest winning photos or something else that might be compelling for people to register.
+**Landing page** (***must***) – you can show the latest winning photos or something else that might be compelling for people to register.
 
-**Login form** (must) – redirects to the private area of the application. Login requires username and password.
+**Login form** (***must***) – redirects to the private area of the application. Login requires username and password.
 
-**Register form** (must) – registers someone as a Photo Junkie. Requires username, email, first name, last name, and password.
+**Register form** (***must***) – registers someone as a Photo Junkie. Requires username, email, first name, last name, and password.
 
 ### Private Part
 Accessible only if the user is authenticated.
 
 ### Dashboard page
-**Dashboard page** (must) is different for **Organizers** and **Photo Junkies**
+**Dashboard page** (***must***) is different for **Organizers** and **Photo Junkies**
 
 For **Organizers**: (any of the below can be either a new page, or directly on the dashboard).
 - There must be a way to view Contests which are in Phase I.
@@ -32,17 +32,17 @@ For **Organizers**: (any of the below can be either a new page, or directly on t
 - Must be able to delete contest entry (due to offensive nature of the photo, comment etc.) Jury must be able to delete as well.
 - Jury must not be able to participate within the same contest where they are jury.
 - There must be a way to view Photo Junkies.
-    - (If scoring is implemented) ordered by ranking (should)
+    - (If scoring is implemented) ordered by ranking (***should***)
 
 For **Photo Junkies**:
 - There must be a way to view active Open contests.
 - There must be a way to view contests that the junkie currently participates in.
 - There should be a way to view finished contests that the junkie participated in.
-- (If scoring is implemented) Display current points and ranking and how much until next ranking at a visible place (should)
+- (If scoring is implemented) Display current points and ranking and how much until next ranking at a visible place (***should***)
 
 ### Contest page
 - The Contest Category is always visible
-- **Phase I** (must)
+- **Phase I** (***must***)
     - Remaining time until Phase II should be displayed.
     - **Jury** can view submitted photos but cannot rate them yet.
     - Junkies see enroll button if the contest is Open and they are not participating.
@@ -50,9 +50,9 @@ For **Photo Junkies**:
         - Title – short text **(required)**
         - Story – long text, which tells the captivating story of the phot **(required)**
         - Photo – file **(required)**
-    - Only one photo can be uploaded per participant. The photo, title, and story cannot be edited (must). 
-Display a warning on submit that any data cannot be changed later (should)
-- **Phase II** (must)
+    - Only one photo can be uploaded per participant. The photo, title, and story cannot be edited (***must***). 
+Display a warning on submit that any data cannot be changed later (***should***)
+- **Phase II** (***must***)
     - Remaining time until Finish phase.
     - Participants cannot upload anymore.
     - Jury sees a form for each submitted photo.
@@ -61,28 +61,28 @@ Display a warning on submit that any data cannot be changed later (should)
         - Checkbox to mark that the photo does not fit the contest category. If the checkbox is selected, score 0 is assigned automatically and a Comment that the category is wrong. This is the only way to assign Score outside the [1, 10] interval.
         - Each juror can give one review per photo, if a photo is not reviewed, a default score of 3 is awarded.
 - **Finished**
-    - Jury can no longer review photos. (must)
-    - Participants view their score and comments. (must)
-    - In this phase, participants can also view the photos submitted by other users, along with their scores and comments by the Jury. (should)
+    - Jury can no longer review photos. (***must***)
+    - Participants view their score and comments. (***must***)
+    - In this phase, participants can also view the photos submitted by other users, along with their scores and comments by the Jury. (***should***)
 
 ### Contest page
 
-**Create Contest Form** (must) – either a new page, or on the organizer’s dashboard. The following must be easy to setup.
+**Create Contest Form** (***must***) – either a new page, or on the organizer’s dashboard. The following must be easy to setup.
 - **Title** – text field **(required and unique)**
 - Category – text field (required)
-- Open (must) or Invitational (should) Contest. Open means that everyone (except the jury can join)
-    - If invitational – a list of users should be available, along with the option to select them (should)
-- **Phase I time limit** (must) – anything from one day to one month 
-- **Phase II time limit** (must) – anything from one hour to one day
-- **Select Jury** – all users with Organizer role are automatically selected (must)
-    -  (If scoring is implemented) Additionally, users with ranking Photo Master can also be selected, if the organizers decide (should)
-- **Cover photo** (could) - a photo can be selected for a contest.
+- Open (***must***) or Invitational (should) Contest. Open means that everyone (except the jury can join)
+    - If invitational – a list of users should be available, along with the option to select them (***should***)
+- **Phase I time limit** (***must***) – anything from one day to one month 
+- **Phase II time limit** (***must***) – anything from one hour to one day
+- **Select Jury** – all users with Organizer role are automatically selected (***must***)
+    -  (If scoring is implemented) Additionally, users with ranking Photo Master can also be selected, if the organizers decide (***should***)
+- **Cover photo** (***could***) - a photo can be selected for a contest.
     - Option 1 – upload a cover photo.
     - Option 2 – paste the URL of an existing photo.
     - Option 3 – select the cover from previously uploaded photos.
     - The organizer must be able to choose between all three options and select the easiest for him/her (**all 3 required if cover photo is implemented**)
 
-### Scoring (should)
+### Scoring (***should***)
 
 Contest participation should award points. Points are accumulative, so being invited and subsequently winning will award **53 points totals**.
 
@@ -102,11 +102,11 @@ For example, two 1st places, one 2nd and four 3rds; the two winners will each ge
 - (151 – 1000) points – Master (can now be invited as jury)
 - (1001 – infinity) points – Wise and Benevolent Photo Dictator (can still be jury)
 
-### Forgotten password (should)
+### Forgotten password (***should***)
 
 A customer has forgotten their password. They select the “Forgot password?” option and enter their email. The system checks if there is a registered user with that email. If there is one, he receives an email with a link to a page where he can enter a new password. The link should be accessible for a limited time only (say, an hour) and if accessed one, it should not be possible to access it again.
 
-### Social Sharing (could)
+### Social Sharing (***could***)
 
 Participants that finish 1st, 2nd, or 3rd could have to option to share their achievement to a social media, for example: Facebook - 
 [https://developers.facebook.com/docs/sharing/web/](https://developers.facebook.com/docs/sharing/web/)
@@ -120,16 +120,16 @@ A great API is nothing without a great documentation. The documentation holds th
 The REST API provides the following capabilities:
 
 1. Users
-    - CRUD Operations (must)
-    - List and search by username, first name or last name (must)
+    - CRUD Operations (***must***)
+    - List and search by username, first name or last name (***must***)
 2. Contests
-    - CRUD Operations (must)
-    - Submit photo (must)
-    - Rate photo (must)
-    - List and filter by title, category, type and phase (must)
+    - CRUD Operations (***must***)
+    - Submit photo (***must***)
+    - Rate photo (***must***)
+    - List and filter by title, category, type and phase (***must***)
 3. Photos
-    - CRD Operations(must)
-    - List and search by title (must)
+    - CRD Operations(***must***)
+    - List and search by title (mu***must***st)
 
 ## Technical Requirements
 ### General
@@ -156,10 +156,10 @@ history! The repository must contain the complete application source code and an
 
 Provide a link to a GitLab repository with the following information in the README.md file:
 - Project description
-- Link to the Swagger documentation (must)
+- Link to the Swagger documentation (***must***)
 - Link to the hosted project (if hosted online)
 - Instructions how to setup and run the project locally
-- Images of the database relations (must)
+- Images of the database relations (***must***)
 
 ### Optional Requirements
 
