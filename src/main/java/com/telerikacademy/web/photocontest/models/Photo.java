@@ -1,9 +1,14 @@
 package com.telerikacademy.web.photocontest.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "photos")
 public class Photo {
     @Id
@@ -19,45 +24,6 @@ public class Photo {
     @JoinColumn(name = "user_id")
     private User userCreated;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getStory() {
-        return story;
-    }
-
-    public void setStory(String story) {
-        this.story = story;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-
-    public User getUserCreated() {
-        return userCreated;
-    }
-
-    public void setUserCreated(User userCreated) {
-        this.userCreated = userCreated;
-    }
 
     @Override
     public boolean equals(Object o) {

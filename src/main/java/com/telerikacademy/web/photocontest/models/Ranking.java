@@ -1,10 +1,15 @@
 package com.telerikacademy.web.photocontest.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "rankings")
 public class Ranking {
 
@@ -23,30 +28,6 @@ public class Ranking {
 
     public Ranking(Ranks name) {
         this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Ranks getName() {
-        return name;
-    }
-
-    public void setName(Ranks name) {
-        this.name = name;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
     }
 
     @Override

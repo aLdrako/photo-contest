@@ -94,25 +94,17 @@ create or replace table permissions
 
 create or replace table photos
 (
-    id      bigint auto_increment
+    id         bigint auto_increment
         primary key,
-    title   varchar(50)   not null,
-    story   varchar(8196) not null,
-    photo   blob          not null,
-    user_id bigint        not null,
+    title      varchar(50)   not null,
+    story      varchar(8196) not null,
+    photo      blob          not null,
+    user_id    bigint        not null,
+    contest_id bigint        not null,
+    constraint photos_contests_id_fk
+        foreign key (contest_id) references contests (id),
     constraint photos_users_fk
         foreign key (user_id) references users (id)
-);
-
-create or replace table contests_photos
-(
-    contest_id bigint not null,
-    photo_id   bigint not null,
-    primary key (contest_id, photo_id),
-    constraint contests_photos_contests_fk
-        foreign key (contest_id) references contests (id),
-    constraint contests_photos_photos_id_fk
-        foreign key (photo_id) references photos (id)
 );
 
 create or replace table points
