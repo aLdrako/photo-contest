@@ -1,5 +1,6 @@
 package com.telerikacademy.web.photocontest.config;
 
+import com.telerikacademy.web.photocontest.models.Contest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -25,8 +26,7 @@ public class HibernateConfig {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        // TODO add package
-        sessionFactory.setPackagesToScan();
+        sessionFactory.setPackagesToScan(Contest.class.getPackage().getName());
         return sessionFactory;
     }
 
