@@ -10,13 +10,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+// TODO Repo is disabled
+//@Repository
 @AllArgsConstructor
-public class ContestRepositoryImpl implements ContestRepository {
+public class ContestRepositoryImpl {
 
     private final SessionFactory sessionFactory;
-    @Override
-    public List<Contest> get() {
+    public Iterable<Contest> findAll() {
         try (Session session = sessionFactory.openSession()) {
             Query<Contest> contestList = session.createQuery("from Contest", Contest.class);
             return contestList.getResultList();

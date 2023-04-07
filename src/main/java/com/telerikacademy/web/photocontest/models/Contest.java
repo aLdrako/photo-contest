@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenerationTime;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -38,29 +39,20 @@ public class Contest {
     @Lob
     @Column(name = "cover_photo", table = "cover_photos")
     private String coverPhoto;
-    // TODO pending User implementation
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    @JoinTable(
-//            name = "juries",
-//            joinColumns = @JoinColumn(name = "contest_id"),
-//            inverseJoinColumns = @JoinColumn(name = "user_id")
-//    )
-//    private Set<User> juries;
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    @JoinTable(
-//            name = "participants",
-//            joinColumns = @JoinColumn(name = "contest_id"),
-//            inverseJoinColumns = @JoinColumn(name = "user_id")
-//    )
-//    private Set<User> participants;
-    // TODO pending Photo implementation
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    @JoinTable(
-//            name = "contests_photos",
-//            joinColumns = @JoinColumn(name = "contest_id"),
-//            inverseJoinColumns = @JoinColumn(name = "photo_id")
-//    )
-//    private Set<Photo> photos;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "juries",
+            joinColumns = @JoinColumn(name = "contest_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> juries;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "participants",
+            joinColumns = @JoinColumn(name = "contest_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> participants;
 
     @Override
     public boolean equals(Object o) {
