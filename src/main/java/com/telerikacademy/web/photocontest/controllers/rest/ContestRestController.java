@@ -35,7 +35,11 @@ public class ContestRestController {
 
     @GetMapping("/{id}")
     public Contest findById(@PathVariable Long id) {
-        return contestServices.findById(id);
+        try {
+            return contestServices.findById(id);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
     @GetMapping("/filter")
@@ -59,15 +63,19 @@ public class ContestRestController {
         try {
             Contest contest = modelMapper.dtoToObject(id, contestDto);
             return contestServices.save(contest);
-        } catch (EntityDuplicateException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (EntityDuplicateException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        contestServices.deleteById(id);
+        try {
+            contestServices.deleteById(id);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 }

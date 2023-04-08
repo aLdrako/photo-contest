@@ -5,14 +5,13 @@ import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGr
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Data
 public class ContestDto {
     @NotEmpty(message = "Title can't be empty", groups = {CreateValidationGroup.class, UpdateValidationGroup.class})
+    @Size(min = 10, max = 50, message = "Title should be between 10 and 50 symbols", groups = {CreateValidationGroup.class, UpdateValidationGroup.class})
     private String title;
     @Positive(message = "Category Id should be positive number", groups = {CreateValidationGroup.class, UpdateValidationGroup.class})
     private Long categoryId;

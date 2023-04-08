@@ -1,7 +1,9 @@
 package com.telerikacademy.web.photocontest.services;
 
+import com.telerikacademy.web.photocontest.models.Category;
 import com.telerikacademy.web.photocontest.models.Contest;
 import com.telerikacademy.web.photocontest.models.User;
+import com.telerikacademy.web.photocontest.models.dto.CategoryDto;
 import com.telerikacademy.web.photocontest.models.dto.ContestDto;
 import com.telerikacademy.web.photocontest.models.dto.UserDto;
 import com.telerikacademy.web.photocontest.services.contracts.CategoryServices;
@@ -11,6 +13,8 @@ import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+
 @Component
 @AllArgsConstructor
 public class ModelMapper {
@@ -19,7 +23,6 @@ public class ModelMapper {
     private final RankingServices rankingServices;
     private final UserServices userServices;
 
-
     public Contest dtoToObject(ContestDto contestDto) {
         Contest contest = new Contest();
         contest.setTitle(contestDto.getTitle());
@@ -27,9 +30,9 @@ public class ModelMapper {
         contest.setPhase1(contestDto.getPhase1());
         contest.setPhase2(contestDto.getPhase2());
         contest.setInvitational(contestDto.isInvitational());
-        contest.setCoverPhoto(contestDto.getPhoto());
 //        if (contestDto.isInvitational()) contest.setParticipants();
-//        contest.setJuries();
+        contest.setJuries(new HashSet<>(userServices.getAllOrganizers()));
+        contest.setCoverPhoto(contestDto.getPhoto());
         return contest;
     }
 
@@ -39,6 +42,19 @@ public class ModelMapper {
         if (contestDto.getTitle() != null) contest.setTitle(contestDto.getTitle());
         return contest;
     }
+
+    public Category dtoToObject(CategoryDto categoryDto) {
+        Category category = new Category();
+        category.setName(categoryDto.getName());
+        return category;
+    }
+
+    public Category dtoToObject(Long id, CategoryDto categoryDto) {
+        Category category = categoryServices.findById(id);
+        if (categoryDto.getName() != null) category.setName(categoryDto.getName());
+        return category;
+    }
+
     public User dtoToObject(UserDto userDto) {
         User user = new User();
         user.setFirstName(userDto.getFirstName());
@@ -49,6 +65,7 @@ public class ModelMapper {
         user.setRank(rankingServices.getJunkie());
         return user;
     }
+
     public User dtoToObject(Long id, UserDto userDto) {
         User userFromRepo = userServices.getById(id);
         if (userDto.getFirstName() != null) userFromRepo.setFirstName(userDto.getFirstName());

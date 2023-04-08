@@ -30,6 +30,7 @@ public class ContestServicesImpl implements ContestServices {
     }
 
     public void deleteById(Long id) {
+        Contest contestToDelete = findById(id);
         contestRepository.deleteById(id);
     }
 
