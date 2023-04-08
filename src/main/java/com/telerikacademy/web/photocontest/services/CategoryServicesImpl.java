@@ -1,12 +1,11 @@
 package com.telerikacademy.web.photocontest.services;
 
+import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.models.Category;
 import com.telerikacademy.web.photocontest.repositories.contracts.CategoryRepository;
 import com.telerikacademy.web.photocontest.services.contracts.CategoryServices;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -18,8 +17,8 @@ public class CategoryServicesImpl implements CategoryServices {
     }
 
     @Override
-    public Optional<Category> findById(Long id) {
-        return categoryRepository.findById(id);
+    public Category findById(Long id) {
+        return categoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Category", id));
     }
 
     @Override

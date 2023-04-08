@@ -7,7 +7,8 @@ import java.util.Optional;
 
 public interface ContestServices {
     Iterable<Contest> findAll();
-    Optional<Contest> findById(Long id);
+    Contest findById(Long id);
     Contest save(Contest contest);
     void deleteById(Long id);
+    List<Contest> filter(String title, String categoryName, Boolean type);
 }
