@@ -16,12 +16,13 @@ public class ContestDto {
     private String title;
     @Positive(message = "Category Id should be positive number", groups = {CreateValidationGroup.class, UpdateValidationGroup.class})
     private Long categoryId;
-    @NotNull(message = "Type of contest can't be null", groups = {CreateValidationGroup.class, UpdateValidationGroup.class})
+    @NotNull(message = "Type of contest can't be null", groups = {CreateValidationGroup.class})
     private boolean isInvitational;
-    @NotNull(message = "Phase 1 can't be empty", groups = {CreateValidationGroup.class, UpdateValidationGroup.class})
+    @NotNull(message = "Phase 1 can't be empty", groups = {CreateValidationGroup.class})
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime phase1;
-    @NotNull(message = "Phase 2 can't be empty", groups = {CreateValidationGroup.class, UpdateValidationGroup.class})
+    @NotNull(message = "Phase 2 can't be empty", groups = {CreateValidationGroup.class})
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime phase2;
+    private String photo;
 }
