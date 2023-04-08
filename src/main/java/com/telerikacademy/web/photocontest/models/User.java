@@ -2,6 +2,8 @@ package com.telerikacademy.web.photocontest.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,7 +15,7 @@ import java.util.Set;
 @Setter
 @Table(name = "users")
 @SecondaryTables({
-        @SecondaryTable(name = "points", pkJoinColumns = @PrimaryKeyJoinColumn(name = "user_id"))
+        @SecondaryTable(name = "permissions", pkJoinColumns = @PrimaryKeyJoinColumn(name = "user_id"))
 })
 public class User {
     @Id
@@ -30,17 +32,20 @@ public class User {
     private String password;
     @Column(name = "email")
     private String email;
+    @Column(name = "is_organizer", table = "permissions")
+    private boolean isOrganizer;
+    @Column(name = "is_deleted", table = "permissions")
+    private boolean isDeleted;
+
+    @Generated(GenerationTime.ALWAYS)
     @Column(name = "join_date")
     private LocalDateTime joinDate;
     @ManyToOne
     @JoinColumn(name = "ranking_id")
     private Ranking rank;
-    @Column(name = "points", table = "points")
+    @Column(name = "points")
     private int points;
-    @OneToOne
-    @JoinColumn(name = "id", referencedColumnName = "user_id")
-    private Permission permission;
-    @OneToMany(mappedBy = "userCreated")
+    @OneToMany(mappedBy = "userCreated", fetch = FetchType.EAGER)
     private Set<Photo> photos;
 
     @Override

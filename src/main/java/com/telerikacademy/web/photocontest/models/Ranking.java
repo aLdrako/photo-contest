@@ -1,5 +1,6 @@
 package com.telerikacademy.web.photocontest.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,18 +17,20 @@ public class Ranking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Enumerated(EnumType.STRING)
     @Column(name = "name")
-    private Ranks name;
-
+    private String name;
+    @JsonIgnore
     @OneToMany
     private Set<User> users;
 
     public Ranking() {
     }
 
-    public Ranking(Ranks name) {
+    public Ranking(String name) {
         this.name = name;
+    }
+    public Ranking(int id) {
+        this.id = id;
     }
 
     @Override
