@@ -50,8 +50,9 @@ create or replace table users
     username   varchar(50)                          not null,
     email      varchar(50)                          not null,
     password   varchar(100)                         not null,
-    join_date  datetime default current_timestamp() not null,
-    ranking_id int      default 1                   null,
+    join_date  datetime default current_timestamp() null,
+    ranking_id int      default 1                   not null,
+    points     int      default 0                   not null,
     constraint users_pk2
         unique (username),
     constraint users_pk3
@@ -104,14 +105,5 @@ create or replace table photos
     constraint photos_contests_id_fk
         foreign key (contest_id) references contests (id),
     constraint photos_users_fk
-        foreign key (user_id) references users (id)
-);
-
-create or replace table points
-(
-    user_id bigint        not null
-        primary key,
-    points  int default 0 not null,
-    constraint points_users_fk
         foreign key (user_id) references users (id)
 );
