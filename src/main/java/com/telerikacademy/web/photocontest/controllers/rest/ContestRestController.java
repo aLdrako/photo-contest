@@ -1,10 +1,15 @@
 package com.telerikacademy.web.photocontest.controllers.rest;
 
+import com.telerikacademy.web.photocontest.exceptions.AuthorizationException;
 import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
+import com.telerikacademy.web.photocontest.helpers.AuthenticationHelper;
 import com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper;
 import com.telerikacademy.web.photocontest.models.Contest;
+import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.models.dto.ContestDto;
+import com.telerikacademy.web.photocontest.models.dto.ContestOutputDto;
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
@@ -15,8 +20,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.DateTimeException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import static com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper.getResult;
 
@@ -25,44 +33,60 @@ import static com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper
 @AllArgsConstructor
 public class ContestRestController {
 
+    private final AuthenticationHelper authenticationHelper;
     private final ContestServices contestServices;
     private final ModelMapper modelMapper;
 
     @GetMapping
-    public Iterable<Contest> findAll() {
-        return contestServices.findAll();
+    public Iterable<ContestOutputDto> findAll() {
+        Iterable<Contest> contests = contestServices.findAll();
+        return StreamSupport.stream(contests.spliterator(), false)
+                .map(modelMapper::objectToDto).toList();
+//        return contestServices.findAll();
     }
 
     @GetMapping("/{id}")
-    public Contest findById(@PathVariable Long id) {
+    public ContestOutputDto findById(@PathVariable Long id) {
         try {
-            return contestServices.findById(id);
+            Contest contest = contestServices.findById(id);
+            return modelMapper.objectToDto(contest);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @GetMapping("/filter")
-    public List<Contest> filter(@RequestParam Map<String, String> parameter) {
+    public List<ContestOutputDto> filter(@RequestParam Map<String, String> parameter) {
         FilterAndSortingHelper.Result result = getResult(parameter);
-        return contestServices.filter(result.title(), result.categoryName(), result.isInvitational());
+        List<Contest> contests = contestServices.filter(result.title(), result.categoryName(), result.isInvitational());
+        return contests.stream().map(modelMapper::objectToDto).toList();
     }
 
     @PostMapping
-    public Contest create(@Validated(CreateValidationGroup.class) @RequestBody ContestDto contestDto) {
+    public ContestOutputDto create(@RequestHeader(required = false) Optional<String> authorization, @Validated(CreateValidationGroup.class) @RequestBody ContestDto contestDto) {
         try {
+            User authenticatedUser = authenticationHelper.tryGetUser(authorization);
             Contest contest = modelMapper.dtoToObject(contestDto);
-            return contestServices.save(contest);
+            Contest savedContest = contestServices.save(contest, authenticatedUser);
+            return modelMapper.objectToDto(savedContest);
+        } catch (AuthorizationException | UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityDuplicateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        } catch (DateTimeException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public Contest update(@PathVariable Long id, @Validated(UpdateValidationGroup.class) @RequestBody ContestDto contestDto) {
+    public ContestOutputDto update(@RequestHeader(required = false) Optional<String> authorization, @PathVariable Long id, @Validated(UpdateValidationGroup.class) @RequestBody ContestDto contestDto) {
         try {
+            User authenticatedUser = authenticationHelper.tryGetUser(authorization);
             Contest contest = modelMapper.dtoToObject(id, contestDto);
-            return contestServices.save(contest);
+            Contest updatedContest = contestServices.save(contest, authenticatedUser);
+            return modelMapper.objectToDto(updatedContest);
+        } catch (AuthorizationException | UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (EntityDuplicateException e) {
@@ -71,9 +95,12 @@ public class ContestRestController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization) {
         try {
-            contestServices.deleteById(id);
+            User authenticatedUser = authenticationHelper.tryGetUser(authorization);
+            contestServices.deleteById(id, authenticatedUser);
+        } catch (AuthorizationException | UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

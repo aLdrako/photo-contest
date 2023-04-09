@@ -53,6 +53,8 @@ public class Contest {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> participants;
+    @OneToMany(mappedBy = "postedOn", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private Set<Photo> photos;
 
     @Override
     public boolean equals(Object o) {

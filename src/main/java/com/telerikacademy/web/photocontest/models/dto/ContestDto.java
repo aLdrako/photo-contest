@@ -1,7 +1,6 @@
 package com.telerikacademy.web.photocontest.models.dto;
 
-import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
-import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
+import com.telerikacademy.web.photocontest.models.validations.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -18,9 +17,11 @@ public class ContestDto {
     @NotNull(message = "Type of contest can't be null", groups = {CreateValidationGroup.class})
     private boolean isInvitational;
     @NotNull(message = "Phase 1 can't be empty", groups = {CreateValidationGroup.class})
+    @Future(message = "Phase 1 should be in the future in bounds of one day to one month", groups = {CreateValidationGroup.class})
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime phase1;
     @NotNull(message = "Phase 2 can't be empty", groups = {CreateValidationGroup.class})
+    @Future(message = "Phase 2 should be after Phase 1 in bounds of one hour to one day", groups = {CreateValidationGroup.class})
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime phase2;
     private String photo;

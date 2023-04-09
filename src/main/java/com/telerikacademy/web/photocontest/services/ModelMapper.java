@@ -5,6 +5,7 @@ import com.telerikacademy.web.photocontest.models.Contest;
 import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.models.dto.CategoryDto;
 import com.telerikacademy.web.photocontest.models.dto.ContestDto;
+import com.telerikacademy.web.photocontest.models.dto.ContestOutputDto;
 import com.telerikacademy.web.photocontest.models.dto.UserDto;
 import com.telerikacademy.web.photocontest.services.contracts.CategoryServices;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
@@ -41,6 +42,22 @@ public class ModelMapper {
         if (contestDto.getCategoryId() != null) contest.setCategory(categoryServices.findById(contestDto.getCategoryId()));
         if (contestDto.getTitle() != null) contest.setTitle(contestDto.getTitle());
         return contest;
+    }
+
+    public ContestOutputDto objectToDto(Contest contest) {
+        ContestOutputDto contestOutputDto = new ContestOutputDto();
+        contestOutputDto.setId(contest.getId());
+        contestOutputDto.setTitle(contest.getTitle());
+        contestOutputDto.setCategory(contest.getCategory().getName());
+        contestOutputDto.setPhase1(contest.getPhase1());
+        contestOutputDto.setPhase2(contest.getPhase2());
+        contestOutputDto.setDateCreated(contest.getDateCreated());
+        contestOutputDto.setCoverPhoto(contest.getCoverPhoto());
+        contestOutputDto.setInvitational(contest.isInvitational());
+        if (contest.getJuries() != null) contestOutputDto.setJuries(contest.getJuries().stream().map(User::getUsername).toList());
+        if (contest.getParticipants() != null) contestOutputDto.setParticipants(contest.getParticipants().stream().map(User::getUsername).toList());
+        if (contest.getPhotos() != null) contestOutputDto.setPhotos(contest.getPhotos().stream().toList());
+        return contestOutputDto;
     }
 
     public Category dtoToObject(CategoryDto categoryDto) {
