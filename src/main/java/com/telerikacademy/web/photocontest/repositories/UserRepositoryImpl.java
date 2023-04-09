@@ -10,7 +10,11 @@ import org.springframework.stereotype.Repository;
 import org.hibernate.query.Query;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -58,15 +62,6 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void delete(User user) {
-        try (Session session = sessionFactory.openSession()){
-            session.beginTransaction();
-            session.remove(user);
-            session.getTransaction().commit();
-        }
-    }
-
-    @Override
     public User getByEmail(String email) {
         try (Session session = sessionFactory.openSession()){
             Query<User> query = session.createQuery("from User where email = :email", User.class);
@@ -94,8 +89,27 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<User> getAllOrganizers() {
         try (Session session = sessionFactory.openSession()){
-            Query<User> query = session.createQuery("from User where isOrganizer = true", User.class);
+            Query<User> query = session.createQuery("from User where isOrganizer = true " +
+                    "and isDeleted = false", User.class);
             return query.list();
+        }
+    }
+
+    @Override
+    public List<User> search(Optional<String> keyword) {
+        String query = keyword.orElse("");
+        try (Session session = sessionFactory.openSession()){
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+            Root<User> userRoot = criteriaQuery.from(User.class);
+            Predicate firstName = criteriaBuilder.equal(userRoot.get("firstName"), query);
+            Predicate lastName = criteriaBuilder.equal(userRoot.get("lastName"), query);
+            Predicate username = criteriaBuilder.equal(userRoot.get("username"), query);
+            Predicate search = criteriaBuilder.or(firstName, lastName, username);
+            Predicate finalPredicate = criteriaBuilder.and(search,
+                    criteriaBuilder.equal(userRoot.get("isDeleted"), false));
+            criteriaQuery.where(finalPredicate);
+            return session.createQuery(criteriaQuery).getResultList();
         }
     }
 

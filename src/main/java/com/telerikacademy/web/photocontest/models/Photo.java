@@ -25,8 +25,10 @@ public class Photo {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User userCreated;
-
-
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "contest_id")
+    private Contest postedOn;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

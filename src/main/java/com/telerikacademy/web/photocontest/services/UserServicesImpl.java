@@ -14,11 +14,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 @Service
 @AllArgsConstructor
 public class UserServicesImpl implements UserServices {
     private final UserRepository userRepository;
+    private final RankingServices rankingServices;
 
     @Override
     public List<User> getAll() {
@@ -35,7 +38,7 @@ public class UserServicesImpl implements UserServices {
     private void checkAuthorizationPermissions(User user, User userFromAuthorization) {
         if (!userFromAuthorization.isOrganizer()  &&
                 !user.getUsername().equals(userFromAuthorization.getUsername())) {
-            throw new UnauthorizedOperationException("Only an organizer or owner of account can update profile settings!");
+            throw new UnauthorizedOperationException("Only an organizer or owner of account can update/delete profile!");
         }
     }
 
@@ -89,4 +92,34 @@ public class UserServicesImpl implements UserServices {
     public List<User> getAllOrganizers() {
         return userRepository.getAllOrganizers();
     }
+
+    @Override
+    public void delete(Long id, User userFromAuthorization) {
+        User userFromRepo = getById(id);
+        checkAuthorizationPermissions(userFromRepo, userFromAuthorization);
+        changeUserProperties(userFromRepo);
+        userRepository.update(userFromRepo);
+    }
+
+    @Override
+    public List<User> search(Optional<String> keyword) {
+        return userRepository.search(keyword);
+    }
+
+    private void changeUserProperties(User userFromRepo) {
+        userFromRepo.setDeleted(true);
+        userFromRepo.setFirstName(generateString());
+        userFromRepo.setLastName(generateString());
+        userFromRepo.setUsername(generateString());
+        userFromRepo.setPassword(generateString());
+        userFromRepo.setEmail(generateString());
+        userFromRepo.setPoints(-1);
+        userFromRepo.setRank(rankingServices.getJunkie());
+    }
+    private String generateString() {
+        return new Random().ints(48, 123)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97)).limit(15)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
+    }
+
 }

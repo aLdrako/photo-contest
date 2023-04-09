@@ -42,6 +42,10 @@ public class UserRestController {
     public List<User> getAll() {
         return userServices.getAll();
     }
+    @GetMapping("/search")
+    public List<User> search(@RequestParam(required = false) Optional<String> q) {
+        return userServices.search(q);
+    }
     @GetMapping("/{id}")
     public User getById(@PathVariable Long id) {
         try {
@@ -53,13 +57,13 @@ public class UserRestController {
 
     @PostMapping
     public User createUser(@Validated(CreateValidationGroup.class) @RequestBody UserDto userDto) {
-        User user = modelMapper.dtoToObject(userDto);
         try {
+            User user = modelMapper.dtoToObject(userDto);
             userServices.create(user);
+            return user;
         } catch (EntityDuplicateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
-        return user;
     }
 
     @PutMapping("/{id}")
@@ -77,6 +81,18 @@ public class UserRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (EntityDuplicateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        }
+    }
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id,
+                       @RequestHeader(required = false) Optional<String> authorization) {
+        try {
+            User userFromAuthorization = authenticationHelper.tryGetUser(authorization);
+            userServices.delete(id, userFromAuthorization);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (AuthorizationException | UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 }
