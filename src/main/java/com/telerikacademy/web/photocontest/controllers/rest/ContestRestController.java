@@ -10,6 +10,8 @@ import com.telerikacademy.web.photocontest.models.Contest;
 import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.models.dto.ContestDto;
 import com.telerikacademy.web.photocontest.models.dto.ContestResponseDto;
+import com.telerikacademy.web.photocontest.models.dto.UserDto;
+import com.telerikacademy.web.photocontest.models.validations.AddJuryValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
@@ -76,6 +78,39 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (DateTimeException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/join")
+    public ContestResponseDto joinContest(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization) {
+        try {
+            User authenticatedUser = authenticationHelper.tryGetUser(authorization);
+            Contest contest = contestServices.findById(id);
+            Contest joinedContest = contestServices.join(contest, authenticatedUser);
+            return modelMapper.objectToDto(joinedContest);
+        } catch (AuthorizationException | UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (EntityDuplicateException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/add-jury")
+    public ContestResponseDto addJury(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization,
+                                      @Validated(AddJuryValidationGroup.class) @RequestBody UserDto userDto) {
+        try {
+            User authenticatedUser = authenticationHelper.tryGetUser(authorization);
+            Contest contest = contestServices.findById(id);
+            Contest selectedJuryContest = contestServices.addJury(contest, authenticatedUser, userDto.getUsername());
+            return modelMapper.objectToDto(selectedJuryContest);
+        } catch (AuthorizationException | UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (EntityDuplicateException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
 

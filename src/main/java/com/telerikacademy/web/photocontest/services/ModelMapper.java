@@ -28,7 +28,6 @@ public class ModelMapper {
         contest.setPhase1(contestDto.getPhase1());
         contest.setPhase2(contestDto.getPhase2());
         contest.setInvitational(contestDto.isInvitational());
-//        if (contestDto.isInvitational()) contest.setParticipants();
         contest.setJuries(new HashSet<>(userServices.getAllOrganizers()));
         contest.setCoverPhoto(contestDto.getPhoto());
         return contest;
