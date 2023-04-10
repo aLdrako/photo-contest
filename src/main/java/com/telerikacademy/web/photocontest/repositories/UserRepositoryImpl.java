@@ -1,6 +1,7 @@
 package com.telerikacademy.web.photocontest.repositories;
 
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.photocontest.models.Ranks;
 import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.repositories.contracts.UserRepository;
 import org.hibernate.Session;
@@ -91,6 +92,18 @@ public class UserRepositoryImpl implements UserRepository {
         try (Session session = sessionFactory.openSession()){
             Query<User> query = session.createQuery("from User where isOrganizer = true " +
                     "and isDeleted = false", User.class);
+            return query.list();
+        }
+    }
+
+    @Override
+    public List<User> getUsersWithJuryPermission() {
+        try (Session session = sessionFactory.openSession()){
+            Query<User> query = session.createQuery("from User where rank.name = :master " +
+                    "or rank.name = :wise " +
+                    "and isDeleted = false", User.class);
+            query.setParameter("master", Ranks.MASTER.toString());
+            query.setParameter("wise", Ranks.WISE_AND_BENEVOLENT_PHOTO_DICTATOR.toString());
             return query.list();
         }
     }

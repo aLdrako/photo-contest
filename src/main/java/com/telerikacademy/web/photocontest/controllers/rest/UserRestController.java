@@ -13,6 +13,7 @@ import com.telerikacademy.web.photocontest.models.validations.CreateValidationGr
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -25,18 +26,12 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
+@AllArgsConstructor
 public class UserRestController {
 
     private final UserServices userServices;
     private final AuthenticationHelper authenticationHelper;
     private final ModelMapper modelMapper;
-    @Autowired
-    public UserRestController(UserServices userServices, AuthenticationHelper authenticationHelper,
-                              ModelMapper modelMapper) {
-        this.userServices = userServices;
-        this.authenticationHelper = authenticationHelper;
-        this.modelMapper = modelMapper;
-    }
 
     @GetMapping
     public List<User> getAll() {

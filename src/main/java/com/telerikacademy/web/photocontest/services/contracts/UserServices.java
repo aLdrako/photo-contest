@@ -12,6 +12,7 @@ public interface UserServices {
     User getById(Long id);
     User getByUsername(String username);
     List<User> getAllOrganizers();
+    List<User> getUsersWithJuryPermission();
     void delete(Long id, User userFromAuthorization);
     List<User> search(Optional<String> keyword);
 }

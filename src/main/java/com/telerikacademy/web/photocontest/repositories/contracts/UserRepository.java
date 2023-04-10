@@ -13,5 +13,6 @@ public interface UserRepository {
     User getByEmail(String email);
     User getByUsername(String username);
     List<User> getAllOrganizers();
+    List<User> getUsersWithJuryPermission();
     List<User> search(Optional<String> keyword);
 }

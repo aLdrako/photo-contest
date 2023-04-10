@@ -28,6 +28,7 @@ public class UserServicesImpl implements UserServices {
         return userRepository.getAll();
     }
 
+
     @Override
     public void update(User user, User userFromAuthorization) {
         checkAuthorizationPermissions(user, userFromAuthorization);
@@ -91,6 +92,11 @@ public class UserServicesImpl implements UserServices {
     @Override
     public List<User> getAllOrganizers() {
         return userRepository.getAllOrganizers();
+    }
+
+    @Override
+    public List<User> getUsersWithJuryPermission() {
+        return userRepository.getUsersWithJuryPermission();
     }
 
     @Override
