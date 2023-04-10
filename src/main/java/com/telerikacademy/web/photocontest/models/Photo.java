@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -29,6 +30,13 @@ public class Photo {
     @ManyToOne
     @JoinColumn(name = "contest_id")
     private Contest postedOn;
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reviewId.photoId")
+    private Set<PhotoReview> reviews;
+
+    public void addReview(PhotoReview photoReview) {
+        reviews.add(photoReview);
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

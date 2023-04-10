@@ -3,12 +3,12 @@ package com.telerikacademy.web.photocontest.models.dto;
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.EqualFields;
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
-@Getter
-@Setter
+@Data
 @EqualFields(baseField = "password", matchField = "passwordConfirm", message = "Passwords must be equal!")
 public class UserDto {
     @NotEmpty(message = "First name can't be empty",

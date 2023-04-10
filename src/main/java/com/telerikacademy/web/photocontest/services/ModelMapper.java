@@ -1,9 +1,6 @@
 package com.telerikacademy.web.photocontest.services;
 
-import com.telerikacademy.web.photocontest.models.Category;
-import com.telerikacademy.web.photocontest.models.Contest;
-import com.telerikacademy.web.photocontest.models.Photo;
-import com.telerikacademy.web.photocontest.models.User;
+import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.models.dto.*;
 import com.telerikacademy.web.photocontest.services.contracts.CategoryServices;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
@@ -87,5 +84,23 @@ public class ModelMapper {
         if (userDto.getEmail() != null) userFromRepo.setEmail(userDto.getEmail());
 
         return userFromRepo;
+    }
+
+    public Photo dtoToObject(PhotoDto photoDto) {
+        Photo photo = new Photo();
+        photo.setTitle(photoDto.getTitle());
+        photo.setStory(photoDto.getStory());
+        photo.setPostedOn(contestServices.findById(photoDto.getContestId()));
+        photo.setPhoto(photoDto.getPhoto());
+
+        return photo;
+    }
+
+    public PhotoReview dtoToObject(PhotoReviewDto photoReviewDto) {
+        PhotoReview photoReview = new PhotoReview();
+        photoReview.setScore(photoReviewDto.isFitsCategory() ? photoReviewDto.getScore() : 0);
+        photoReview.setComment(photoReviewDto.getComment());
+
+        return photoReview;
     }
 }
