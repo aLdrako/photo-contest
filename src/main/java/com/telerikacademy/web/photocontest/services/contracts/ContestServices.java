@@ -13,4 +13,5 @@ public interface ContestServices {
     List<Contest> filter(String title, String categoryName, Boolean type);
     Contest join(Contest contest, User authenticatedUser);
     Contest addJury(Contest contest, User authenticatedUser, String username);
+    Contest addParticipant(Contest contest, User authenticatedUser, String username);
 }

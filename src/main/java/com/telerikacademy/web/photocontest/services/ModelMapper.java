@@ -7,7 +7,6 @@ import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.RankingServices;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;

@@ -11,7 +11,7 @@ import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.models.dto.ContestDto;
 import com.telerikacademy.web.photocontest.models.dto.ContestResponseDto;
 import com.telerikacademy.web.photocontest.models.dto.UserDto;
-import com.telerikacademy.web.photocontest.models.validations.AddJuryValidationGroup;
+import com.telerikacademy.web.photocontest.models.validations.EnlistUserValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
@@ -23,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.DateTimeException;
 import java.util.List;
 import java.util.Map;
@@ -97,14 +98,23 @@ public class ContestRestController {
         }
     }
 
-    @PostMapping("/{id}/add-jury")
-    public ContestResponseDto addJury(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization,
-                                      @Validated(AddJuryValidationGroup.class) @RequestBody UserDto userDto) {
+    @PostMapping({
+            "/{id}/add-jury",
+            "/{id}/add-participant"
+    })
+    public ContestResponseDto enlistUser(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization,
+                                             @Validated(EnlistUserValidationGroup.class) @RequestBody UserDto userDto, HttpServletRequest request) {
         try {
             User authenticatedUser = authenticationHelper.tryGetUser(authorization);
             Contest contest = contestServices.findById(id);
-            Contest selectedJuryContest = contestServices.addJury(contest, authenticatedUser, userDto.getUsername());
-            return modelMapper.objectToDto(selectedJuryContest);
+            String endpoint = request.getRequestURI();
+            Contest resultContest;
+            if (endpoint.endsWith("/add-jury")) {
+                resultContest = contestServices.addJury(contest, authenticatedUser, userDto.getUsername());
+            } else if (endpoint.endsWith("/add-participant")) {
+                resultContest = contestServices.addParticipant(contest, authenticatedUser, userDto.getUsername());
+            } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid endpoint");
+            return modelMapper.objectToDto(resultContest);
         } catch (AuthorizationException | UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {

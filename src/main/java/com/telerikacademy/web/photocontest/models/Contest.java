@@ -46,7 +46,7 @@ public class Contest {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> juries;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
             name = "participants",
             joinColumns = @JoinColumn(name = "contest_id"),

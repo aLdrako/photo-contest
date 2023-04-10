@@ -1,12 +1,10 @@
 package com.telerikacademy.web.photocontest.models.dto;
 
-import com.telerikacademy.web.photocontest.models.validations.AddJuryValidationGroup;
+import com.telerikacademy.web.photocontest.models.validations.EnlistUserValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.EqualFields;
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.validation.constraints.*;
 @Data
@@ -28,9 +26,9 @@ public class UserDto {
             groups = {UpdateValidationGroup.class, CreateValidationGroup.class})
     private String email;
     @NotEmpty(message = "Username can't be empty",
-            groups = {CreateValidationGroup.class, AddJuryValidationGroup.class})
+            groups = {CreateValidationGroup.class, EnlistUserValidationGroup.class})
     @Size(min = 4, max = 16, message = "Username should be between 4 and 16 symbols",
-            groups = {CreateValidationGroup.class, AddJuryValidationGroup.class})
+            groups = {CreateValidationGroup.class, EnlistUserValidationGroup.class})
     private String username;
     @NotEmpty(message = "Password can't be empty",
             groups = {CreateValidationGroup.class})
