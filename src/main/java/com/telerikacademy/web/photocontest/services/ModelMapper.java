@@ -2,19 +2,19 @@ package com.telerikacademy.web.photocontest.services;
 
 import com.telerikacademy.web.photocontest.models.Category;
 import com.telerikacademy.web.photocontest.models.Contest;
+import com.telerikacademy.web.photocontest.models.Photo;
 import com.telerikacademy.web.photocontest.models.User;
-import com.telerikacademy.web.photocontest.models.dto.CategoryDto;
-import com.telerikacademy.web.photocontest.models.dto.ContestDto;
-import com.telerikacademy.web.photocontest.models.dto.ContestOutputDto;
-import com.telerikacademy.web.photocontest.models.dto.UserDto;
+import com.telerikacademy.web.photocontest.models.dto.*;
 import com.telerikacademy.web.photocontest.services.contracts.CategoryServices;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.RankingServices;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
+import java.util.List;
 
 @Component
 @AllArgsConstructor
@@ -44,20 +44,16 @@ public class ModelMapper {
         return contest;
     }
 
-    public ContestOutputDto objectToDto(Contest contest) {
-        ContestOutputDto contestOutputDto = new ContestOutputDto();
-        contestOutputDto.setId(contest.getId());
-        contestOutputDto.setTitle(contest.getTitle());
-        contestOutputDto.setCategory(contest.getCategory().getName());
-        contestOutputDto.setPhase1(contest.getPhase1());
-        contestOutputDto.setPhase2(contest.getPhase2());
-        contestOutputDto.setDateCreated(contest.getDateCreated());
-        contestOutputDto.setCoverPhoto(contest.getCoverPhoto());
-        contestOutputDto.setInvitational(contest.isInvitational());
-        if (contest.getJuries() != null) contestOutputDto.setJuries(contest.getJuries().stream().map(User::getUsername).toList());
-        if (contest.getParticipants() != null) contestOutputDto.setParticipants(contest.getParticipants().stream().map(User::getUsername).toList());
-        if (contest.getPhotos() != null) contestOutputDto.setPhotos(contest.getPhotos().stream().toList());
-        return contestOutputDto;
+    public ContestResponseDto objectToDto(Contest contest) {
+        List<String> juries = null ;
+        if (contest.getJuries() != null) juries = contest.getJuries().stream().map(User::getUsername).toList();
+        List<String> participants = null;
+        if (contest.getParticipants() != null) participants = contest.getParticipants().stream().map(User::getUsername).toList();
+        List<Photo> photos = null;
+        if (contest.getPhotos() != null) photos = contest.getPhotos().stream().toList();
+
+        return new ContestResponseDto(contest.getId(), contest.getTitle(), contest.getCategory().getName(), contest.getPhase1(), contest.getPhase2(),
+                contest.getDateCreated(), contest.getCoverPhoto(), contest.isInvitational(), juries, participants, photos);
     }
 
     public Category dtoToObject(CategoryDto categoryDto) {

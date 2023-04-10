@@ -80,5 +80,4 @@ public class CategoryRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
-
 }
