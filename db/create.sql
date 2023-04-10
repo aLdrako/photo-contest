@@ -107,3 +107,17 @@ create or replace table photos
     constraint photos_users_fk
         foreign key (user_id) references users (id)
 );
+
+create or replace table photos_reviews
+(
+    photo_id      bigint               not null,
+    jury_id       bigint               not null,
+    comment       varchar(1024)        not null,
+    score         int        default 3 not null,
+    fits_category tinyint(1) default 1 not null,
+    primary key (photo_id, jury_id),
+    constraint photos_reviews_photos_id_fk
+        foreign key (photo_id) references photos (id),
+    constraint photos_reviews_users_id_fk
+        foreign key (jury_id) references users (id)
+);
