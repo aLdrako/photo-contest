@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -32,10 +33,24 @@ public class Photo {
     private Contest postedOn;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "reviewId.photoId")
-    private Set<PhotoReview> reviews;
+    private Set<PhotoScore> scores = new HashSet<>();
 
-    public void addReview(PhotoReview photoReview) {
-        reviews.add(photoReview);
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reviewId.photoId")
+    private Set<PhotoReviewDetails> reviewsDetails = new HashSet<>();
+
+    public void addScore(PhotoScore photoScore) {
+        scores.add(photoScore);
+    }
+    public void addReviewDetails(PhotoReviewDetails photoReviewDetails) {
+        reviewsDetails.add(photoReviewDetails);
+    }
+    public void updateScore(PhotoScore photoScore) {
+        PhotoScore reviewFromRepo = new PhotoScore();
+        reviewFromRepo.setReviewId(new ReviewId(photoScore.getReviewId().getPhotoId(),
+                photoScore.getReviewId().getJuryId()));
+        scores.remove(reviewFromRepo);
+        scores.add(photoScore);
     }
     @Override
     public boolean equals(Object o) {
@@ -49,4 +64,5 @@ public class Photo {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

@@ -9,24 +9,19 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@Table(name = "photos_reviews")
-public class PhotoReview {
+@Table(name = "photos_scores")
+public class PhotoScore {
 
     @EmbeddedId
     private ReviewId reviewId;
-
-    @Column(name = "comment")
-    private String comment;
     @Column(name = "score")
     private int score;
-    @Column(name = "fits_category")
-    private boolean fitsCategory;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PhotoReview that = (PhotoReview) o;
+        PhotoScore that = (PhotoScore) o;
         return Objects.equals(reviewId, that.reviewId);
     }
 

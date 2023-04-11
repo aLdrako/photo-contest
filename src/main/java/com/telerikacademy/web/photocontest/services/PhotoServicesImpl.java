@@ -3,10 +3,7 @@ package com.telerikacademy.web.photocontest.services;
 import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
-import com.telerikacademy.web.photocontest.models.Contest;
-import com.telerikacademy.web.photocontest.models.Photo;
-import com.telerikacademy.web.photocontest.models.PhotoReview;
-import com.telerikacademy.web.photocontest.models.User;
+import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.repositories.contracts.PhotoRepository;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
@@ -42,6 +39,12 @@ public class PhotoServicesImpl implements PhotoServices {
         if (photo.getPostedOn().getPhase1().isBefore(LocalDateTime.now())) {
             throw new UnauthorizedOperationException(NOT_IN_PHASE_ONE_MESSAGE);
         }
+        /*photo.getPostedOn().getJuries().forEach(jury -> {
+            PhotoScore photoScore = new PhotoScore();
+            photoScore.setReviewId(new ReviewId(photo, jury));
+            photoScore.setScore(3);
+            photo.addScore(photoScore);
+        });*/
         photoRepository.save(photo);
     }
 
@@ -63,16 +66,25 @@ public class PhotoServicesImpl implements PhotoServices {
     }
 
     @Override
-    public void postReview(PhotoReview photoReview, Photo photo, User user) {
-        checkReviewPostPermissions(photoReview, photo, user);
-        photo.addReview(photoReview);
+    public void postReview(PhotoScore photoScore, Photo photo, User user,
+                           PhotoReviewDetails photoReviewDetails) {
+        checkReviewPostPermissions(photoReviewDetails, photo, user);
+        photo.addReviewDetails(photoReviewDetails);
+        photo.updateScore(photoScore);
         photoRepository.save(photo);
     }
-    private void checkReviewPostPermissions(PhotoReview photoReview, Photo photo, User user) {
+
+    @Override
+    public int getScoreOfPhoto(Long id) {
+        photoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Photo", id));
+        return photoRepository.getScoreOfPhoto(id);
+    }
+
+    private void checkReviewPostPermissions(PhotoReviewDetails photoReviewDetails, Photo photo, User user) {
         if (!photo.getPostedOn().getJuries().contains(user)) {
             throw new UnauthorizedOperationException(NOT_A_JURY_MESSAGE);
         }
-        if (photo.getReviews().contains(photoReview)) {
+        if (photo.getReviewsDetails().contains(photoReviewDetails)) {
             throw new EntityDuplicateException(
                     String.format(DUPLICATE_REVIEW_MESSAGE, user.getUsername()));
         }

@@ -5,10 +5,7 @@ import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.helpers.AuthenticationHelper;
-import com.telerikacademy.web.photocontest.models.Photo;
-import com.telerikacademy.web.photocontest.models.PhotoReview;
-import com.telerikacademy.web.photocontest.models.ReviewId;
-import com.telerikacademy.web.photocontest.models.User;
+import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.models.dto.PhotoDto;
 import com.telerikacademy.web.photocontest.models.dto.PhotoReviewDto;
 import com.telerikacademy.web.photocontest.models.validations.CreatePhotoGroup;
@@ -63,16 +60,20 @@ public class PhotoRestController {
     }
 
     @PostMapping("/{id}/review")
-    public PhotoReview postReview(@PathVariable Long id,
-                            @RequestHeader(required = false) Optional<String> authorization,
-                            @Valid @RequestBody PhotoReviewDto photoReviewDto) {
+    public PhotoReviewDetails postReview(@PathVariable Long id,
+                                 @RequestHeader(required = false) Optional<String> authorization,
+                                 @Valid @RequestBody PhotoReviewDto photoReviewDto) {
         try {
             User user = authenticationHelper.tryGetUser(authorization);
             Photo photo = photoServices.getById(id);
-            PhotoReview photoReview = modelMapper.dtoToObject(photoReviewDto);
-            photoReview.setReviewId(new ReviewId(photo, user));
-            photoServices.postReview(photoReview, photo, user);
-            return photoReview;
+            ReviewId reviewId = new ReviewId(photo, user);
+
+            PhotoScore photoScore = modelMapper.dtoToObject(photoReviewDto);
+            PhotoReviewDetails photoReviewDetails = modelMapper.dtoToReviewDetails(photoReviewDto);
+            photoScore.setReviewId(reviewId);
+            photoReviewDetails.setReviewId(reviewId);
+            photoServices.postReview(photoScore, photo, user, photoReviewDetails);
+            return photoReviewDetails;
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException | UnauthorizedOperationException e) {
@@ -94,5 +95,4 @@ public class PhotoRestController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
-
 }

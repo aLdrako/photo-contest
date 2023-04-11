@@ -94,11 +94,16 @@ public class ModelMapper {
         return photo;
     }
 
-    public PhotoReview dtoToObject(PhotoReviewDto photoReviewDto) {
-        PhotoReview photoReview = new PhotoReview();
-        photoReview.setScore(photoReviewDto.isFitsCategory() ? photoReviewDto.getScore() : 0);
-        photoReview.setComment(photoReviewDto.getComment());
+    public PhotoScore dtoToObject(PhotoReviewDto photoReviewDto) {
+        PhotoScore photoScore = new PhotoScore();
+        photoScore.setScore(photoReviewDto.isFitsCategory() ? photoReviewDto.getScore() : 0);
+
+        return photoScore;
+    }
+    public PhotoReviewDetails dtoToReviewDetails(PhotoReviewDto photoReviewDto) {
+        PhotoReviewDetails photoReview = new PhotoReviewDetails();
         photoReview.setFitsCategory(photoReviewDto.isFitsCategory());
+        photoReview.setComment(photoReviewDto.getComment());
 
         return photoReview;
     }

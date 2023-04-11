@@ -1,11 +1,11 @@
-create or replace table categories
+create or replace table photo_contest.categories
 (
     id   bigint auto_increment
         primary key,
     name varchar(16) not null
 );
 
-create or replace table contests
+create or replace table photo_contest.contests
 (
     id              bigint auto_increment
         primary key,
@@ -20,19 +20,19 @@ create or replace table contests
     constraint contests_pk2
         unique (title),
     constraint contests_categories_id_fk
-        foreign key (category_id) references categories (id)
+        foreign key (category_id) references photo_contest.categories (id)
 );
 
-create or replace table cover_photos
+create or replace table photo_contest.cover_photos
 (
     contest_id  bigint not null
         primary key,
     cover_photo blob   null,
     constraint cover_photos_contests_fk
-        foreign key (contest_id) references contests (id)
+        foreign key (contest_id) references photo_contest.contests (id)
 );
 
-create or replace table rankings
+create or replace table photo_contest.rankings
 (
     id   int auto_increment
         primary key,
@@ -41,7 +41,7 @@ create or replace table rankings
         unique (name)
 );
 
-create or replace table users
+create or replace table photo_contest.users
 (
     id         bigint auto_increment
         primary key,
@@ -58,42 +58,42 @@ create or replace table users
     constraint users_pk3
         unique (email),
     constraint users_rankings_id_fk
-        foreign key (ranking_id) references rankings (id)
+        foreign key (ranking_id) references photo_contest.rankings (id)
 );
 
-create or replace table juries
+create or replace table photo_contest.juries
 (
     contest_id bigint not null,
     user_id    bigint not null,
     primary key (contest_id, user_id),
     constraint juries_contests_fk
-        foreign key (contest_id) references contests (id),
+        foreign key (contest_id) references photo_contest.contests (id),
     constraint juries_users_id_fk
-        foreign key (user_id) references users (id)
+        foreign key (user_id) references photo_contest.users (id)
 );
 
-create or replace table participants
+create or replace table photo_contest.participants
 (
     contest_id bigint not null,
     user_id    bigint not null,
     primary key (contest_id, user_id),
     constraint participants_contests_id_fk
-        foreign key (contest_id) references contests (id),
+        foreign key (contest_id) references photo_contest.contests (id),
     constraint participants_users_id_fk
-        foreign key (user_id) references users (id)
+        foreign key (user_id) references photo_contest.users (id)
 );
 
-create or replace table permissions
+create or replace table photo_contest.permissions
 (
     user_id      bigint               not null
         primary key,
     is_organizer tinyint(1) default 0 not null,
     is_deleted   tinyint(1) default 0 not null,
     constraint permissions_users_fk
-        foreign key (user_id) references users (id)
+        foreign key (user_id) references photo_contest.users (id)
 );
 
-create or replace table photos
+create or replace table photo_contest.photos
 (
     id         bigint auto_increment
         primary key,
@@ -103,21 +103,32 @@ create or replace table photos
     user_id    bigint        not null,
     contest_id bigint        not null,
     constraint photos_contests_id_fk
-        foreign key (contest_id) references contests (id),
+        foreign key (contest_id) references photo_contest.contests (id),
     constraint photos_users_fk
-        foreign key (user_id) references users (id)
+        foreign key (user_id) references photo_contest.users (id)
 );
 
-create or replace table photos_reviews
+create or replace table photo_contest.photos_reviews_details
 (
-    photo_id      bigint               not null,
-    jury_id       bigint               not null,
-    comment       varchar(1024)        not null,
-    score         int        default 3 not null,
-    fits_category tinyint(1) default 1 not null,
+    photo_id      bigint        not null,
+    jury_id       bigint        not null,
+    comment       varchar(1024) not null,
+    fits_category tinyint(1)    not null,
     primary key (photo_id, jury_id),
-    constraint photos_reviews_photos_id_fk
-        foreign key (photo_id) references photos (id),
-    constraint photos_reviews_users_id_fk
-        foreign key (jury_id) references users (id)
+    constraint photos_reviews_details_photos_id_fk
+        foreign key (photo_id) references photo_contest.photos (id),
+    constraint photos_reviews_details_users_id_fk
+        foreign key (jury_id) references photo_contest.users (id)
+);
+
+create or replace table photo_contest.photos_scores
+(
+    photo_id bigint        not null,
+    jury_id  bigint        not null,
+    score    int default 3 not null,
+    primary key (photo_id, jury_id),
+    constraint photos_scores_photos_id_fk
+        foreign key (photo_id) references photo_contest.photos (id),
+    constraint photos_scores_users_id_fk
+        foreign key (jury_id) references photo_contest.users (id)
 );
