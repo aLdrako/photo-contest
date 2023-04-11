@@ -24,5 +24,5 @@ public class ContestDto {
     @Future(message = "Phase 2 should be after Phase 1 in bounds of one hour to one day", groups = {CreateValidationGroup.class})
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime phase2;
-    private String photo;
+    private String coverPhoto;
 }

@@ -31,21 +31,37 @@ public class ContestServicesImpl implements ContestServices {
 
     private final UserServices userServices;
 
+    @Override
     public Iterable<Contest> findAll() {
         return contestRepository.findAll();
     }
 
+    @Override
     public Contest findById(Long id) {
         return contestRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Contest", id));
     }
 
-    public Contest save(Contest contest, User authenticatedUser) {
+    @Override
+    public Contest create(Contest contest, User authenticatedUser) {
         checkOrganizerPermissions(authenticatedUser);
-        checkUniqueness(contest);
+        checkUniqueness(contest.getTitle());
         validatePhases(contest);
         return contestRepository.save(contest);
     }
 
+    @Override
+    public Contest update(Contest contest, User authenticatedUser) {
+        checkOrganizerPermissions(authenticatedUser);
+        return contestRepository.save(contest);
+    }
+
+    @Override
+    public Contest uploadCover(Contest contest, User authenticatedUser) {
+        checkOrganizerPermissions(authenticatedUser);
+        return contestRepository.save(contest);
+    }
+
+    @Override
     public void deleteById(Long id, User authenticatedUser) {
         checkOrganizerPermissions(authenticatedUser);
         contestRepository.deleteById(findById(id).getId());
@@ -95,9 +111,10 @@ public class ContestServicesImpl implements ContestServices {
         return contestRepository.save(contest);
     }
 
-    private void checkUniqueness(Contest contest) {
-        if (contestRepository.existsByTitleEqualsIgnoreCase(contest.getTitle())) {
-            throw new EntityDuplicateException("Contest", "title", contest.getTitle());
+    @Override
+    public void checkUniqueness(String title) {
+        if (contestRepository.existsByTitleEqualsIgnoreCase(title)) {
+            throw new EntityDuplicateException("Contest", "title", title);
         }
     }
 
