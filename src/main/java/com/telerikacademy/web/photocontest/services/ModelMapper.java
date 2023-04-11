@@ -98,6 +98,7 @@ public class ModelMapper {
         PhotoReview photoReview = new PhotoReview();
         photoReview.setScore(photoReviewDto.isFitsCategory() ? photoReviewDto.getScore() : 0);
         photoReview.setComment(photoReviewDto.getComment());
+        photoReview.setFitsCategory(photoReviewDto.isFitsCategory());
 
         return photoReview;
     }

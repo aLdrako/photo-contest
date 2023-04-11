@@ -17,6 +17,14 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class PhotoServicesImpl implements PhotoServices {
+    private static final String PHOTO_ALREADY_UPLOADED_BY_USER = "This user has already uploaded a photo in this contest!";
+    private static final String NOT_IN_PHASE_ONE_MESSAGE = "Photos can be uploaded during Phase One of each contest!";
+    private static final String INVALID_REMOVE_MESSAGE = "Only organizers or creator can remove a photo!";
+    private static final String NOT_A_JURY_MESSAGE = "You are not a jury in this contest. " +
+            "Therefore you cannot post reviews on photos!";
+    private static final String DUPLICATE_REVIEW_MESSAGE = "This photo has already been reviewed by jury '%s'!";
+    private static final String NOT_IN_PHASE_TWO_MESSAGE = "Reviews can be posted during Phase Two!";
+    public static final String NOT_A_PARTICIPANT_MESSAGE = "Only participants in the contest can upload a photo!";
     private final PhotoRepository photoRepository;
     @Override
     public List<Photo> getAll() {
@@ -29,10 +37,10 @@ public class PhotoServicesImpl implements PhotoServices {
         boolean duplicatePhoto = photoRepository.existsByUserCreatedAndPostedOn(photo.getUserCreated(),
                 photo.getPostedOn());
         if (duplicatePhoto) {
-            throw new EntityDuplicateException("This user has already uploaded a photo in this contest!");
+            throw new EntityDuplicateException(PHOTO_ALREADY_UPLOADED_BY_USER);
         }
         if (photo.getPostedOn().getPhase1().isBefore(LocalDateTime.now())) {
-            throw new UnauthorizedOperationException("Photos can be uploaded during Phase One of each contest!");
+            throw new UnauthorizedOperationException(NOT_IN_PHASE_ONE_MESSAGE);
         }
         photoRepository.save(photo);
     }
@@ -45,7 +53,7 @@ public class PhotoServicesImpl implements PhotoServices {
 
     private void checkDeletePermissions(Photo photo, User user) {
         if (!photo.getUserCreated().equals(user) && !user.isOrganizer()) {
-            throw new UnauthorizedOperationException("Only organizers or creator can remove a photo!");
+            throw new UnauthorizedOperationException(INVALID_REMOVE_MESSAGE);
         }
     }
 
@@ -62,21 +70,21 @@ public class PhotoServicesImpl implements PhotoServices {
     }
     private void checkReviewPostPermissions(PhotoReview photoReview, Photo photo, User user) {
         if (!photo.getPostedOn().getJuries().contains(user)) {
-            throw new UnauthorizedOperationException("You are not a jury in this contest. " +
-                    "Therefore you cannot post reviews on photos!");
+            throw new UnauthorizedOperationException(NOT_A_JURY_MESSAGE);
         }
         if (photo.getReviews().contains(photoReview)) {
-            throw new EntityDuplicateException("This photo has already been reviewed!");
+            throw new EntityDuplicateException(
+                    String.format(DUPLICATE_REVIEW_MESSAGE, user.getUsername()));
         }
-        if (photo.getPostedOn().getPhase1().isBefore(LocalDateTime.now()) ||
-                photo.getPostedOn().getPhase2().isAfter(LocalDateTime.now())) {
-            throw new UnauthorizedOperationException("Reviews can be posted during Phase Two!");
+        if (photo.getPostedOn().getPhase1().isAfter(LocalDateTime.now()) ||
+                photo.getPostedOn().getPhase2().isBefore(LocalDateTime.now())) {
+            throw new UnauthorizedOperationException(NOT_IN_PHASE_TWO_MESSAGE);
         }
     }
 
     private void checkCreatePermissions(User userCreated, Contest postedOn) {
         if (!postedOn.getParticipants().contains(userCreated)) {
-            throw new UnauthorizedOperationException("Only participants in the contest can upload a photo!");
+            throw new UnauthorizedOperationException(NOT_A_PARTICIPANT_MESSAGE);
         }
     }
 }

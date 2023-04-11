@@ -1,5 +1,6 @@
 package com.telerikacademy.web.photocontest.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
+@Setter
 @Embeddable
 public class ReviewId implements Serializable {
     @ManyToOne
@@ -21,19 +23,9 @@ public class ReviewId implements Serializable {
     private User juryId;
 
     public ReviewId(){}
-    public ReviewId(Long photoId, Long juryId) {
-        setPhotoId(photoId);
-        setJuryId(juryId);
-    }
-    public void setPhotoId(Long photoId) {
-        Photo photo = new Photo();
-        photo.setId(photoId);
+    public ReviewId(Photo photo, User jury) {
         this.photoId = photo;
-    }
-    public void setJuryId(Long juryId) {
-        User user = new User();
-        user.setId(juryId);
-        this.juryId = user;
+        this.juryId = jury;
     }
     @Override
     public boolean equals(Object o) {

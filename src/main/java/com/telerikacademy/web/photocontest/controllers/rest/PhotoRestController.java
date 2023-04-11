@@ -70,7 +70,7 @@ public class PhotoRestController {
             User user = authenticationHelper.tryGetUser(authorization);
             Photo photo = photoServices.getById(id);
             PhotoReview photoReview = modelMapper.dtoToObject(photoReviewDto);
-            photoReview.setReviewId(new ReviewId(photo.getId(), user.getId()));
+            photoReview.setReviewId(new ReviewId(photo, user));
             photoServices.postReview(photoReview, photo, user);
             return photoReview;
         } catch (EntityNotFoundException e) {
