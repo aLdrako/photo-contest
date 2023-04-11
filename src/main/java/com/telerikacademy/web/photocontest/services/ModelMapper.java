@@ -28,12 +28,13 @@ public class ModelMapper {
         contest.setPhase2(contestDto.getPhase2());
         contest.setInvitational(contestDto.isInvitational());
         contest.setJuries(new HashSet<>(userServices.getAllOrganizers()));
-        contest.setCoverPhoto(contestDto.getPhoto());
+        contest.setCoverPhoto(contestDto.getCoverPhoto());
         return contest;
     }
 
     public Contest dtoToObject(Long id, ContestDto contestDto) {
         Contest contest = contestServices.findById(id);
+        if (!contest.getTitle().equals(contestDto.getTitle())) contestServices.checkUniqueness(contestDto.getTitle());
         if (contestDto.getCategoryId() != null) contest.setCategory(categoryServices.findById(contestDto.getCategoryId()));
         if (contestDto.getTitle() != null) contest.setTitle(contestDto.getTitle());
         return contest;

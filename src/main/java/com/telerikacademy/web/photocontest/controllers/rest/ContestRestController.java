@@ -11,16 +11,18 @@ import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.models.dto.ContestDto;
 import com.telerikacademy.web.photocontest.models.dto.ContestResponseDto;
 import com.telerikacademy.web.photocontest.models.dto.UserDto;
-import com.telerikacademy.web.photocontest.models.validations.EnlistUserValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
+import com.telerikacademy.web.photocontest.models.validations.EnlistUserValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +32,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
+import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.deletePhoto;
+import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.uploadPhoto;
 import static com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper.getResult;
 
 @RestController
@@ -67,12 +71,13 @@ public class ContestRestController {
     }
 
     @PostMapping
-    public ContestResponseDto create(@RequestHeader(required = false) Optional<String> authorization, @Validated(CreateValidationGroup.class) @RequestBody ContestDto contestDto) {
+    public ContestResponseDto create(@RequestHeader(required = false) Optional<String> authorization,
+                                     @Validated(CreateValidationGroup.class) @RequestBody ContestDto contestDto) {
         try {
             User authenticatedUser = authenticationHelper.tryGetUser(authorization);
             Contest contest = modelMapper.dtoToObject(contestDto);
-            Contest savedContest = contestServices.save(contest, authenticatedUser);
-            return modelMapper.objectToDto(savedContest);
+            Contest updatedContest = contestServices.create(contest, authenticatedUser);
+            return modelMapper.objectToDto(updatedContest);
         } catch (AuthorizationException | UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityDuplicateException e) {
@@ -87,8 +92,8 @@ public class ContestRestController {
         try {
             User authenticatedUser = authenticationHelper.tryGetUser(authorization);
             Contest contest = contestServices.findById(id);
-            Contest joinedContest = contestServices.join(contest, authenticatedUser);
-            return modelMapper.objectToDto(joinedContest);
+            Contest updatedContest = contestServices.join(contest, authenticatedUser);
+            return modelMapper.objectToDto(updatedContest);
         } catch (AuthorizationException | UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -108,13 +113,13 @@ public class ContestRestController {
             User authenticatedUser = authenticationHelper.tryGetUser(authorization);
             Contest contest = contestServices.findById(id);
             String endpoint = request.getRequestURI();
-            Contest resultContest;
+            Contest updatedContest;
             if (endpoint.endsWith("/add-jury")) {
-                resultContest = contestServices.addJury(contest, authenticatedUser, userDto.getUsername());
+                updatedContest = contestServices.addJury(contest, authenticatedUser, userDto.getUsername());
             } else if (endpoint.endsWith("/add-participant")) {
-                resultContest = contestServices.addParticipant(contest, authenticatedUser, userDto.getUsername());
+                updatedContest = contestServices.addParticipant(contest, authenticatedUser, userDto.getUsername());
             } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid endpoint");
-            return modelMapper.objectToDto(resultContest);
+            return modelMapper.objectToDto(updatedContest);
         } catch (AuthorizationException | UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -125,11 +130,12 @@ public class ContestRestController {
     }
 
     @PutMapping("/{id}")
-    public ContestResponseDto update(@RequestHeader(required = false) Optional<String> authorization, @PathVariable Long id, @Validated(UpdateValidationGroup.class) @RequestBody ContestDto contestDto) {
+    public ContestResponseDto update(@RequestHeader(required = false) Optional<String> authorization, @PathVariable Long id,
+                                     @Validated(UpdateValidationGroup.class) @RequestBody ContestDto contestDto) {
         try {
             User authenticatedUser = authenticationHelper.tryGetUser(authorization);
             Contest contest = modelMapper.dtoToObject(id, contestDto);
-            Contest updatedContest = contestServices.save(contest, authenticatedUser);
+            Contest updatedContest = contestServices.update(contest, authenticatedUser);
             return modelMapper.objectToDto(updatedContest);
         } catch (AuthorizationException | UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -151,6 +157,24 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/upload-cover")
+    public ContestResponseDto uploadCoverPhoto(@PathVariable Long id, @RequestParam("file") MultipartFile file, @RequestHeader(required = false) Optional<String> authorization) {
+        try {
+            User authenticatedUser = authenticationHelper.tryGetUser(authorization);
+            Contest contest = contestServices.findById(id);
+            if (contest.getCoverPhoto() != null) deletePhoto(contest.getCoverPhoto());
+            contest.setCoverPhoto(uploadPhoto(file));
+            Contest updatedContest = contestServices.uploadCover(contest, authenticatedUser);
+            return modelMapper.objectToDto(updatedContest);
+        } catch (AuthorizationException | UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (FileUploadException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }
