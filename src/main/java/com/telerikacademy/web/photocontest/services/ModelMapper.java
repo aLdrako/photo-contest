@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @AllArgsConstructor
@@ -27,7 +28,7 @@ public class ModelMapper {
         contest.setPhase1(contestDto.getPhase1());
         contest.setPhase2(contestDto.getPhase2());
         contest.setInvitational(contestDto.isInvitational());
-        contest.setJuries(new HashSet<>(userServices.getAllOrganizers()));
+        contest.setJuries(new HashSet<>(contestDto.getJuries().stream().map(userServices::getByUsername).toList()));
         contest.setCoverPhoto(contestDto.getCoverPhoto());
         return contest;
     }

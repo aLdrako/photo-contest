@@ -13,19 +13,22 @@ import org.springframework.stereotype.Service;
 
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class ContestServicesImpl implements ContestServices {
-    private static final String UNAUTHORIZED_MANIPULATION_MESSAGE = "Only users with Organizer role can create, update, delete contests or add juries!";
+    private static final String UNAUTHORIZED_MANIPULATION_MESSAGE = "Only users with Organizer role can create, update, delete contests or add juries and participants!";
     private static final String USER_ALREADY_IN_LIST_MESSAGE = "Current user already in the list of participants or juries!";
     private static final String USER_AS_JURY_NOT_ELIGIBLE_MESSAGE = "Only users with ranking 'Master' or above are eligible to be selected as jury!";
     private static final String JURI_AS_PARTICIPANT_NOT_ELIGIBLE_MESSAGE = "Juries cannot participate within the same contest where they are jury!";
     private static final String PHASE_1_VALIDATION_MESSAGE = "Phase 1 should be in the future in bounds of one day to one month";
     private static final String PHASE_2_VALIDATION_MESSAGE = "Phase 2 should be after Phase 1 in bounds of one hour to one day";
     private static final String INVITATIONAL_CONTEST_MESSAGE = "This contest is Invitational, only Organizers can invite participants";
+    private static final String ENROLL_INVITATION_TIME_LIMITS_MESSAGE = "Users can enroll / be invited only during Phase 1";
 
     private final ContestRepository contestRepository;
 
@@ -46,6 +49,12 @@ public class ContestServicesImpl implements ContestServices {
         checkOrganizerPermissions(authenticatedUser);
         checkUniqueness(contest.getTitle());
         validatePhases(contest);
+        Set<User> juries = contest.getJuries();
+        contest.setJuries(new HashSet<>());
+        contest.setParticipants(new HashSet<>());
+        juries.forEach(user -> addJury(contest, authenticatedUser, user.getUsername()));
+        juries.addAll(userServices.getAllOrganizers());
+        contest.setJuries(juries);
         return contestRepository.save(contest);
     }
 
@@ -74,7 +83,8 @@ public class ContestServicesImpl implements ContestServices {
 
     @Override
     public Contest join(Contest contest, User authenticatedUser) {
-        if (contest.isInvitational()) throw new UnauthorizedOperationException(INVITATIONAL_CONTEST_MESSAGE);
+        isInvitational(contest);
+        isInEnrollTimeLimits(contest);
         Set<User> participants = contest.getParticipants();
         checkIfEnlisted(participants, authenticatedUser.getUsername());
         checkIfIsJury(contest, authenticatedUser);
@@ -87,6 +97,7 @@ public class ContestServicesImpl implements ContestServices {
     @Override
     public Contest addParticipant(Contest contest, User authenticatedUser, String username) {
         checkOrganizerPermissions(authenticatedUser);
+        isInEnrollTimeLimits(contest);
         User participantToAdd = userServices.getByUsername(username);
         Set<User> participants = contest.getParticipants();
         checkIfEnlisted(participants, participantToAdd.getUsername());
@@ -100,6 +111,7 @@ public class ContestServicesImpl implements ContestServices {
     @Override
     public Contest addJury(Contest contest, User authenticatedUser, String username) {
         checkOrganizerPermissions(authenticatedUser);
+        isInEnrollTimeLimits(contest);
         User juryToAdd = userServices.getByUsername(username);
         Set<User> juries = contest.getJuries();
         Set<User> participants = contest.getParticipants();
@@ -121,6 +133,18 @@ public class ContestServicesImpl implements ContestServices {
     private void checkOrganizerPermissions(User authenticatedUser) {
         if (!authenticatedUser.isOrganizer()) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_MANIPULATION_MESSAGE);
+        }
+    }
+
+    private static void isInvitational(Contest contest) {
+        if (contest.isInvitational()) {
+            throw new UnauthorizedOperationException(INVITATIONAL_CONTEST_MESSAGE);
+        }
+    }
+
+    private static void isInEnrollTimeLimits(Contest contest) {
+        if (LocalDateTime.now().isAfter(contest.getPhase1())) {
+            throw new UnauthorizedOperationException(ENROLL_INVITATION_TIME_LIMITS_MESSAGE);
         }
     }
 
