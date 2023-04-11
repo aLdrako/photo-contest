@@ -1,6 +1,7 @@
 package com.telerikacademy.web.photocontest.services.contracts;
 
 import com.telerikacademy.web.photocontest.models.User;
+import com.telerikacademy.web.photocontest.models.dto.PermissionsDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,4 +16,5 @@ public interface UserServices {
     List<User> getUsersWithJuryPermission();
     void delete(Long id, User userFromAuthorization);
     List<User> search(Optional<String> keyword);
+    void updatePermissions(User userFromRepo, User userFromAuthorization, PermissionsDto permissionsDto);
 }

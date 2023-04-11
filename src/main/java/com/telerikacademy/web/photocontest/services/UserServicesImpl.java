@@ -6,6 +6,7 @@ import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.models.Ranking;
 import com.telerikacademy.web.photocontest.models.User;
+import com.telerikacademy.web.photocontest.models.dto.PermissionsDto;
 import com.telerikacademy.web.photocontest.repositories.contracts.RankingRepository;
 import com.telerikacademy.web.photocontest.repositories.contracts.UserRepository;
 import com.telerikacademy.web.photocontest.services.contracts.RankingServices;
@@ -20,6 +21,9 @@ import java.util.Random;
 @Service
 @AllArgsConstructor
 public class UserServicesImpl implements UserServices {
+    private static final String UNAUTHORIZED_UPDATE_DELETE_MESSAGE = "Only an organizer or owner of " +
+            "account can update/delete profile!";
+    private static final String UNAUTHORIZED_UPDATE_PERMISSIONS_MESSAGE = "Only organizers can change permissions!";
     private final UserRepository userRepository;
     private final RankingServices rankingServices;
 
@@ -39,7 +43,7 @@ public class UserServicesImpl implements UserServices {
     private void checkAuthorizationPermissions(User user, User userFromAuthorization) {
         if (!userFromAuthorization.isOrganizer()  &&
                 !user.getUsername().equals(userFromAuthorization.getUsername())) {
-            throw new UnauthorizedOperationException("Only an organizer or owner of account can update/delete profile!");
+            throw new UnauthorizedOperationException(UNAUTHORIZED_UPDATE_DELETE_MESSAGE);
         }
     }
 
@@ -110,6 +114,16 @@ public class UserServicesImpl implements UserServices {
     @Override
     public List<User> search(Optional<String> keyword) {
         return userRepository.search(keyword);
+    }
+
+    @Override
+    public void updatePermissions(User userFromRepo, User userFromAuthorization,
+                                  PermissionsDto permissionsDto) {
+        if (!userFromAuthorization.isOrganizer()) {
+            throw new UnauthorizedOperationException(UNAUTHORIZED_UPDATE_PERMISSIONS_MESSAGE);
+        }
+        userFromRepo.setOrganizer(permissionsDto.getOrganiser());
+        userRepository.update(userFromRepo);
     }
 
     private void changeUserProperties(User userFromRepo) {

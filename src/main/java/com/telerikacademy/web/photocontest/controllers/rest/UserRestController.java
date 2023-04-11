@@ -5,16 +5,14 @@ import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.helpers.AuthenticationHelper;
-import com.telerikacademy.web.photocontest.models.Ranking;
-import com.telerikacademy.web.photocontest.models.Ranks;
 import com.telerikacademy.web.photocontest.models.User;
+import com.telerikacademy.web.photocontest.models.dto.PermissionsDto;
 import com.telerikacademy.web.photocontest.models.dto.UserDto;
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -84,6 +82,20 @@ public class UserRestController {
         try {
             User userFromAuthorization = authenticationHelper.tryGetUser(authorization);
             userServices.delete(id, userFromAuthorization);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (AuthorizationException | UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
+    @PutMapping("/{id}/permissions")
+    public User updatePermissions(@PathVariable Long id, @Valid @RequestBody PermissionsDto permissionsDto,
+                                  @RequestHeader(required = false) Optional<String> authorization) {
+        try {
+            User userFromAuthorization = authenticationHelper.tryGetUser(authorization);
+            User userFromRepo = userServices.getById(id);
+            userServices.updatePermissions(userFromRepo, userFromAuthorization, permissionsDto);
+            return userFromRepo;
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException | UnauthorizedOperationException e) {
