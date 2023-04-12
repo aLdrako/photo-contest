@@ -21,9 +21,6 @@ public class PhotoDto {
     @Size(min = 20, max = 8196, message = "Story should be between 20 and 8196 symbols!",
             groups = {CreatePhotoViaContestGroup.class, CreatePhotoGroup.class})
     private String story;
-    @NotEmpty(message = "A photo must be uploaded!",
-            groups = {CreatePhotoViaContestGroup.class, CreatePhotoGroup.class})
-    private String photo;
     @Positive(message = "A contest id must be a positive number!",
             groups = {CreatePhotoGroup.class})
     private Long contestId;

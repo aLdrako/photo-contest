@@ -90,7 +90,6 @@ public class ModelMapper {
         photo.setTitle(photoDto.getTitle());
         photo.setStory(photoDto.getStory());
         photo.setPostedOn(contestServices.findById(photoDto.getContestId()));
-        photo.setPhoto(photoDto.getPhoto());
 
         return photo;
     }

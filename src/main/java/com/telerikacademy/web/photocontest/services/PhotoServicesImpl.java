@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.deletePhoto;
+
 @Service
 @AllArgsConstructor
 public class PhotoServicesImpl implements PhotoServices {
@@ -51,6 +54,7 @@ public class PhotoServicesImpl implements PhotoServices {
     @Override
     public void delete(Photo photo, User user) {
         checkDeletePermissions(photo, user);
+        deletePhoto(photo.getPhoto());
         photoRepository.delete(photo);
     }
 
