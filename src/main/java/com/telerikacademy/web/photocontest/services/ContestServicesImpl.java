@@ -52,8 +52,10 @@ public class ContestServicesImpl implements ContestServices {
         Set<User> juries = contest.getJuries();
         contest.setJuries(new HashSet<>());
         contest.setParticipants(new HashSet<>());
-        juries.forEach(user -> addJury(contest, authenticatedUser, user.getUsername()));
-        juries.addAll(userServices.getAllOrganizers());
+        if (juries != null) {
+            juries.forEach(user -> addJury(contest, authenticatedUser, user.getUsername()));
+            juries.addAll(userServices.getAllOrganizers());
+        } else juries = new HashSet<>(userServices.getAllOrganizers());
         contest.setJuries(juries);
         return contestRepository.save(contest);
     }
