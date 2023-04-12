@@ -1,6 +1,5 @@
 package com.telerikacademy.web.photocontest.repositories;
 
-import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.models.Ranking;
 import com.telerikacademy.web.photocontest.repositories.contracts.RankingRepository;

@@ -42,12 +42,12 @@ public class PhotoServicesImpl implements PhotoServices {
         if (photo.getPostedOn().getPhase1().isBefore(LocalDateTime.now())) {
             throw new UnauthorizedOperationException(NOT_IN_PHASE_ONE_MESSAGE);
         }
-        /*photo.getPostedOn().getJuries().forEach(jury -> {
+        photo.getPostedOn().getJuries().forEach(jury -> {
             PhotoScore photoScore = new PhotoScore();
             photoScore.setReviewId(new ReviewId(photo, jury));
             photoScore.setScore(3);
             photo.addScore(photoScore);
-        });*/
+        });
         photoRepository.save(photo);
     }
 
