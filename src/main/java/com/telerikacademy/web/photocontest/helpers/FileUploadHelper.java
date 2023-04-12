@@ -11,6 +11,9 @@ import java.util.Random;
 
 public class FileUploadHelper {
     public static String uploadPhoto(MultipartFile file) throws FileUploadException {
+        if (file.isEmpty()) {
+            throw new FileUploadException("Please upload an actual photo");
+        }
         if (!Objects.requireNonNull(file.getContentType()).contains("image/")) {
             throw new FileUploadException("jpg/jpeg/png file types are only supported");
         }

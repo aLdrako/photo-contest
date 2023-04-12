@@ -27,7 +27,7 @@ create or replace table photo_contest.cover_photos
 (
     contest_id  bigint not null
         primary key,
-    cover_photo blob   null,
+    cover_photo varchar(100)   null,
     constraint cover_photos_contests_fk
         foreign key (contest_id) references photo_contest.contests (id)
 );
@@ -99,7 +99,7 @@ create or replace table photo_contest.photos
         primary key,
     title      varchar(50)   not null,
     story      varchar(8196) not null,
-    photo      blob          not null,
+    photo      varchar(100)  not null,
     user_id    bigint        not null,
     contest_id bigint        not null,
     constraint photos_contests_id_fk

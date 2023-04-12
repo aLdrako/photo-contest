@@ -5,8 +5,10 @@ import com.telerikacademy.web.photocontest.models.validations.CreatePhotoViaCont
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 @Data
@@ -21,6 +23,11 @@ public class PhotoDto {
     @Size(min = 20, max = 8196, message = "Story should be between 20 and 8196 symbols!",
             groups = {CreatePhotoViaContestGroup.class, CreatePhotoGroup.class})
     private String story;
+    @NotNull(message = "An actual photo file needs to be uploaded",
+    groups = {CreatePhotoGroup.class})
+    private MultipartFile file;
+    @NotNull(message = "A contestId is required!",
+            groups = {CreatePhotoGroup.class})
     @Positive(message = "A contest id must be a positive number!",
             groups = {CreatePhotoGroup.class})
     private Long contestId;

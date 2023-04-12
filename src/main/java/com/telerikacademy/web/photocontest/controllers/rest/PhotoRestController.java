@@ -14,12 +14,14 @@ import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,13 +49,12 @@ public class PhotoRestController {
     }
     @PostMapping
     public Photo create(@RequestHeader(required = false) Optional<String> authorization,
-                        @RequestParam("file") MultipartFile file,
-                        @Validated(CreatePhotoGroup.class) @RequestBody PhotoDto photoDto) {
+                        @Validated(CreatePhotoGroup.class) @ModelAttribute PhotoDto photoDto) {
         try {
             User user = authenticationHelper.tryGetUser(authorization);
             Photo photo = modelMapper.dtoToObject(photoDto);
             photo.setUserCreated(user);
-            photo.setPhoto(uploadPhoto(file));
+            photo.setPhoto(uploadPhoto(photoDto.getFile()));
             photoServices.create(photo);
             return photo;
         } catch (EntityNotFoundException e) {
