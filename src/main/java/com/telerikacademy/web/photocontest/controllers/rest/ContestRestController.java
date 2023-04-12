@@ -80,6 +80,8 @@ public class ContestRestController {
             return modelMapper.objectToDto(updatedContest);
         } catch (AuthorizationException | UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (EntityDuplicateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (DateTimeException e) {
@@ -108,7 +110,7 @@ public class ContestRestController {
             "/{id}/add-participant"
     })
     public ContestResponseDto enlistUser(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization,
-                                             @Validated(EnlistUserValidationGroup.class) @RequestBody UserDto userDto, HttpServletRequest request) {
+                                         @Validated(EnlistUserValidationGroup.class) @RequestBody UserDto userDto, HttpServletRequest request) {
         try {
             User authenticatedUser = authenticationHelper.tryGetUser(authorization);
             Contest contest = contestServices.findById(id);
@@ -129,8 +131,27 @@ public class ContestRestController {
         }
     }
 
+    @PostMapping("/{id}/upload-cover")
+    public ContestResponseDto uploadCoverPhoto(@PathVariable Long id, @RequestParam("file") MultipartFile file,
+                                               @RequestHeader(required = false) Optional<String> authorization) {
+        try {
+            User authenticatedUser = authenticationHelper.tryGetUser(authorization);
+            Contest contest = contestServices.findById(id);
+            if (contest.getCoverPhoto() != null) deletePhoto(contest.getCoverPhoto());
+            contest.setCoverPhoto(uploadPhoto(file));
+            Contest updatedContest = contestServices.uploadCover(contest, authenticatedUser);
+            return modelMapper.objectToDto(updatedContest);
+        } catch (AuthorizationException | UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (FileUploadException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
     @PutMapping("/{id}")
-    public ContestResponseDto update(@RequestHeader(required = false) Optional<String> authorization, @PathVariable Long id,
+    public ContestResponseDto update(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization,
                                      @Validated(UpdateValidationGroup.class) @RequestBody ContestDto contestDto) {
         try {
             User authenticatedUser = authenticationHelper.tryGetUser(authorization);
@@ -157,24 +178,6 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
-    }
-
-    @PostMapping("/{id}/upload-cover")
-    public ContestResponseDto uploadCoverPhoto(@PathVariable Long id, @RequestParam("file") MultipartFile file, @RequestHeader(required = false) Optional<String> authorization) {
-        try {
-            User authenticatedUser = authenticationHelper.tryGetUser(authorization);
-            Contest contest = contestServices.findById(id);
-            if (contest.getCoverPhoto() != null) deletePhoto(contest.getCoverPhoto());
-            contest.setCoverPhoto(uploadPhoto(file));
-            Contest updatedContest = contestServices.uploadCover(contest, authenticatedUser);
-            return modelMapper.objectToDto(updatedContest);
-        } catch (AuthorizationException | UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (FileUploadException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }

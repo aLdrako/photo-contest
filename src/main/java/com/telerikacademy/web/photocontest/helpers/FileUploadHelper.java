@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Random;
 
 public class FileUploadHelper {
+
     public static String uploadPhoto(MultipartFile file) throws FileUploadException {
         if (file.isEmpty()) {
             throw new FileUploadException("Please upload an actual photo");
