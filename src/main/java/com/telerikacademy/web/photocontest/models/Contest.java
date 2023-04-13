@@ -1,5 +1,6 @@
 package com.telerikacademy.web.photocontest.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Generated;
@@ -7,6 +8,8 @@ import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -29,6 +32,8 @@ public class Contest {
     private Category category;
     @Column(name = "is_invitational")
     private boolean isInvitational;
+    @Column(name = "is_finished")
+    private Boolean isFinished;
     @Column(name = "phase1")
     private LocalDateTime phase1;
     @Column(name = "phase2")
@@ -55,6 +60,10 @@ public class Contest {
     private Set<User> participants;
     @OneToMany(mappedBy = "postedOn", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Photo> photos;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "resultEmbed.contest", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<ContestResults> results = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
