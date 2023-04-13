@@ -141,6 +141,17 @@ public class ContestServicesImpl implements ContestServices {
         }
     }
 
+    @Override
+    public void evaluateRank(User user) {
+        if (user.getPoints() > 1000) {
+            user.setRank(rankingServices.getWiseAndBenevolentPhotoDictator());
+        } else if (user.getPoints() > 150) {
+            user.setRank(rankingServices.getMaster());
+        } else if (user.getPoints() > 50) {
+            user.setRank(rankingServices.getEnthusiast());
+        } else user.setRank(rankingServices.getJunkie());
+    }
+
     private void checkOrganizerPermissions(User authenticatedUser) {
         if (!authenticatedUser.isOrganizer()) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_MANIPULATION_MESSAGE);
@@ -175,16 +186,6 @@ public class ContestServicesImpl implements ContestServices {
         if (userServices.getUsersWithJuryPermission().stream().noneMatch(user -> user.getUsername().equals(username))) {
             throw new UnauthorizedOperationException(USER_AS_JURY_NOT_ELIGIBLE_MESSAGE);
         }
-    }
-
-    private void evaluateRank(User authenticatedUser) {
-        if (authenticatedUser.getPoints() > 1000) {
-            authenticatedUser.setRank(rankingServices.getWiseAndBenevolentPhotoDictator());
-        } else if (authenticatedUser.getPoints() > 150) {
-            authenticatedUser.setRank(rankingServices.getMaster());
-        } else if (authenticatedUser.getPoints() > 50) {
-            authenticatedUser.setRank(rankingServices.getEnthusiast());
-        } else authenticatedUser.setRank(rankingServices.getJunkie());
     }
 
     private void validatePhases(Contest contest) {
