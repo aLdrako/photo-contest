@@ -50,7 +50,7 @@ public class ModelMapper {
         if (contest.getPhotos() != null) photos = contest.getPhotos().stream().toList();
 
         return new ContestResponseDto(contest.getId(), contest.getTitle(), contest.getCategory().getName(), contest.getPhase1(), contest.getPhase2(),
-                contest.getDateCreated(), contest.getCoverPhoto(), contest.isInvitational(), juries, participants, photos);
+                contest.getDateCreated(), contest.getCoverPhoto(), contest.isInvitational(), contest.getIsFinished(), juries, participants, photos);
     }
 
     public Category dtoToObject(CategoryDto categoryDto) {

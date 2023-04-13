@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -22,4 +23,5 @@ public interface ContestRepository extends JpaRepository<Contest, Long> {
             @Param("isInvitational") Boolean isInvitational
     );
     boolean existsByTitleEqualsIgnoreCase(String title);
+    List<Contest> findByPhase2IsBeforeAndIsFinishedFalse(LocalDateTime now);
 }

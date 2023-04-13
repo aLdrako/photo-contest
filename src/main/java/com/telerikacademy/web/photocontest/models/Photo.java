@@ -32,7 +32,7 @@ public class Photo {
     @JoinColumn(name = "contest_id")
     private Contest postedOn;
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reviewId.photoId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reviewId.photoId", fetch = FetchType.EAGER)
     private Set<PhotoScore> scores = new HashSet<>();
 
     @JsonIgnore
