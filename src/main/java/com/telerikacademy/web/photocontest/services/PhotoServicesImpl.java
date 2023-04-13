@@ -7,12 +7,15 @@ import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.repositories.contracts.PhotoRepository;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.deletePhoto;
+import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.uploadPhoto;
 
 @Service
 @AllArgsConstructor
@@ -32,7 +35,7 @@ public class PhotoServicesImpl implements PhotoServices {
     }
 
     @Override
-    public void create(Photo photo) {
+    public void create(Photo photo, MultipartFile file) throws FileUploadException {
         checkCreatePermissions(photo.getUserCreated(), photo.getPostedOn());
         boolean duplicatePhoto = photoRepository.existsByUserCreatedAndPostedOn(photo.getUserCreated(),
                 photo.getPostedOn());
@@ -42,6 +45,7 @@ public class PhotoServicesImpl implements PhotoServices {
         if (photo.getPostedOn().getPhase1().isBefore(LocalDateTime.now())) {
             throw new UnauthorizedOperationException(NOT_IN_PHASE_ONE_MESSAGE);
         }
+        photo.setPhoto(uploadPhoto(file));
         photo.getPostedOn().getJuries().forEach(jury -> {
             PhotoScore photoScore = new PhotoScore();
             photoScore.setReviewId(new ReviewId(photo, jury));

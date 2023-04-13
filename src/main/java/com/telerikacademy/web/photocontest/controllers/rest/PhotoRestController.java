@@ -54,8 +54,7 @@ public class PhotoRestController {
             User user = authenticationHelper.tryGetUser(authorization);
             Photo photo = modelMapper.dtoToObject(photoDto);
             photo.setUserCreated(user);
-            photo.setPhoto(uploadPhoto(photoDto.getFile()));
-            photoServices.create(photo);
+            photoServices.create(photo, photoDto.getFile());
             return photo;
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
