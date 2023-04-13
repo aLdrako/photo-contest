@@ -62,7 +62,7 @@ public class Contest {
     private Set<Photo> photos;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "resultId.contestId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "resultEmbed.contest", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<ContestResults> results = new HashSet<>();
 
     @Override

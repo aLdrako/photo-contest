@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Component
 @AllArgsConstructor
@@ -48,9 +47,24 @@ public class ModelMapper {
         if (contest.getParticipants() != null) participants = contest.getParticipants().stream().map(User::getUsername).toList();
         List<Photo> photos = null;
         if (contest.getPhotos() != null) photos = contest.getPhotos().stream().toList();
+        List<ContestResultDto> results = null;
+        if (contest.getResults() != null) {
+            results = contest.getResults().stream()
+                    .map(contestResults -> new ContestResultDto(
+                            contestResults.getResultEmbed().getPhoto().getId(),
+                            contestResults.getResultEmbed().getPhoto().getPhoto(),
+                            contestResults.getResultEmbed().getPhoto().getUserCreated().getUsername(),
+                            contestResults.getResultEmbed().getPhoto().getReviewsDetails().stream()
+                                    .map(photoReviewDetails -> photoReviewDetails.getReviewId().getJuryId().getUsername()).toList(),
+                            contestResults.getResultEmbed().getPhoto().getReviewsDetails().stream()
+                                    .map(PhotoReviewDetails::getComment).toList(),
+                            contestResults.getResultEmbed().getPhoto().getScores().stream()
+                                    .mapToInt(PhotoScore::getScore).boxed().toList(),
+                            contestResults.getResults())).toList();
+        }
 
         return new ContestResponseDto(contest.getId(), contest.getTitle(), contest.getCategory().getName(), contest.getPhase1(), contest.getPhase2(),
-                contest.getDateCreated(), contest.getCoverPhoto(), contest.isInvitational(), contest.getIsFinished(), juries, participants, photos);
+                contest.getDateCreated(), contest.getCoverPhoto(), contest.isInvitational(), contest.getIsFinished(), juries, participants, photos, results);
     }
 
     public Category dtoToObject(CategoryDto categoryDto) {

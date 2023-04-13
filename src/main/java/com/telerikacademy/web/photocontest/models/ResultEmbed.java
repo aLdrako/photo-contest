@@ -13,11 +13,11 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class ResultId implements Serializable {
+public class ResultEmbed implements Serializable {
     @ManyToOne
     @JoinColumn(name = "contest_id")
-    private Contest contestId;
+    private Contest contest;
     @ManyToOne
     @JoinColumn(name = "photo_id")
-    private Photo photoId;
+    private Photo photo;
 }

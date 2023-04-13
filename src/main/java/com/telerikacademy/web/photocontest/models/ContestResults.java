@@ -18,7 +18,7 @@ import java.util.Objects;
 public class ContestResults {
 
     @EmbeddedId
-    private ResultId resultId;
+    private ResultEmbed resultEmbed;
     @Column(name = "results")
     private int results;
 
@@ -27,11 +27,11 @@ public class ContestResults {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         ContestResults that = (ContestResults) o;
-        return getResultId() != null && Objects.equals(getResultId(), that.getResultId());
+        return getResultEmbed() != null && Objects.equals(getResultEmbed(), that.getResultEmbed());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(resultId);
+        return Objects.hash(resultEmbed);
     }
 }
