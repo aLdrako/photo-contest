@@ -3,17 +3,16 @@ package com.telerikacademy.web.photocontest.services;
 import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
-import com.telerikacademy.web.photocontest.models.Contest;
-import com.telerikacademy.web.photocontest.models.User;
+import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.repositories.contracts.ContestRepository;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
+import com.telerikacademy.web.photocontest.services.contracts.RankingServices;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +32,8 @@ public class ContestServicesImpl implements ContestServices {
     private final ContestRepository contestRepository;
 
     private final UserServices userServices;
+
+    private final RankingServices rankingServices;
 
     @Override
     public Iterable<Contest> findAll() {
@@ -91,6 +92,7 @@ public class ContestServicesImpl implements ContestServices {
         checkIfEnlisted(participants, authenticatedUser.getUsername());
         checkIfIsJury(contest, authenticatedUser);
         authenticatedUser.setPoints(authenticatedUser.getPoints() + 1);
+        evaluateRank(authenticatedUser);
         participants.add(authenticatedUser);
         contest.setParticipants(participants);
         return contestRepository.save(contest);
@@ -105,6 +107,7 @@ public class ContestServicesImpl implements ContestServices {
         checkIfEnlisted(participants, participantToAdd.getUsername());
         checkIfIsJury(contest, participantToAdd);
         participantToAdd.setPoints(participantToAdd.getPoints() + 3);
+        evaluateRank(participantToAdd);
         participants.add(participantToAdd);
         contest.setParticipants(participants);
         return contestRepository.save(contest);
@@ -122,6 +125,12 @@ public class ContestServicesImpl implements ContestServices {
         checkIfEligibleJury(username);
         juries.add(juryToAdd);
         contest.setJuries(juries);
+        contest.getPhotos().forEach(photo -> {
+            PhotoScore photoScore = new PhotoScore();
+            photoScore.setReviewId(new ReviewId(photo, juryToAdd));
+            photoScore.setScore(3);
+            photo.addScore(photoScore);
+        });
         return contestRepository.save(contest);
     }
 
@@ -166,6 +175,16 @@ public class ContestServicesImpl implements ContestServices {
         if (userServices.getUsersWithJuryPermission().stream().noneMatch(user -> user.getUsername().equals(username))) {
             throw new UnauthorizedOperationException(USER_AS_JURY_NOT_ELIGIBLE_MESSAGE);
         }
+    }
+
+    private void evaluateRank(User authenticatedUser) {
+        if (authenticatedUser.getPoints() > 1000) {
+            authenticatedUser.setRank(rankingServices.getWiseAndBenevolentPhotoDictator());
+        } else if (authenticatedUser.getPoints() > 150) {
+            authenticatedUser.setRank(rankingServices.getMaster());
+        } else if (authenticatedUser.getPoints() > 50) {
+            authenticatedUser.setRank(rankingServices.getEnthusiast());
+        } else authenticatedUser.setRank(rankingServices.getJunkie());
     }
 
     private void validatePhases(Contest contest) {
