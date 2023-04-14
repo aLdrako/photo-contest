@@ -9,12 +9,15 @@ import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @AllArgsConstructor
 public class ModelMapper {
+
     private final ContestServices contestServices;
     private final CategoryServices categoryServices;
     private final RankingServices rankingServices;
@@ -45,8 +48,19 @@ public class ModelMapper {
         if (contest.getJuries() != null) juries = contest.getJuries().stream().map(User::getUsername).toList();
         List<String> participants = null;
         if (contest.getParticipants() != null) participants = contest.getParticipants().stream().map(User::getUsername).toList();
-        List<Photo> photos = null;
-        if (contest.getPhotos() != null) photos = contest.getPhotos().stream().toList();
+        List<Map<String, Object>> photos = null;
+        if (contest.getPhotos() != null) {
+            photos = contest.getPhotos().stream().map(photo -> {
+                Map<String, Object> photoMap = new HashMap<>();
+                photoMap.put("id", photo.getId());
+                photoMap.put("title", photo.getTitle());
+                photoMap.put("story", photo.getStory());
+                photoMap.put("photo", photo.getPhoto());
+                photoMap.put("userCreated", photo.getUserCreated().getUsername());
+                return photoMap;
+            }).toList();
+        }
+
         List<ContestResultDto> results = null;
         if (contest.getResults() != null) {
             results = contest.getResults().stream()
@@ -60,7 +74,8 @@ public class ModelMapper {
                                     .map(PhotoReviewDetails::getComment).toList(),
                             contestResults.getResultEmbed().getPhoto().getScores().stream()
                                     .mapToInt(PhotoScore::getScore).boxed().toList(),
-                            contestResults.getResults())).toList();
+                            contestResults.getResults()
+                    )).toList();
         }
 
         return new ContestResponseDto(contest.getId(), contest.getTitle(), contest.getCategory().getName(), contest.getPhase1(), contest.getPhase2(),

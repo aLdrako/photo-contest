@@ -17,4 +17,5 @@ public interface ContestServices {
     Contest addJury(Contest contest, User authenticatedUser, String username);
     Contest addParticipant(Contest contest, User authenticatedUser, String username);
     void checkUniqueness(String title);
+    void evaluateRank(User user);
 }
