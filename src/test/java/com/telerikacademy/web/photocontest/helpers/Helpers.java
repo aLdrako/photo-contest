@@ -45,6 +45,20 @@ public class Helpers {
         return contest;
     }
 
+    public static Contest createMockContestDynamic() {
+        Contest contest = new Contest();
+        contest.setId(1L);
+        contest.setTitle("mockTitle");
+        contest.setCategory(createMockCategory());
+        contest.setCoverPhoto("mockPhotoURL");
+        contest.setPhase1(LocalDateTime.now().plusDays(1).plusHours(1));
+        contest.setPhase2(LocalDateTime.now().plusDays(1).plusHours(2).plusMinutes(1));
+        contest.setDateCreated(LocalDateTime.now());
+        contest.setJuries(Set.of());
+        contest.setParticipants(Set.of());
+        return contest;
+    }
+
     public static Category createMockCategory() {
         Category category = new Category();
         category.setId(1L);
@@ -65,6 +79,18 @@ public class Helpers {
         user.setJoinDate(LocalDateTime.now());
         return user;
     }
+
+    public static User createDifferentMockUser() {
+        User mockDifferentUser = createMockUser();
+        mockDifferentUser.setId(2L);
+        mockDifferentUser.setFirstName("mockDifferentFirstName");
+        mockDifferentUser.setLastName("mockDifferentLastName");
+        mockDifferentUser.setUsername("mockDifferentUsername");
+        mockDifferentUser.setPassword("mockDifferentPassword");
+        mockDifferentUser.setEmail("mockDifferentEmail@email.com");
+        return mockDifferentUser;
+    }
+
     public static User createMockOrganizer() {
         User user = createMockUser();
         user.setId(2L);

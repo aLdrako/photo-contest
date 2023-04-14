@@ -1,10 +1,14 @@
 package com.telerikacademy.web.photocontest.services;
 
+import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.models.Contest;
+import com.telerikacademy.web.photocontest.models.Ranking;
+import com.telerikacademy.web.photocontest.models.Ranks;
 import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.repositories.contracts.ContestRepository;
+import com.telerikacademy.web.photocontest.services.contracts.RankingServices;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,9 +16,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.telerikacademy.web.photocontest.helpers.Helpers.*;
+import static com.telerikacademy.web.photocontest.helpers.Helpers.createMockRanking;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -25,6 +32,8 @@ public class ContestServicesImplTests {
     ContestRepository mockContestRepository;
     @Mock
     UserServices mockUserServices;
+    @Mock
+    RankingServices mockRankingService;
     @InjectMocks
     ContestServicesImpl contestServices;
 
@@ -160,5 +169,136 @@ public class ContestServicesImplTests {
 
         // Assert
         verify(mockContestRepository).filter(anyString(), anyString(), anyBoolean(), anyBoolean(), any(), any());
+    }
+
+    @Test
+    public void create_Should_CallRepository_WithoutAddedJuries() {
+        // Arrange
+        Contest mockContest = createMockContestDynamic();
+        User mockOrganizer = createMockOrganizer();
+        mockContest.setJuries(null);
+
+        when(mockUserServices.getAllOrganizers()).thenReturn(new ArrayList<>());
+        when(mockContestRepository.existsByTitleEqualsIgnoreCase(anyString())).thenReturn(false);
+        when(mockContestRepository.save(mockContest)).thenReturn(mockContest);
+
+        // Act
+        contestServices.create(mockContest, mockOrganizer);
+
+        // Assert
+        verify(mockContestRepository).save(mockContest);
+    }
+
+    @Test
+    public void create_Should_CallRepository_WithAddedJuries() {
+        // Arrange
+        Contest mockContest = createMockContestDynamic();
+        User mockOrganizer = createMockOrganizer();
+        User mockJury = createMockUser();
+        mockJury.setRank(createMockRanking(Ranks.MASTER));
+        Set<User> juries = new HashSet<>();
+        juries.add(mockJury);
+        mockContest.setJuries(juries);
+        mockContest.setPhotos(new HashSet<>());
+
+        when(mockUserServices.getAllOrganizers()).thenReturn(new ArrayList<>());
+        when(mockUserServices.getUsersWithJuryPermission()).thenReturn(List.of(mockJury));
+        when(mockContestRepository.existsByTitleEqualsIgnoreCase(anyString())).thenReturn(false);
+        when(mockContestRepository.save(mockContest)).thenReturn(mockContest);
+
+        // Act
+        contestServices.create(mockContest, mockOrganizer);
+
+        // Assert
+        verify(mockContestRepository, times(2)).save(mockContest);
+    }
+
+    @Test
+    public void create_Should_ThrowException_When_UserIsNotOrganizer() {
+        // Arrange
+        Contest mockContest = createMockContest();
+        User mockUser = createMockUser();
+
+        // Act, Assert
+        assertThrows(UnauthorizedOperationException.class,
+                () -> contestServices.create(mockContest, mockUser));
+    }
+
+    @Test
+    public void create_Should_ThrowException_When_ContestWithSameNameExist() {
+        // Arrange
+        Contest mockContest = createMockContest();
+        User mockOrganizer = createMockOrganizer();
+
+        when(mockContestRepository.existsByTitleEqualsIgnoreCase(anyString())).thenReturn(true);
+
+        // Act, Assert
+        assertThrows(EntityDuplicateException.class,
+                () -> contestServices.create(mockContest, mockOrganizer));
+    }
+
+    @Test
+    public void create_Should_ThrowException_When_ContestPhasesAreWrong() {
+        // Arrange
+        Contest mockContest1 = createMockContest();
+        Contest mockContest2 = createMockContest();
+        User mockOrganizer = createMockOrganizer();
+        mockContest1.setPhase1(LocalDateTime.now());
+        mockContest2.setPhase2(LocalDateTime.now());
+
+        // Act, Assert
+        assertAll(() -> {
+            assertThrows(DateTimeException.class,
+                    () -> contestServices.create(mockContest1, mockOrganizer));
+            assertThrows(DateTimeException.class,
+                    () -> contestServices.create(mockContest2, mockOrganizer));
+        });
+    }
+
+    @Test
+    public void join_Should_CallRepository_When_UserIsNotAlreadyEnlisted() {
+        // Arrange
+        Contest mockContest = createMockContestDynamic();
+        User mockUser = createMockUser();
+        User mockDifferentUser = createDifferentMockUser();
+        Ranking mockRanking = createMockRanking(Ranks.JUNKIE);
+        Set<User> participants = new HashSet<>();
+        participants.add(mockDifferentUser);
+        mockContest.setParticipants(participants);
+
+        when(mockContestRepository.save(mockContest)).thenReturn(mockContest);
+        when(mockRankingService.getJunkie()).thenReturn(mockRanking);
+
+        // Act
+        contestServices.join(mockContest, mockUser);
+
+        // Assert
+        verify(mockContestRepository).save(mockContest);
+    }
+
+    @Test
+    public void join_Should_ThrowException_When_ContestIsInvitational() {
+        // Arrange
+        Contest mockContest = createMockContest();
+        mockContest.setInvitational(true);
+        User mockUser = createMockUser();
+
+        // Act, Assert
+        assertThrows(UnauthorizedOperationException.class,
+                () -> contestServices.join(mockContest, mockUser));
+    }
+
+    @Test
+    public void join_Should_ThrowException_When_EnrolmentIsNotInTimeLimits() {
+        // Arrange
+        Contest mockContest = createMockContestDynamic();
+        mockContest.setInvitational(false);
+        mockContest.setParticipants(new HashSet<>());
+        mockContest.setPhase1(LocalDateTime.now().minusDays(1));
+        User mockUser = createMockUser();
+
+        // Act, Assert
+        assertThrows(UnauthorizedOperationException.class,
+                () -> contestServices.join(mockContest, mockUser));
     }
 }

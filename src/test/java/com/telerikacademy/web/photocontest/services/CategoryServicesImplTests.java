@@ -91,7 +91,7 @@ public class CategoryServicesImplTests {
     }
 
     @Test
-    public void save_Should_ThrowException_When_CategoryWithSameNameAlreadyExist() {
+    public void save_Should_ThrowException_When_CategoryWithSameNameExist() {
         // Arrange
         Category mockCategory = createMockCategory();
         User mockOrganizer = createMockOrganizer();

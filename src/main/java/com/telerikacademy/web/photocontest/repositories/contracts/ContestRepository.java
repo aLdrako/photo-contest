@@ -29,9 +29,6 @@ public interface ContestRepository extends JpaRepository<Contest, Long> {
             @Param("phase2") LocalDateTime phase2
     );
 
-    default List<Contest> filterWithDefault() {
-        return filter(null, null, null, null, null, null);
-    }
     boolean existsByTitleEqualsIgnoreCase(String title);
     List<Contest> findByPhase2IsBeforeAndIsFinishedFalse(LocalDateTime now);
 }

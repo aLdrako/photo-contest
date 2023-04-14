@@ -64,7 +64,7 @@ public class ContestScheduler {
         }
     }
 
-    public static Map<Integer, Integer> awardPoints(List<Integer> scores) {
+    private Map<Integer, Integer> awardPoints(List<Integer> scores) {
 
         List<Integer> sortedScores = new ArrayList<>(scores);
         Collections.sort(sortedScores);
