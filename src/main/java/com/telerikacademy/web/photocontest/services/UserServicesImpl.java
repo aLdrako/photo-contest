@@ -32,7 +32,6 @@ public class UserServicesImpl implements UserServices {
         return userRepository.getAll();
     }
 
-
     @Override
     public void update(User user, User userFromAuthorization) {
         checkAuthorizationPermissions(user, userFromAuthorization);
@@ -105,7 +104,7 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     public void delete(Long id, User userFromAuthorization) {
-        User userFromRepo = getById(id);
+        User userFromRepo = userRepository.getById(id);
         checkAuthorizationPermissions(userFromRepo, userFromAuthorization);
         changeUserProperties(userFromRepo);
         userRepository.update(userFromRepo);

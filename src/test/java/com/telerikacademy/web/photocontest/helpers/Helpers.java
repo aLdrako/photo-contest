@@ -22,6 +22,7 @@ public class Helpers {
         photo.setStory("mockStory");
         photo.setTitle("mockTitle");
         photo.setId(1L);
+        photo.setPhoto("mockPathName");
         photo.setPostedOn(createMockContest());
         return photo;
     }
@@ -62,6 +63,13 @@ public class Helpers {
         user.setEmail("mockEmail@email.com");
         user.setRank(createMockRanking(Ranks.JUNKIE));
         user.setJoinDate(LocalDateTime.now());
+        return user;
+    }
+    public static User createMockOrganizer() {
+        User user = createMockUser();
+        user.setId(2L);
+        user.setOrganizer(true);
+
         return user;
     }
 }

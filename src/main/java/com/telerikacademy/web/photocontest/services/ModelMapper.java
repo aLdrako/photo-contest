@@ -122,4 +122,13 @@ public class ModelMapper {
 
         return photoReview;
     }
+    public PhotoReviewResponseDto objectToDto(PhotoReviewDetails photoReviewDetails, PhotoScore score) {
+        return new PhotoReviewResponseDto(photoReviewDetails.getReviewId().getPhotoId().getId(),
+                photoReviewDetails.getReviewId().getJuryId().getId(), photoReviewDetails.getComment(),
+                score.getScore());
+    }
+    public PhotoResponseDto objectToDto(Photo photo) {
+        return new PhotoResponseDto(photo.getTitle(), photo.getStory(), photo.getPhoto(),
+                photo.getUserCreated().getId(), photo.getPostedOn().getId());
+    }
 }

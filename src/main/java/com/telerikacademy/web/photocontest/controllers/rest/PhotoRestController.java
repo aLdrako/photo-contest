@@ -7,7 +7,9 @@ import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationExcep
 import com.telerikacademy.web.photocontest.helpers.AuthenticationHelper;
 import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.models.dto.PhotoDto;
+import com.telerikacademy.web.photocontest.models.dto.PhotoResponseDto;
 import com.telerikacademy.web.photocontest.models.dto.PhotoReviewDto;
+import com.telerikacademy.web.photocontest.models.dto.PhotoReviewResponseDto;
 import com.telerikacademy.web.photocontest.models.validations.CreatePhotoGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
@@ -24,6 +26,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.uploadPhoto;
 
@@ -36,26 +39,27 @@ public class PhotoRestController {
     private final ModelMapper modelMapper;
 
     @GetMapping
-    public List<Photo> getAll() {
-        return photoServices.getAll();
+    public List<PhotoResponseDto> getAll() {
+        return photoServices.getAll().stream()
+                .map(modelMapper::objectToDto).collect(Collectors.toList());
     }
     @GetMapping("/{id}")
-    public Photo getById(@PathVariable Long id) {
+    public PhotoResponseDto getById(@PathVariable Long id) {
         try {
-            return photoServices.getById(id);
+            return modelMapper.objectToDto(photoServices.getById(id));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
     @PostMapping
-    public Photo create(@RequestHeader(required = false) Optional<String> authorization,
-                        @Validated(CreatePhotoGroup.class) @ModelAttribute PhotoDto photoDto) {
+    public PhotoResponseDto create(@RequestHeader(required = false) Optional<String> authorization,
+                                   @Validated(CreatePhotoGroup.class) @ModelAttribute PhotoDto photoDto) {
         try {
             User user = authenticationHelper.tryGetUser(authorization);
             Photo photo = modelMapper.dtoToObject(photoDto);
             photo.setUserCreated(user);
             photoServices.create(photo, photoDto.getFile());
-            return photo;
+            return modelMapper.objectToDto(photo);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException | UnauthorizedOperationException e) {
@@ -68,9 +72,9 @@ public class PhotoRestController {
     }
 
     @PostMapping("/{id}/review")
-    public PhotoReviewDetails postReview(@PathVariable Long id,
-                                 @RequestHeader(required = false) Optional<String> authorization,
-                                 @Valid @RequestBody PhotoReviewDto photoReviewDto) {
+    public PhotoReviewResponseDto postReview(@PathVariable Long id,
+                                             @RequestHeader(required = false) Optional<String> authorization,
+                                             @Valid @RequestBody PhotoReviewDto photoReviewDto) {
         try {
             User user = authenticationHelper.tryGetUser(authorization);
             Photo photo = photoServices.getById(id);
@@ -81,7 +85,7 @@ public class PhotoRestController {
             photoScore.setReviewId(reviewId);
             photoReviewDetails.setReviewId(reviewId);
             photoServices.postReview(photoScore, photo, user, photoReviewDetails);
-            return photoReviewDetails;
+            return modelMapper.objectToDto(photoReviewDetails, photoScore);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException | UnauthorizedOperationException e) {

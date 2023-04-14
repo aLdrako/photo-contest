@@ -28,6 +28,7 @@ public class PhotoServicesImpl implements PhotoServices {
     private static final String DUPLICATE_REVIEW_MESSAGE = "This photo has already been reviewed by jury '%s'!";
     private static final String NOT_IN_PHASE_TWO_MESSAGE = "Reviews can be posted during Phase Two!";
     public static final String NOT_A_PARTICIPANT_MESSAGE = "Only participants in the contest can upload a photo!";
+    public static final String INVALID_PHOTO_DELETION_MESSAGE = "Deleting a photo is only possible during Phase One of a contest!";
     private final PhotoRepository photoRepository;
     @Override
     public List<Photo> getAll() {
@@ -65,6 +66,9 @@ public class PhotoServicesImpl implements PhotoServices {
     private void checkDeletePermissions(Photo photo, User user) {
         if (!photo.getUserCreated().equals(user) && !user.isOrganizer()) {
             throw new UnauthorizedOperationException(INVALID_REMOVE_MESSAGE);
+        }
+        if (photo.getPostedOn().getPhase1().isBefore(LocalDateTime.now())) {
+            throw new UnauthorizedOperationException(INVALID_PHOTO_DELETION_MESSAGE);
         }
     }
 
