@@ -50,44 +50,64 @@ public class ContestScheduler {
         List<ContestResults> sortedResults = results.stream()
                 .sorted(Comparator.comparing(ContestResults::getResults).reversed()).toList();
 
-        Set<Integer> uniqueResults = results.stream()
-                .map(ContestResults::getResults).collect(Collectors.toSet());
+        List<Integer> resultList = new ArrayList<>(results.stream()
+                .mapToInt(ContestResults::getResults)
+                .sorted().boxed().toList());
+        Collections.reverse(resultList);
 
-        int numResults = sortedResults.size();
+        List<Integer> uniqueResults = results.stream()
+                .map(ContestResults::getResults)
+                .distinct().toList();
+
+        int numResults = resultList.size();
+        int numTies = 0;
 
         for (int i = 0; i < numResults; i++) {
-            ContestResults result = sortedResults.get(i);
-            int score = result.getResults();
-            int points = 0;
-            int numTies = 0;
+            ContestResults contestResults = sortedResults.get(i);
+            int resultInt = resultList.get(i);
+            int points = Collections.frequency(resultList, resultInt);
 
-            if (uniqueResults.contains(score)) {
-                numTies = Collections.frequency(sortedResults, result);
+            // Check for shared positions
+            if (uniqueResults.contains(resultInt)) {
+                numTies = Collections.frequency(resultList, resultInt);
             }
 
-            if (i == 0 && numTies == 0) {
-                points = 50;
-
-                if (numResults > 1 && score >= 2 * sortedResults.get(1).getResults()) {
-                    points = 75;
+            // Calculate points based on position and ties
+            if (i == 0) {
+                // First place
+                if (numTies > 1) {
+                    points = 40 / numTies;
+                } else {
+                    if (numResults > 1 && resultInt >= 2 * resultInt) {
+                        points = 75;
+                    } else {
+                        points = 50;
+                    }
                 }
-            } else if (i == 0 && numTies > 0) {
-                points = 40 / numTies;
-
-                if (numResults > 1 && score >= 2 * sortedResults.get(1).getResults()) {
-                    points = 60 / numTies;
+            } else if (i == 1) {
+                // Second place
+                if (numTies > 1) {
+                    points = 25 / numTies;
+                } else {
+                    points = 35;
                 }
-            } else if (i == 1 && numTies == 0) {
-                points = 35;
-            } else if (i == 1 && numTies > 0) {
-                points = 25 / numTies;
-            } else if (i == 2 && numTies == 0) {
-                points = 20;
-            } else if (i == 2 && numTies > 0) {
-                points = 10 / numTies;
+            } else if (i == 2) {
+                // Third place
+                if (numTies > 1) {
+                    points = 10 / numTies;
+                } else {
+                    points = 20;
+                }
+            } else {
+                // Other positions
+                if (numTies > 1) {
+                    points = 5 / numTies;
+                } else {
+                    points = 10;
+                }
             }
 
-            User user = result.getResultEmbed().getPhoto().getUserCreated();
+            User user = contestResults.getResultEmbed().getPhoto().getUserCreated();
             user.setPoints(user.getPoints() + points);
             contestServices.evaluateRank(user);
         }
