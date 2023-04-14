@@ -1,5 +1,6 @@
 package com.telerikacademy.web.photocontest.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,11 +29,11 @@ public class Photo {
     @JoinColumn(name = "user_id")
     private User userCreated;
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contest_id")
     private Contest postedOn;
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reviewId.photoId", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reviewId.photoId")
     private Set<PhotoScore> scores = new HashSet<>();
 
     @JsonIgnore

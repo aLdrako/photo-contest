@@ -25,8 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.uploadPhoto;
@@ -108,6 +107,15 @@ public class PhotoRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException | UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
+    @GetMapping("/{id}/reviews")
+    public List<PhotoReviewResponseDto> getReviewsOfPhoto(@PathVariable Long id) {
+        try {
+            Photo photo = photoServices.getById(id);
+            return modelMapper.objectsToDto(photo);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 }

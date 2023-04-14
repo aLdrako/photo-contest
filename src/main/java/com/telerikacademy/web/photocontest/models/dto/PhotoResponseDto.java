@@ -1,6 +1,6 @@
 package com.telerikacademy.web.photocontest.models.dto;
 
 public record PhotoResponseDto(
-        String title, String story, String photo, Long userId, Long contestId
+        String title, String story, String photo, String userCreated, Long contestId
 ) {
 }

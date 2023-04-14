@@ -1,5 +1,6 @@
 package com.telerikacademy.web.photocontest.services;
 
+import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.models.dto.*;
 import com.telerikacademy.web.photocontest.services.contracts.CategoryServices;
@@ -9,10 +10,8 @@ import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -138,11 +137,20 @@ public class ModelMapper {
     }
     public PhotoReviewResponseDto objectToDto(PhotoReviewDetails photoReviewDetails, PhotoScore score) {
         return new PhotoReviewResponseDto(photoReviewDetails.getReviewId().getPhotoId().getId(),
-                photoReviewDetails.getReviewId().getJuryId().getId(), photoReviewDetails.getComment(),
+                photoReviewDetails.getReviewId().getJuryId().getUsername(), photoReviewDetails.getComment(),
                 score.getScore());
     }
     public PhotoResponseDto objectToDto(Photo photo) {
         return new PhotoResponseDto(photo.getTitle(), photo.getStory(), photo.getPhoto(),
-                photo.getUserCreated().getId(), photo.getPostedOn().getId());
+                photo.getUserCreated().getUsername(), photo.getPostedOn().getId());
+    }
+
+    public List<PhotoReviewResponseDto> objectsToDto(Photo photo) {
+        return photo.getReviewsDetails()
+                .stream()
+                .map(review -> objectToDto(review, Objects.requireNonNull(photo.getScores()
+                        .stream().filter(score -> score.getReviewId().equals(review.getReviewId()))
+                        .findFirst().orElse(null))))
+                .collect(Collectors.toList());
     }
 }
