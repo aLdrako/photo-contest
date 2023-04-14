@@ -1,9 +1,7 @@
 package com.telerikacademy.web.photocontest.services.contracts;
 
-import com.telerikacademy.web.photocontest.models.Photo;
-import com.telerikacademy.web.photocontest.models.PhotoScore;
-import com.telerikacademy.web.photocontest.models.PhotoReviewDetails;
-import com.telerikacademy.web.photocontest.models.User;
+import com.telerikacademy.web.photocontest.models.*;
+import com.telerikacademy.web.photocontest.models.dto.PhotoResponseDto;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,4 +14,6 @@ public interface PhotoServices {
     Photo getById(Long id);
     void postReview(PhotoScore photoScore, Photo photo, User user, PhotoReviewDetails photoReviewDetails);
     int getScoreOfPhoto(Long id);
+
+    List<Photo> getPhotosOfContest(Contest contest);
 }

@@ -12,6 +12,7 @@ import com.telerikacademy.web.photocontest.models.dto.PhotoReviewDto;
 import com.telerikacademy.web.photocontest.models.dto.PhotoReviewResponseDto;
 import com.telerikacademy.web.photocontest.models.validations.CreatePhotoGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
+import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -35,6 +36,7 @@ import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.uploa
 @AllArgsConstructor
 public class PhotoRestController {
     private final PhotoServices photoServices;
+    private final ContestServices contestServices;
     private final AuthenticationHelper authenticationHelper;
     private final ModelMapper modelMapper;
 
@@ -57,6 +59,7 @@ public class PhotoRestController {
         try {
             User user = authenticationHelper.tryGetUser(authorization);
             Photo photo = modelMapper.dtoToObject(photoDto);
+            photo.setPostedOn(contestServices.findById(photoDto.getContestId()));
             photo.setUserCreated(user);
             photoServices.create(photo, photoDto.getFile());
             return modelMapper.objectToDto(photo);

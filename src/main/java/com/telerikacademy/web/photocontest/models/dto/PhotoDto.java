@@ -24,7 +24,7 @@ public class PhotoDto {
             groups = {CreatePhotoViaContestGroup.class, CreatePhotoGroup.class})
     private String story;
     @NotNull(message = "An actual photo file needs to be uploaded",
-    groups = {CreatePhotoGroup.class})
+    groups = {CreatePhotoGroup.class, CreatePhotoViaContestGroup.class})
     private MultipartFile file;
     @NotNull(message = "A contestId is required!",
             groups = {CreatePhotoGroup.class})

@@ -4,10 +4,12 @@ import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.models.*;
+import com.telerikacademy.web.photocontest.models.dto.PhotoResponseDto;
 import com.telerikacademy.web.photocontest.repositories.contracts.PhotoRepository;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -90,6 +92,11 @@ public class PhotoServicesImpl implements PhotoServices {
     public int getScoreOfPhoto(Long id) {
         photoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Photo", id));
         return photoRepository.getScoreOfPhoto(id);
+    }
+
+    @Override
+    public List<Photo> getPhotosOfContest(Contest contest) {
+        return photoRepository.findAllByPostedOn(contest);
     }
 
     private void checkReviewPostPermissions(PhotoReviewDetails photoReviewDetails, Photo photo, User user) {

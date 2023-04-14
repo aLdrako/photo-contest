@@ -7,15 +7,13 @@ import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationExcep
 import com.telerikacademy.web.photocontest.helpers.AuthenticationHelper;
 import com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper;
 import com.telerikacademy.web.photocontest.models.Contest;
+import com.telerikacademy.web.photocontest.models.Photo;
 import com.telerikacademy.web.photocontest.models.User;
-import com.telerikacademy.web.photocontest.models.dto.ContestDto;
-import com.telerikacademy.web.photocontest.models.dto.ContestResponseDto;
-import com.telerikacademy.web.photocontest.models.dto.UserDto;
-import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
-import com.telerikacademy.web.photocontest.models.validations.EnlistUserValidationGroup;
-import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
+import com.telerikacademy.web.photocontest.models.dto.*;
+import com.telerikacademy.web.photocontest.models.validations.*;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
+import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -30,6 +28,7 @@ import java.time.DateTimeException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.deletePhoto;
@@ -44,6 +43,7 @@ public class ContestRestController {
 
     private final AuthenticationHelper authenticationHelper;
     private final ContestServices contestServices;
+    private final PhotoServices photoServices;
     private final ModelMapper modelMapper;
 
     @GetMapping
@@ -178,6 +178,38 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+    @GetMapping("/{id}/photos")
+    public List<PhotoResponseDto> getAllPhotosOfContest(@PathVariable Long id) {
+        try {
+            Contest contest = contestServices.findById(id);
+            return photoServices.getPhotosOfContest(contest).stream()
+                    .map(modelMapper::objectToDto).collect(Collectors.toList());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+    @PostMapping("/{id}/photos")
+    public PhotoResponseDto createPhoto(@PathVariable Long id,
+                                        @RequestHeader(required = false) Optional<String> authorization,
+                                        @Validated(CreatePhotoViaContestGroup.class)
+                                        @ModelAttribute PhotoDto photoDto) {
+        try {
+            User user = authenticationHelper.tryGetUser(authorization);
+            Photo photo = modelMapper.dtoToObject(photoDto);
+            photo.setPostedOn(contestServices.findById(id));
+            photo.setUserCreated(user);
+            photoServices.create(photo, photoDto.getFile());
+            return modelMapper.objectToDto(photo);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (AuthorizationException | UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityDuplicateException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        } catch (FileUploadException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }

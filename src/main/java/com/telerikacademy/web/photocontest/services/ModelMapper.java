@@ -119,7 +119,6 @@ public class ModelMapper {
         Photo photo = new Photo();
         photo.setTitle(photoDto.getTitle());
         photo.setStory(photoDto.getStory());
-        photo.setPostedOn(contestServices.findById(photoDto.getContestId()));
 
         return photo;
     }
