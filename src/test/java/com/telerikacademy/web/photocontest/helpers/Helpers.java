@@ -37,9 +37,9 @@ public class Helpers {
         contest.setTitle("mockTitle");
         contest.setCategory(createMockCategory());
         contest.setCoverPhoto("mockPhotoURL");
-        contest.setPhase1(LocalDateTime.now());
-        contest.setPhase2(LocalDateTime.now());
-        contest.setDateCreated(LocalDateTime.now());
+        contest.setPhase1(LocalDateTime.of(2023,1, 2, 1, 0, 0));
+        contest.setPhase2(LocalDateTime.of(2023,1, 2, 3, 0, 0));
+        contest.setDateCreated(LocalDateTime.of(2023,1, 1, 0, 0, 0));
         contest.setJuries(Set.of());
         contest.setParticipants(Set.of());
         return contest;

@@ -39,7 +39,7 @@ public class CategoryServicesImplTests {
     }
 
     @Test
-    public void getById_Should_CallRepository() {
+    public void findById_Should_CallRepository() {
         // Arrange
         Category mockCategory = createMockCategory();
 
@@ -53,12 +53,11 @@ public class CategoryServicesImplTests {
     }
 
     @Test
-    public void getById_Should_ThrowException_When_CategoryDoesNotExist() {
+    public void findById_Should_ThrowException_When_CategoryDoesNotExist() {
         // Arrange
         Category mockCategory = createMockCategory();
 
-        when(mockCategoryRepository.findById(anyLong()))
-                .thenThrow(EntityNotFoundException.class);
+        when(mockCategoryRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // Act, Assert
         assertThrows(EntityNotFoundException.class,
@@ -125,8 +124,7 @@ public class CategoryServicesImplTests {
         Category mockCategory = createMockCategory();
         User mockOrganizer = createMockOrganizer();
 
-        when(mockCategoryRepository.findById(anyLong()))
-                .thenThrow(EntityNotFoundException.class);
+        when(mockCategoryRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // Act, Assert
         assertThrows(EntityNotFoundException.class,
