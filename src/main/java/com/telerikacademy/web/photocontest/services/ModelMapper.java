@@ -9,10 +9,7 @@ import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @AllArgsConstructor
@@ -48,35 +45,8 @@ public class ModelMapper {
         if (contest.getJuries() != null) juries = contest.getJuries().stream().map(User::getUsername).toList();
         List<String> participants = null;
         if (contest.getParticipants() != null) participants = contest.getParticipants().stream().map(User::getUsername).toList();
-        List<Map<String, Object>> photos = null;
-        if (contest.getPhotos() != null) {
-            photos = contest.getPhotos().stream().map(photo -> {
-                Map<String, Object> photoMap = new HashMap<>();
-                photoMap.put("id", photo.getId());
-                photoMap.put("title", photo.getTitle());
-                photoMap.put("story", photo.getStory());
-                photoMap.put("photo", photo.getPhoto());
-                photoMap.put("userCreated", photo.getUserCreated().getUsername());
-                return photoMap;
-            }).toList();
-        }
-
-        List<ContestResultDto> results = null;
-        if (contest.getResults() != null) {
-            results = contest.getResults().stream()
-                    .map(contestResults -> new ContestResultDto(
-                            contestResults.getResultEmbed().getPhoto().getId(),
-                            contestResults.getResultEmbed().getPhoto().getPhoto(),
-                            contestResults.getResultEmbed().getPhoto().getUserCreated().getUsername(),
-                            contestResults.getResultEmbed().getPhoto().getReviewsDetails().stream()
-                                    .map(photoReviewDetails -> photoReviewDetails.getReviewId().getJuryId().getUsername()).toList(),
-                            contestResults.getResultEmbed().getPhoto().getReviewsDetails().stream()
-                                    .map(PhotoReviewDetails::getComment).toList(),
-                            contestResults.getResultEmbed().getPhoto().getScores().stream()
-                                    .mapToInt(PhotoScore::getScore).boxed().toList(),
-                            contestResults.getResults()
-                    )).toList();
-        }
+        List<Map<String, Object>> photos = getPhotos(contest);
+        List<ContestResultDto> results = getContestResultDto(contest);
 
         return new ContestResponseDto(contest.getId(), contest.getTitle(), contest.getCategory().getName(), contest.getPhase1(), contest.getPhase2(),
                 contest.getDateCreated(), contest.getCoverPhoto(), contest.isInvitational(), contest.getIsFinished(), juries, participants, photos, results);
@@ -144,5 +114,66 @@ public class ModelMapper {
     public PhotoResponseDto objectToDto(Photo photo) {
         return new PhotoResponseDto(photo.getTitle(), photo.getStory(), photo.getPhoto(),
                 photo.getUserCreated().getId(), photo.getPostedOn().getId());
+    }
+
+    private static List<ContestResultDto> getContestResultDto(Contest contest) {
+        List<ContestResultDto> results = null;
+        if (contest.getResults() != null) {
+            results = contest.getResults().stream()
+                    .map(contestResults -> {
+                        Long id = contestResults.getResultEmbed().getPhoto().getId();
+                        String photo = contestResults.getResultEmbed().getPhoto().getPhoto();
+                        String userCreated = contestResults.getResultEmbed().getPhoto().getUserCreated().getUsername();
+                        int totalScore = contestResults.getResults();
+
+                        Map<Long, Map<String, Integer>> juryScores = new HashMap<>();
+                        contestResults.getResultEmbed().getPhoto().getReviewsDetails().forEach(photoReviewDetails -> {
+                            Long photoId = photoReviewDetails.getReviewId().getPhotoId().getId();
+                            String jury = photoReviewDetails.getReviewId().getJuryId().getUsername();
+                            int score = photoReviewDetails.getReviewId().getPhotoId().getScores()
+                                    .stream()
+                                    .filter(photoScore -> photoScore.getReviewId().getJuryId().getUsername().equals(jury))
+                                    .findFirst()
+                                    .map(PhotoScore::getScore)
+                                    .orElse(0);
+
+                            Map<String, Integer> scores = juryScores.computeIfAbsent(photoId, k -> new HashMap<>());
+                            scores.put(jury, score);
+                        });
+
+                        List<Map<String, Object>> juriesMap = new ArrayList<>();
+                        contestResults.getResultEmbed().getPhoto().getReviewsDetails().forEach(photoReviewDetails -> {
+                            Long photoId = photoReviewDetails.getReviewId().getPhotoId().getId();
+                            String jury = photoReviewDetails.getReviewId().getJuryId().getUsername();
+                            int score = juryScores.get(photoId).getOrDefault(jury, 0);
+                            String comment = photoReviewDetails.getComment();
+
+                            Map<String, Object> scoreDetails = new HashMap<>();
+                            scoreDetails.put("jury", jury);
+                            scoreDetails.put("score", score);
+                            scoreDetails.put("comment", comment);
+                            juriesMap.add(scoreDetails);
+                        });
+
+                        return new ContestResultDto(id, photo, userCreated, juriesMap, totalScore);
+                    }).toList();
+        }
+        return results;
+    }
+
+    private static List<Map<String, Object>> getPhotos(Contest contest) {
+        List<Map<String, Object>> photos = null;
+        if (contest.getPhotos() != null) {
+            photos = contest.getPhotos().stream().map(photo -> {
+                Map<String, Object> photoMap = new HashMap<>();
+                photoMap.put("id", photo.getId());
+                photoMap.put("title", photo.getTitle());
+                photoMap.put("story", photo.getStory());
+                photoMap.put("photo", photo.getPhoto());
+                photoMap.put("userCreated", photo.getUserCreated().getUsername());
+                return photoMap;
+            }).toList();
+        }
+        return photos;
     }
 }
