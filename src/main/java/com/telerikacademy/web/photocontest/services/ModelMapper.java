@@ -155,7 +155,7 @@ public class ModelMapper {
                         contestResults.getResultEmbed().getPhoto().getReviewsDetails().forEach(photoReviewDetails -> {
                             Long photoId = photoReviewDetails.getReviewId().getPhotoId().getId();
                             String jury = photoReviewDetails.getReviewId().getJuryId().getUsername();
-                            int score = juryScores.get(photoId).getOrDefault(jury, 0);
+                            int score = juryScores.get(photoId).getOrDefault(jury, 3);
                             String comment = photoReviewDetails.getComment();
 
                             Map<String, Object> scoreDetails = new HashMap<>();
