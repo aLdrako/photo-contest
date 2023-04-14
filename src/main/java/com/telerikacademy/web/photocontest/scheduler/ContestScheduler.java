@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 @EnableScheduling
@@ -45,7 +44,6 @@ public class ContestScheduler {
         }
     }
 
-    // TODO minor fix in calculations
     private void calculateScore(Set<ContestResults> results) {
         List<ContestResults> sortedResults = results.stream()
                 .sorted(Comparator.comparing(ContestResults::getResults).reversed()).toList();
@@ -55,61 +53,52 @@ public class ContestScheduler {
                 .sorted().boxed().toList());
         Collections.reverse(resultList);
 
-        List<Integer> uniqueResults = results.stream()
-                .map(ContestResults::getResults)
-                .distinct().toList();
+        Map<Integer, Integer> pointsList = awardPoints(resultList);
 
-        int numResults = resultList.size();
-        int numTies = 0;
-
-        for (int i = 0; i < numResults; i++) {
+        for (int i = 0; i < resultList.size(); i++) {
             ContestResults contestResults = sortedResults.get(i);
-            int resultInt = resultList.get(i);
-            int points = Collections.frequency(resultList, resultInt);
-
-            // Check for shared positions
-            if (uniqueResults.contains(resultInt)) {
-                numTies = Collections.frequency(resultList, resultInt);
-            }
-
-            // Calculate points based on position and ties
-            if (i == 0) {
-                // First place
-                if (numTies > 1) {
-                    points = 40 / numTies;
-                } else {
-                    if (numResults > 1 && resultInt >= 2 * resultInt) {
-                        points = 75;
-                    } else {
-                        points = 50;
-                    }
-                }
-            } else if (i == 1) {
-                // Second place
-                if (numTies > 1) {
-                    points = 25 / numTies;
-                } else {
-                    points = 35;
-                }
-            } else if (i == 2) {
-                // Third place
-                if (numTies > 1) {
-                    points = 10 / numTies;
-                } else {
-                    points = 20;
-                }
-            } else {
-                // Other positions
-                if (numTies > 1) {
-                    points = 5 / numTies;
-                } else {
-                    points = 10;
-                }
-            }
 
             User user = contestResults.getResultEmbed().getPhoto().getUserCreated();
-            user.setPoints(user.getPoints() + points);
+            user.setPoints(user.getPoints() + pointsList.get(i));
             contestServices.evaluateRank(user);
         }
+    }
+
+    public static Map<Integer, Integer> awardPoints(List<Integer> scores) {
+
+        List<Integer> sortedScores = new ArrayList<>(scores);
+        Collections.sort(sortedScores);
+        int n = sortedScores.size();
+
+        Map<Integer, Integer> points = new HashMap<>();
+        int place = 1;
+        int[] places = {0, 0, 0};
+
+        for (int i = n - 1; i >= 0; i--) {
+            if (i < n - 1 && !Objects.equals(sortedScores.get(i), sortedScores.get(i + 1))) {
+                place++;
+            }
+
+            if (place <= 3) {
+                places[place - 1]++;
+            }
+        }
+
+        for (int i = 0; i < scores.size(); i++) {
+            int score = scores.get(i);
+            int point = 0;
+
+            if (score == sortedScores.get(n - 1)) {
+                point = places[0] > 1 ? 40 : 50;
+            } else if (score == sortedScores.get(n - places[0] - 1)) {
+                point = places[1] > 1 ? 25 : 35;
+            } else if (places[2] > 0 && score == sortedScores.get(n - places[0] - places[1] - 1)) {
+                point = places[2] > 1 ? 10 : 20;
+            }
+
+            points.put(i, point);
+        }
+
+        return points;
     }
 }
