@@ -3,6 +3,7 @@ package com.telerikacademy.web.photocontest.scheduler;
 import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.repositories.contracts.ContestRepository;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
+import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -20,6 +21,7 @@ public class ContestScheduler {
 
     private final ContestRepository contestRepository;
     private final ContestServices contestServices;
+    private final PhotoServices photoServices;
 
     @Scheduled(fixedDelay = 300000) // 5 min update
     public void checkContestPhases() {
@@ -27,12 +29,10 @@ public class ContestScheduler {
         for (Contest contest : contests) {
             Set<ContestResults> results = new HashSet<>();
             contest.getPhotos().forEach(photo -> {
-                int totalScore = photo.getScores().stream().mapToInt(PhotoScore::getScore).sum();
-
+                int totalScore = photoServices.getScoreOfPhoto(photo.getId());
                 ContestResults result = new ContestResults();
                 result.setResultEmbed(new ResultEmbed(contest, photo));
                 result.setResults(totalScore);
-
                 results.add(result);
             });
 
@@ -64,7 +64,7 @@ public class ContestScheduler {
         }
     }
 
-    public static Map<Integer, Integer> awardPoints(List<Integer> scores) {
+    private Map<Integer, Integer> awardPoints(List<Integer> scores) {
 
         List<Integer> sortedScores = new ArrayList<>(scores);
         Collections.sort(sortedScores);

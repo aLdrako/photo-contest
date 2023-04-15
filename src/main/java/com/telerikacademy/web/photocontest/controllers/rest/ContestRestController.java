@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.DateTimeException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -65,8 +66,9 @@ public class ContestRestController {
 
     @GetMapping("/filter")
     public List<ContestResponseDto> filter(@RequestParam Map<String, String> parameter) {
+        if (parameter.isEmpty()) return new ArrayList<>();
         FilterAndSortingHelper.Result result = getResult(parameter);
-        List<Contest> contests = contestServices.filter(result.title(), result.categoryName(), result.isInvitational());
+        List<Contest> contests = contestServices.filter(result.title(), result.categoryName(), result.isInvitational(), result.isFinished(), result.phase1(), result.phase2());
         return contests.stream().map(modelMapper::objectToDto).toList();
     }
 

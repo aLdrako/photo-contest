@@ -80,8 +80,8 @@ public class ContestServicesImpl implements ContestServices {
     }
 
     @Override
-    public List<Contest> filter(String title, String categoryName, Boolean type) {
-        return contestRepository.filter(title, categoryName, type);
+    public List<Contest> filter(String title, String categoryName, Boolean isInvitational, Boolean isFinished, LocalDateTime phase1, LocalDateTime phase2) {
+        return contestRepository.filter(title, categoryName, isInvitational, isFinished, phase1, phase2);
     }
 
     @Override
