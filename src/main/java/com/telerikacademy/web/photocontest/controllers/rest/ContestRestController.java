@@ -190,6 +190,12 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+    @GetMapping("/{id}/photos/search")
+    public List<PhotoResponseDto> search(@PathVariable Long id,
+                                         @RequestParam(required = false) Optional<String> q) {
+        return photoServices.search(q, id.describeConstable()).stream()
+                .map(modelMapper::objectToDto).collect(Collectors.toList());
+    }
     @PostMapping("/{id}/photos")
     public PhotoResponseDto createPhoto(@PathVariable Long id,
                                         @RequestHeader(required = false) Optional<String> authorization,

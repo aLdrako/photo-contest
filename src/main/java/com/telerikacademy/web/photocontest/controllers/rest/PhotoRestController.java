@@ -44,6 +44,11 @@ public class PhotoRestController {
         return photoServices.getAll().stream()
                 .map(modelMapper::objectToDto).collect(Collectors.toList());
     }
+    @GetMapping("/search")
+    public List<PhotoResponseDto> search(@RequestParam(required = false) Optional<String> q) {
+        return photoServices.search(q, Optional.empty()).stream()
+                .map(modelMapper::objectToDto).collect(Collectors.toList());
+    }
     @GetMapping("/{id}")
     public PhotoResponseDto getById(@PathVariable Long id) {
         try {

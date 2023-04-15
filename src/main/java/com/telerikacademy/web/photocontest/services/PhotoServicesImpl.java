@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.deletePhoto;
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.uploadPhoto;
@@ -97,6 +98,12 @@ public class PhotoServicesImpl implements PhotoServices {
     @Override
     public List<Photo> getPhotosOfContest(Contest contest) {
         return photoRepository.findAllByPostedOn(contest);
+    }
+
+    @Override
+    public List<Photo> search(Optional<String> keyword, Optional<Long> contestId) {
+        return contestId.isPresent() ? photoRepository.search(keyword, contestId) :
+                photoRepository.search(keyword);
     }
 
     private void checkReviewPostPermissions(PhotoReviewDetails photoReviewDetails, Photo photo, User user) {
