@@ -149,7 +149,9 @@ public class ContestServicesImpl implements ContestServices {
             user.setRank(rankingServices.getMaster());
         } else if (user.getPoints() > 50) {
             user.setRank(rankingServices.getEnthusiast());
-        } else user.setRank(rankingServices.getJunkie());
+        } else {
+            user.setRank(rankingServices.getJunkie());
+        }
     }
 
     private void checkOrganizerPermissions(User authenticatedUser) {

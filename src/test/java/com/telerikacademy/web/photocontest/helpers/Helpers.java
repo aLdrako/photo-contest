@@ -47,7 +47,7 @@ public class Helpers {
 
     public static Contest createMockContestDynamic() {
         Contest contest = new Contest();
-        contest.setId(1L);
+        contest.setId(2L);
         contest.setTitle("mockTitle");
         contest.setCategory(createMockCategory());
         contest.setCoverPhoto("mockPhotoURL");
@@ -82,7 +82,7 @@ public class Helpers {
 
     public static User createDifferentMockUser() {
         User mockDifferentUser = createMockUser();
-        mockDifferentUser.setId(2L);
+        mockDifferentUser.setId(3L);
         mockDifferentUser.setFirstName("mockDifferentFirstName");
         mockDifferentUser.setLastName("mockDifferentLastName");
         mockDifferentUser.setUsername("mockDifferentUsername");

@@ -194,16 +194,13 @@ public class ContestServicesImplTests {
         // Arrange
         Contest mockContest = createMockContestDynamic();
         User mockOrganizer = createMockOrganizer();
-        User mockJury = createMockUser();
-        mockJury.setRank(createMockRanking(Ranks.MASTER));
+        User mockUser = createMockUser();
         Set<User> juries = new HashSet<>();
-        juries.add(mockJury);
+        juries.add(mockUser);
         mockContest.setJuries(juries);
         mockContest.setPhotos(new HashSet<>());
 
-        when(mockUserServices.getAllOrganizers()).thenReturn(new ArrayList<>());
-        when(mockUserServices.getUsersWithJuryPermission()).thenReturn(List.of(mockJury));
-        when(mockContestRepository.existsByTitleEqualsIgnoreCase(anyString())).thenReturn(false);
+        when(mockUserServices.getUsersWithJuryPermission()).thenReturn(List.of(mockUser));
         when(mockContestRepository.save(mockContest)).thenReturn(mockContest);
 
         // Act
@@ -256,18 +253,34 @@ public class ContestServicesImplTests {
     }
 
     @Test
-    public void join_Should_CallRepository_When_UserIsNotAlreadyEnlisted() {
+    public void create_Should_ThrowException_When_AddingUserAsJuryWhichIsNotEligible() {
+        // Arrange
+        Contest mockContest = createMockContestDynamic();
+        User mockOrganizer = createMockOrganizer();
+        User mockUser = createMockUser();
+        User mockDifferentUser = createDifferentMockUser();
+        Set<User> juries = new HashSet<>();
+        juries.add(mockUser);
+        mockContest.setJuries(juries);
+        mockContest.setPhotos(new HashSet<>());
+        when(mockUserServices.getUsersWithJuryPermission()).thenReturn(List.of(mockDifferentUser));
+
+        // Act, Assert
+        assertThrows(UnauthorizedOperationException.class,
+                ()  ->  contestServices.create(mockContest, mockOrganizer));
+    }
+
+    @Test
+    public void join_Should_CallRepository_When_UserIsNotEnlisted() {
         // Arrange
         Contest mockContest = createMockContestDynamic();
         User mockUser = createMockUser();
         User mockDifferentUser = createDifferentMockUser();
-        Ranking mockRanking = createMockRanking(Ranks.JUNKIE);
         Set<User> participants = new HashSet<>();
         participants.add(mockDifferentUser);
         mockContest.setParticipants(participants);
 
         when(mockContestRepository.save(mockContest)).thenReturn(mockContest);
-        when(mockRankingService.getJunkie()).thenReturn(mockRanking);
 
         // Act
         contestServices.join(mockContest, mockUser);
@@ -292,13 +305,204 @@ public class ContestServicesImplTests {
     public void join_Should_ThrowException_When_EnrolmentIsNotInTimeLimits() {
         // Arrange
         Contest mockContest = createMockContestDynamic();
+        User mockUser = createMockUser();
         mockContest.setInvitational(false);
         mockContest.setParticipants(new HashSet<>());
         mockContest.setPhase1(LocalDateTime.now().minusDays(1));
-        User mockUser = createMockUser();
 
         // Act, Assert
         assertThrows(UnauthorizedOperationException.class,
                 () -> contestServices.join(mockContest, mockUser));
+    }
+
+    @Test
+    public void join_Should_ThrowException_When_ParticipantAlreadyEnlisted() {
+        // Arrange
+        Contest mockContest = createMockContestDynamic();
+        User mockUser = createMockUser();
+        Set<User> participants = new HashSet<>();
+        participants.add(mockUser);
+        mockContest.setParticipants(participants);
+
+        // Act, Assert
+        assertThrows(EntityDuplicateException.class,
+                () -> contestServices.join(mockContest, mockUser));
+    }
+
+    @Test
+    public void join_Should_ThrowException_When_ParticipantIsInJuryList() {
+        // Arrange
+        Contest mockContest = createMockContestDynamic();
+        User mockUser = createMockUser();
+        Set<User> juries = new HashSet<>();
+        juries.add(mockUser);
+        mockContest.setJuries(juries);
+
+        // Act, Assert
+        assertThrows(UnauthorizedOperationException.class,
+                () -> contestServices.join(mockContest, mockUser));
+    }
+
+    @Test
+    public void join_Should_AddPointsToUser_When_HeJoinContest() {
+        // Arrange
+        Contest mockContest = createMockContestDynamic();
+        User mockUser = createMockUser();
+        User mockDifferentUser = createDifferentMockUser();
+        Set<User> participants = new HashSet<>();
+        participants.add(mockDifferentUser);
+        mockContest.setParticipants(participants);
+
+        int initialPoints = mockUser.getPoints();
+
+        // Act
+        contestServices.join(mockContest, mockUser);
+
+        // Assert
+        assertEquals(initialPoints + 1, mockUser.getPoints());
+    }
+
+    @Test
+    public void addParticipant_Should_CallRepository_When_UserIsNotEnlisted()  {
+        // Arrange
+        Contest mockContest = createMockContestDynamic();
+        User mockDifferentUser = createDifferentMockUser();
+        User mockOrganizer = createMockOrganizer();
+        Set<User> participants = new HashSet<>();
+        participants.add(mockOrganizer);
+        mockContest.setParticipants(participants);
+
+        when(mockContestRepository.save(mockContest)).thenReturn(mockContest);
+        when(mockUserServices.getByUsername(mockDifferentUser.getUsername())).thenReturn(mockDifferentUser);
+
+        // Act
+        contestServices.addParticipant(mockContest, mockOrganizer, mockDifferentUser.getUsername());
+
+        // Assert
+        verify(mockContestRepository).save(mockContest);
+    }
+
+    @Test
+    public void addParticipant_Should_ThrowException_When_EnrolmentIsNotInTimeLimits()  {
+        // Arrange
+        Contest mockContest = createMockContestDynamic();
+        User mockUser = createMockUser();
+        User mockOrganizer = createMockUser();
+        mockContest.setParticipants(new HashSet<>());
+        mockContest.setPhase1(LocalDateTime.now().minusDays(1));
+
+        // Act, Assert
+        assertThrows(UnauthorizedOperationException.class,
+                () -> contestServices.addParticipant(mockContest, mockOrganizer, mockUser.getUsername()));
+    }
+
+    @Test
+    public void addParticipant_Should_ThrowException_When_ParticipantAlreadyEnlisted()  {
+        // Arrange
+        Contest mockContest = createMockContestDynamic();
+        User mockUser = createMockUser();
+        User mockOrganizer = createMockOrganizer();
+        Set<User> participants = new HashSet<>();
+        participants.add(mockUser);
+        mockContest.setParticipants(participants);
+
+        when(mockUserServices.getByUsername(mockUser.getUsername())).thenReturn(mockUser);
+
+        // Act, Assert
+        assertThrows(EntityDuplicateException.class,
+                () -> contestServices.addParticipant(mockContest, mockOrganizer, mockUser.getUsername()));
+    }
+
+    @Test
+    public void addParticipant_Should_ThrowException_When_ParticipantIsInJuryList() {
+        // Arrange
+        Contest mockContest = createMockContestDynamic();
+        User mockUser = createMockUser();
+        User mockOrganizer = createMockOrganizer();
+        Set<User> juries = new HashSet<>();
+        juries.add(mockUser);
+        mockContest.setJuries(juries);
+
+        when(mockUserServices.getByUsername(mockUser.getUsername())).thenReturn(mockUser);
+
+        // Act, Assert
+        assertThrows(UnauthorizedOperationException.class,
+                () -> contestServices.addParticipant(mockContest, mockOrganizer, mockUser.getUsername()));
+    }
+
+    @Test
+    public void addParticipant_Should_ThrowException_When_UserIsNotOrganizer() {
+        // Arrange
+        Contest mockContest = createMockContest();
+        User mockUser = createMockUser();
+        User mockDifferentUser = createDifferentMockUser();
+
+        // Act, Assert
+        assertThrows(UnauthorizedOperationException.class,
+                () -> contestServices.addParticipant(mockContest, mockUser, mockDifferentUser.getUsername()));
+    }
+
+    @Test
+    public void addParticipant_Should_AddPointsToUser_When_HeJoinContest() {
+        // Arrange
+        Contest mockContest = createMockContestDynamic();
+        User mockUser = createMockUser();
+        User mockOrganizer = createMockOrganizer();
+        User mockDifferentUser = createDifferentMockUser();
+        Set<User> participants = new HashSet<>();
+        participants.add(mockDifferentUser);
+        mockContest.setParticipants(participants);
+
+        int initialPoints = mockUser.getPoints();
+        when(mockUserServices.getByUsername(mockUser.getUsername())).thenReturn(mockUser);
+
+        // Act
+        contestServices.addParticipant(mockContest, mockOrganizer, mockUser.getUsername());
+
+        // Assert
+        assertEquals(initialPoints + 3, mockUser.getPoints());
+    }
+
+    @Test
+    public void evaluateRank_Should_ChangeRankBasedOnPoints()  {
+        // Arrange
+        User mockUser = createMockUser();
+        Ranking mockRankingJunkie = createMockRanking(Ranks.JUNKIE);
+        Ranking mockRankingEnthusiast = createMockRanking(Ranks.ENTHUSIAST);
+        Ranking mockRankingMaster = createMockRanking(Ranks.MASTER);
+        Ranking mockRankingWiseDictator = createMockRanking(Ranks.WISE_AND_BENEVOLENT_PHOTO_DICTATOR);
+
+        when(mockRankingService.getJunkie()).thenReturn(mockRankingJunkie);
+        when(mockRankingService.getEnthusiast()).thenReturn(mockRankingEnthusiast);
+        when(mockRankingService.getMaster()).thenReturn(mockRankingMaster);
+        when(mockRankingService.getWiseAndBenevolentPhotoDictator()).thenReturn(mockRankingWiseDictator);
+
+        // Arrange
+        mockUser.setPoints(0);
+        // Act
+        contestServices.evaluateRank(mockUser);
+        // Assert
+        assertEquals(mockRankingJunkie, mockUser.getRank());
+
+        // Arrange
+        mockUser.setPoints(51);
+        // Act
+        contestServices.evaluateRank(mockUser);
+        // Assert
+        assertEquals(mockRankingEnthusiast, mockUser.getRank());
+
+        // Arrange
+        mockUser.setPoints(151);
+        // Act
+        contestServices.evaluateRank(mockUser);
+        // Assert
+        assertEquals(mockRankingMaster, mockUser.getRank());
+
+        // Arrange
+        mockUser.setPoints(1001);
+        // Act
+        contestServices.evaluateRank(mockUser);
+        // Assert
+        assertEquals(mockRankingWiseDictator, mockUser.getRank());
     }
 }
