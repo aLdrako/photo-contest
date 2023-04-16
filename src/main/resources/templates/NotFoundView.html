@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title th:text="#{page.title.not-found}">Title (design)</title>
+  <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+
+<body class="error-page">
+<div>
+  <span class='error-num'>4</span>
+  <div class='eye'></div>
+  <span class='error-num'>4</span>
+  <p class='alert alert-dark' th:text="${error}">Page Not Found</p>
+  <a href='#' th:href="@{/}" class="btn btn-light text-dark">Go back</a>
+</div>
+
+<script th:replace="~{fragments/scripts :: error-page}"></script>
+</body>
+</html>

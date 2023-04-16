@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title th:text="#{page.title.error}">Forum Management System</title>
+  <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+
+<body class="error-page">
+<div>
+  <span class='error-num'>5</span>
+  <div class='eye'></div>
+  <div class='eye'></div>
+  <p class='error-sub-text'>Something went wrong. We're <i>looking</i> to see what happened.</p>
+  <a href='#' th:href="@{/}" class="btn btn-light text-dark">Go back</a>
+</div>
+
+<script th:replace="~{fragments/scripts :: error-page}"></script>
+</body>
+</html>
