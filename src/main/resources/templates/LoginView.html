@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{page.title.login}">Photo Contest</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+
+<body class="register-view d-flex flex-column min-vh-100">
+<!--<header th:replace="~{fragments/navbar :: header(context='register')}"></header>-->
+
+<main class="form-signin">
+    <form th:replace="~{fragments/user-form :: user-form(context='login')}"></form>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+</body>
+</html>

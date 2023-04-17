@@ -1,0 +1,60 @@
+<form role="form" action="#" method="post" th:fragment="user-form" th:action="${requestURI}"
+      th:object="${user}"
+      th:with="ctxRegister=${context == 'create-user'},
+               ctxUpdate=${context == 'update-user'},
+               ctxLogin=${context == 'login'}">
+
+  <h1 th:if="${ctxRegister}" th:text="#{user-form.create}">Create User</h1>
+  <h1 th:if="${ctxUpdate}" th:text="#{user-form.update}">Update User</h1>
+  <h1 th:if="${ctxUpdate}" th:text="#{user-form.login}">Login</h1>
+
+  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate)}">
+    <input type="text" class="form-control" id="floatingFirstName" placeholder="First Name" name="firstName"
+           th:errorclass="is-invalid" th:field="*{firstName}"/>
+    <label class="form-label" for="floatingFirstName">First Name</label>
+    <div id="validationFirstName" class="invalid-feedback" th:errors="*{firstName}">Error placeholder</div>
+  </div>
+  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate)}">
+    <input type="text" class="form-control" id="floatingLastName" placeholder="Last Name" name="lastName"
+           th:errorclass="is-invalid" th:field="*{lastName}">
+    <label for="floatingLastName">Last Name</label>
+    <div id="validationLastName" class="invalid-feedback" th:errors="*{lastName}">Error placeholder</div>
+  </div>
+  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate)}">
+    <input type="email" class="form-control" id="floatingEmail" placeholder="Email" name="email"
+           th:errorclass="is-invalid" th:field="*{email}">
+    <label for="floatingEmail">Email</label>
+    <div id="validationEmail" class="invalid-feedback" th:errors="*{email}">Error placeholder</div>
+  </div>
+  <div class="form-floating" th:if="${ctxRegister || ctxLogin}">
+    <input type="text" class="form-control" id="floatingUsername" placeholder="Username" name="username"
+           th:errorclass="is-invalid" th:field="*{username}">
+    <label for="floatingUsername">Username</label>
+    <div id="validationUsername" class="invalid-feedback" th:errors="*{username}">Error placeholder</div>
+  </div>
+  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate || ctxLogin)}">
+    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password"
+           th:errorclass="is-invalid" th:field="*{password}">
+    <label for="floatingPassword" th:text="${ctxUpdate ? 'Password (optional)' : 'Password'}">Password</label>
+    <div id="validationPassword" class="invalid-feedback" th:errors="*{password}">Error placeholder</div>
+  </div>
+  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate)}">
+    <input type="password" class="form-control" id="floatingPasswordConfirm" placeholder="Password Confirmation"
+           name="passwordConfirm" th:errorclass="is-invalid" th:field="*{passwordConfirm}">
+    <label for="floatingPasswordConfirm">Password (confirmation)</label>
+    <div id="validationPasswordConfirm" class="invalid-feedback" th:errors="*{passwordConfirm}">Error placeholder
+    </div>
+  </div>
+  <button class="w-100 btn btn-lg btn-primary" type="submit" name="action" value="login" th:if="${ctxLogin}">
+    Login
+  </button>
+  <button class="w-100 btn btn-lg btn-primary" type="submit" name="action" value="register" th:if="${ctxRegister}">
+    Register
+  </button>
+  <button class="w-100 btn btn-lg btn-primary" type="submit" name="action" value="update" th:if="${ctxUpdate}">
+    Update
+  </button>
+
+
+
+</form>

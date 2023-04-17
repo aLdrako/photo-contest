@@ -1,9 +1,6 @@
 package com.telerikacademy.web.photocontest.models.dto;
 
-import com.telerikacademy.web.photocontest.models.validations.EnlistUserValidationGroup;
-import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
-import com.telerikacademy.web.photocontest.models.validations.EqualFields;
-import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
+import com.telerikacademy.web.photocontest.models.validations.*;
 import lombok.Data;
 
 import javax.validation.constraints.*;
@@ -27,14 +24,16 @@ public class UserDto {
             groups = {UpdateValidationGroup.class, CreateValidationGroup.class})
     private String email;
     @NotEmpty(message = "Username can't be empty",
-            groups = {CreateValidationGroup.class, EnlistUserValidationGroup.class})
+            groups = {CreateValidationGroup.class, EnlistUserValidationGroup.class,
+                    LoginValidationGroup.class})
     @Size(min = 4, max = 16, message = "Username should be between 4 and 16 symbols",
-            groups = {CreateValidationGroup.class, EnlistUserValidationGroup.class})
+            groups = {CreateValidationGroup.class, EnlistUserValidationGroup.class,
+                    LoginValidationGroup.class})
     private String username;
     @NotEmpty(message = "Password can't be empty",
-            groups = {CreateValidationGroup.class})
+            groups = {CreateValidationGroup.class, LoginValidationGroup.class})
     @Size(min = 5, max = 16, message = "Password size must be between 5 and 16 characters!",
-            groups = {CreateValidationGroup.class, UpdateValidationGroup.class})
+            groups = {CreateValidationGroup.class, UpdateValidationGroup.class, LoginValidationGroup.class})
     private String password;
     @NotEmpty(message = "Password confirmation can't be empty",
             groups = {CreateValidationGroup.class})

@@ -12,7 +12,9 @@ import java.util.Optional;
 @Component
 @AllArgsConstructor
 public class AuthenticationHelper {
+
     private static final String INVALID_AUTHENTICATION_ERROR = "Invalid authentication";
+    private static final String INVALID_USERNAME_PASSWORD = "Invalid username/password";
     private final UserServices userServices;
 
 
@@ -22,7 +24,7 @@ public class AuthenticationHelper {
                 String[] credentials = validateHeaderValues(authorization.get());
                 User user = userServices.getByUsername(credentials[0]);
                 if (!user.getPassword().equals(credentials[1])) {
-                    throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
+                    throw new AuthorizationException(INVALID_USERNAME_PASSWORD);
                 }
                 return user;
             } catch (EntityNotFoundException e) {
@@ -43,5 +45,17 @@ public class AuthenticationHelper {
         credentials[1] = credentials[1].strip();
         return credentials;
 
+    }
+
+    public User verifyLogin(String username, String password) {
+        try {
+            User user = userServices.getByUsername(username);
+            if (!user.getPassword().equals(password)) {
+                throw new AuthorizationException(INVALID_USERNAME_PASSWORD);
+            }
+            return user;
+        } catch (EntityNotFoundException e) {
+            throw new AuthorizationException(INVALID_USERNAME_PASSWORD);
+        }
     }
 }
