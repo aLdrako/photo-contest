@@ -7,7 +7,10 @@
 </head>
 
 <body class="main-view d-flex flex-column min-vh-100">
+    <header th:replace="~{fragments/navbar :: header(context='home')}"></header>
+    <main>
 
+    </main>
     <div th:replace="~{fragments/footer :: footer}"></div>
     <script th:replace="~{fragments/scripts :: bootstrap}"></script>
 </body>

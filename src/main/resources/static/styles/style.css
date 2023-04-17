@@ -1,5 +1,31 @@
 /*GLOBAL*/
+body {
+    padding-top: 100px;
+}
 
+/*NAVBAR*/
+.nav-link .bi {
+    width: 24px;
+    height: 24px;
+    font-size: 1.5rem;
+}
+
+.nav-link:hover {
+    background-color: #ffc107;
+}
+
+.nav-link:hover span {
+    color: #212529;
+}
+
+.nav-link:hover .text-icon-item {
+    color: #212529;
+}
+
+.active-nav-link {
+    color: #212529;
+    background-color: #ffc107;
+}
 
 /*ERROR PAGE*/
 .error-page {
