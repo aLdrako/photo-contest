@@ -18,6 +18,10 @@ public class PhotoReviewDetails {
     @Column(name = "fits_category")
     private boolean fitsCategory;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @PrimaryKeyJoinColumn
+    private PhotoScore photoScore;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

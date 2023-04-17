@@ -107,23 +107,14 @@ public class ModelMapper {
 
         return photoReview;
     }
-    public PhotoReviewResponseDto objectToDto(PhotoReviewDetails photoReviewDetails, PhotoScore score) {
+    public PhotoReviewResponseDto objectToDto(PhotoReviewDetails photoReviewDetails) {
         return new PhotoReviewResponseDto(photoReviewDetails.getReviewId().getPhotoId().getId(),
                 photoReviewDetails.getReviewId().getJuryId().getUsername(), photoReviewDetails.getComment(),
-                score.getScore());
+                photoReviewDetails.getPhotoScore().getScore());
     }
     public PhotoResponseDto objectToDto(Photo photo) {
         return new PhotoResponseDto(photo.getTitle(), photo.getStory(), photo.getPhoto(),
                 photo.getUserCreated().getUsername(), photo.getPostedOn().getId());
-    }
-
-    public List<PhotoReviewResponseDto> objectsToDto(Photo photo) {
-        return photo.getReviewsDetails()
-                .stream()
-                .map(review -> objectToDto(review, Objects.requireNonNull(photo.getScores()
-                        .stream().filter(score -> score.getReviewId().equals(review.getReviewId()))
-                        .findFirst().orElse(null))))
-                .collect(Collectors.toList());
     }
 
     private static List<ContestResultDto> getContestResultDto(Contest contest) {

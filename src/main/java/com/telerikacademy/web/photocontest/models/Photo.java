@@ -47,10 +47,7 @@ public class Photo {
         reviewsDetails.add(photoReviewDetails);
     }
     public void updateScore(PhotoScore photoScore) {
-        PhotoScore reviewFromRepo = new PhotoScore();
-        reviewFromRepo.setReviewId(new ReviewId(photoScore.getReviewId().getPhotoId(),
-                photoScore.getReviewId().getJuryId()));
-        scores.remove(reviewFromRepo);
+        scores.remove(photoScore);
         scores.add(photoScore);
     }
     @Override

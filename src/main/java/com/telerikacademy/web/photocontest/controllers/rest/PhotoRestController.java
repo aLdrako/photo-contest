@@ -92,7 +92,8 @@ public class PhotoRestController {
             photoScore.setReviewId(reviewId);
             photoReviewDetails.setReviewId(reviewId);
             photoServices.postReview(photoScore, photo, user, photoReviewDetails);
-            return modelMapper.objectToDto(photoReviewDetails, photoScore);
+            photoReviewDetails.setPhotoScore(photoScore);
+            return modelMapper.objectToDto(photoReviewDetails);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException | UnauthorizedOperationException e) {
@@ -118,7 +119,7 @@ public class PhotoRestController {
     public List<PhotoReviewResponseDto> getReviewsOfPhoto(@PathVariable Long id) {
         try {
             Photo photo = photoServices.getById(id);
-            return modelMapper.objectsToDto(photo);
+            return photo.getReviewsDetails().stream().map(modelMapper::objectToDto).collect(Collectors.toList());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
