@@ -2,12 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title th:text="#{page.title.login}">Photo Contest</title>
+    <title th:text="#{user-form.login}">Photo Contest</title>
     <th:block th:replace="~{fragments/head :: head}"></th:block>
 </head>
 
-<body class="register-view d-flex flex-column min-vh-100">
-<!--<header th:replace="~{fragments/navbar :: header(context='register')}"></header>-->
+<body class="login-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='login')}"></header>
 
 <main class="form-signin">
     <form th:replace="~{fragments/user-form :: user-form(context='login')}"></form>

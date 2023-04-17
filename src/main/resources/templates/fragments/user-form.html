@@ -4,9 +4,9 @@
                ctxUpdate=${context == 'update-user'},
                ctxLogin=${context == 'login'}">
 
-  <h1 th:if="${ctxRegister}" th:text="#{user-form.create}">Create User</h1>
-  <h1 th:if="${ctxUpdate}" th:text="#{user-form.update}">Update User</h1>
-  <h1 th:if="${ctxUpdate}" th:text="#{user-form.login}">Login</h1>
+  <h1 class="h3 mb-3 fw-normal"  th:if="${ctxRegister}" th:text="#{user-form.create}">Create User</h1>
+  <h1 class="h3 mb-3 fw-normal"  th:if="${ctxUpdate}" th:text="#{user-form.update}">Update User</h1>
+  <h1 class="h3 mb-3 fw-normal"  th:if="${ctxLogin}" th:text="#{user-form.login}">Login</h1>
 
   <div class="form-floating" th:if="${(ctxRegister || ctxUpdate)}">
     <input type="text" class="form-control" id="floatingFirstName" placeholder="First Name" name="firstName"

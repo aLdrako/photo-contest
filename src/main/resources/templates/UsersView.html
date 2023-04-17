@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{user-form.login}">Photo Contest</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+
+<body class="users-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='users')}"></header>
+<table class="table table-hover table-striped container mx-auto my-3">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Username</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td><a href="#" th:href="@{/users/{id}(id=${user.id})}"><i
+                class="bi bi-person-vcard text-dark" style="font-size: 2rem;"></i></a>
+        </td>
+        <td th:text="${user.firstName}"></td>
+        <td th:text="${user.lastName}"></td>
+        <td th:text="${user.email}"></td>
+        <td th:text="${user.username}"></td>
+    </tr>
+    </tbody>
+</table>
+
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+</body>
+</html>
