@@ -2,12 +2,65 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <title th:text="#{page.title.home}">Title (design)</title>
-  <th:block th:replace="~{fragments/head :: head}"></th:block>
+    <title th:text="#{page.title.home}">Title (design)</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
 </head>
 
-<body class="main-view d-flex flex-column min-vh-100">
+<body class="contests-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='contests')}"></header>
+<main>
+
+    <div class="container px-4 py-5" id="custom-cards">
+
+        <h2 class="pb-2 border-bottom text-center display-2">Contests</h2>
+
+        <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
+            <th:block th:each="contest : ${contests}" th:with="photoUrl=${contest.coverPhoto()}">
+                <div class="col">
+                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
+                         th:style="'background-image: url(' + ${photoUrl} + '); background-repeat: no-repeat; background-position: center center; background-size: cover;'">
+                        <div class="overlay">
+                            <a href="#" class="btn btn-lg btn-warning btn-overlay rounded-4" th:href="@{/contest/{id}(id=${contest.id})}">View</a>
+                        </div>
+                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                            <h3 class="pt-4 mt-4 mb-4 display-5 lh-1 neon-text"
+                                th:text="${contest.title.length() > 20 ? #strings.substring(contest.title, 0, 20) + '...' : contest.title}">
+                                Title (design)</h3>
+                            <ul class="d-flex list-unstyled mt-auto">
+                                <li class="me-auto">
+                                    <span class="badge d-flex align-items-center p-1 pe-2 text-dark bg-warning border border-warning rounded-pill">
+                                      <i class="bi" th:classappend="${contest.invitational ? 'bi-lock-fill' : 'bi-unlock-fill'}"></i>
+                                      <span class="vr mx-1"></span>
+                                      <small th:text="${contest.invitational ? 'Invitational' : 'Open'}">Open (design)</small>
+                                    </span>
+                                </li>
+                                <li class="d-flex align-items-center me-3">
+                                    <span class="badge d-flex align-items-center p-1 pe-2 text-dark bg-warning border border-warning rounded-pill">
+                                      <i class="bi bi-tag-fill"></i>
+                                      <span class="vr mx-1"></span>
+                                      <small th:text="${contest.category}">Category (design)</small>
+                                    </span>
+                                </li>
+                                <li class="d-flex align-items-center">
+                                    <span class="badge d-flex align-items-center p-1 pe-2 text-dark bg-warning border border-warning rounded-pill">
+                                      <i class="bi bi-clock-fill"></i>
+                                      <span class="vr mx-1"></span>
+                                      <small th:if="${contest.dateCreated.isBefore(#temporals.createNow()) && contest.phase1.isAfter(#temporals.createNow())}">Phase I</small>
+                                      <small th:if="${contest.phase1.isBefore(#temporals.createNow()) && contest.phase2.isAfter(#temporals.createNow())}">Phase II</small>
+                                      <small th:if="${contest.isFinished}">Finished</small>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </th:block>
+        </div>
+
+    </div>
+
+</main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>
