@@ -9,6 +9,8 @@ import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.RankingServices;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.DateTimeException;
@@ -80,8 +82,8 @@ public class ContestServicesImpl implements ContestServices {
     }
 
     @Override
-    public List<Contest> filter(String title, String categoryName, Boolean isInvitational, Boolean isFinished, LocalDateTime phase1, LocalDateTime phase2) {
-        return contestRepository.filter(title, categoryName, isInvitational, isFinished, phase1, phase2);
+    public Page<Contest> filter(String title, String categoryName, Boolean isInvitational, Boolean isFinished, LocalDateTime phase1, LocalDateTime phase2, Pageable pageable) {
+        return contestRepository.filter(title, categoryName, isInvitational, isFinished, phase1, phase2, pageable);
     }
 
     @Override

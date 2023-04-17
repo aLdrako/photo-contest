@@ -165,10 +165,10 @@ public class ContestServicesImplTests {
     @Test
     public void filter_Should_CallRepository() {
         // Arrange, Act
-        contestServices.filter(anyString(), anyString(), anyBoolean(), anyBoolean(), any(), any());
+        contestServices.filter(anyString(), anyString(), anyBoolean(), anyBoolean(), any(), any(), any());
 
         // Assert
-        verify(mockContestRepository).filter(anyString(), anyString(), anyBoolean(), anyBoolean(), any(), any());
+        verify(mockContestRepository).filter(anyString(), anyString(), anyBoolean(), anyBoolean(), any(), any(), any());
     }
 
     @Test

@@ -17,6 +17,8 @@ import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -65,10 +67,10 @@ public class ContestRestController {
     }
 
     @GetMapping("/filter")
-    public List<ContestResponseDto> filter(@RequestParam Map<String, String> parameter) {
-        if (parameter.isEmpty()) return new ArrayList<>();
-        FilterAndSortingHelper.Result result = getResult(parameter);
-        List<Contest> contests = contestServices.filter(result.title(), result.categoryName(), result.isInvitational(), result.isFinished(), result.phase1(), result.phase2());
+    public List<ContestResponseDto> filter(@RequestParam Map<String, String> parameters, Pageable page) {
+        if (parameters.isEmpty()) return new ArrayList<>();
+        FilterAndSortingHelper.Result result = getResult(parameters, page);
+        Page<Contest> contests = contestServices.filter(result.title(), result.categoryName(), result.isInvitational(), result.isFinished(), result.phase1(), result.phase2(), result.pageable());
         return contests.stream().map(modelMapper::objectToDto).toList();
     }
 

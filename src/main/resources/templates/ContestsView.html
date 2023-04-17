@@ -11,14 +11,14 @@
 <main>
 
     <div class="container px-4 py-5" id="custom-cards">
-
-        <h2 class="pb-2 border-bottom text-center display-2">Contests</h2>
+        <h2 class="pb-2 text-center display-2" th:text="${!contests.isEmpty() ? 'Contests' : 'No Contests'}">Contests (design)</h2>
+        <form th:replace="~{fragments/contest-form :: contest-form-sort}"></form>
 
         <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
-            <th:block th:each="contest : ${contests}" th:with="photoUrl=${contest.coverPhoto()}">
+            <th:block th:each="contest : ${contests}">
                 <div class="col">
-                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
-                         th:style="'background-image: url(' + ${photoUrl} + '); background-repeat: no-repeat; background-position: center center; background-size: cover;'">
+                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg contest-cards"
+                         th:style="'background-image: url(' + ${contest.coverPhoto} + ')'">
                         <div class="overlay">
                             <a href="#" class="btn btn-lg btn-warning btn-overlay rounded-4" th:href="@{/contest/{id}(id=${contest.id})}">View</a>
                         </div>
@@ -57,6 +57,14 @@
 
             </th:block>
         </div>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center" th:if="${contests.totalPages} > 1">
+                <li class="page-item" th:classappend="${contests.first} ? 'disabled'"><a class="page-link" th:href="@{contests(page=${contests.number - 1})}">Previous</a></li>
+                <li th:each="page : ${#numbers.sequence(0, contests.totalPages - 1)}" class="page-item" th:classappend="${contests.number == page ? 'active' : ''}"><a class="page-link" th:href="@{contests(page=${page})}" th:text="${page + 1}"></a></li>
+                <li class="page-item" th:classappend="${contests.last} ? 'disabled'"><a class="page-link" th:href="@{contests(page=${contests.number + 1})}">Next</a></li>
+            </ul>
+        </nav>
 
     </div>
 

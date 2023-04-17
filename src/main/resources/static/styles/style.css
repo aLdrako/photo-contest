@@ -40,6 +40,12 @@ body {
             0 0 102px #212529;
 }
 
+.contest-cards {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
 .card:hover .overlay {
     opacity: 1;
 }
@@ -62,6 +68,37 @@ body {
     transform: translate(-50%, -50%);
     padding: 10px;
     cursor: pointer;
+}
+
+/*PAGINATION*/
+.page-link {
+    position: relative;
+    display: block;
+    padding: .5rem .75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #ffc107 !important;
+    background-color: #212529 !important;
+    border: 1px solid #ffc107 !important;
+}
+.page-link:hover {
+    z-index: 2;
+    color: #212529 !important;
+    text-decoration: none;
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+}
+.page-item.active .page-link {
+    z-index: 3;
+    color: #212529 !important;
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d !important;
+    background-color: #212529 !important;
+    border-color: #212529 !important;
 }
 
 /*ERROR PAGE*/
