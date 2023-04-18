@@ -1,0 +1,23 @@
+<form method="get" action="#"
+      th:fragment="contest-form-sort" th:action="${requestURI}">
+  <div class="input-group input-group">
+    <input type="text" class="form-control" placeholder="Title" name="title">
+    <input type="text" class="form-control" placeholder="Category" name="category">
+    <select class="form-select" id="inputGroupType" name="type">
+      <option selected value="all">All Types</option>
+      <option value="true">Invitational</option>
+      <option value="false">Open</option>
+    </select>
+    <span class="input-group-text">Phase 1</span>
+    <input type="datetime-local" class="form-control" placeholder="Phase 1" name="phase1">
+    <span class="input-group-text">Phase 2</span>
+    <input type="datetime-local" class="form-control" placeholder="Phase 2" name="phase2">
+    <div class="input-group-text">
+      <label for="inputFinished" title="Is Finished">
+        <input class="form-check-input mt-1" id="inputFinished" type="checkbox" value="true" name="finished">
+        <span>Finished</span>
+      </label>
+    </div>
+    <button class="btn btn-warning" type="submit">Filter</button>
+  </div>
+</form>
