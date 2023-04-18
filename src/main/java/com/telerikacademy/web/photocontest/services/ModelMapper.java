@@ -52,6 +52,16 @@ public class ModelMapper {
         return new ContestResponseDto(contest.getId(), contest.getTitle(), contest.getCategory().getName(), contest.getPhase1(), contest.getPhase2(),
                 contest.getDateCreated(), contest.getCoverPhoto(), contest.isInvitational(), contest.getIsFinished(), juries, participants, photos, results);
     }
+    public UserDto objectToDto(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setFirstName(user.getFirstName());
+        userDto.setLastName(user.getLastName());
+        userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
+        userDto.setPassword(user.getPassword());
+        userDto.setPasswordConfirm(user.getPassword());
+        return userDto;
+    }
 
     public Category dtoToObject(CategoryDto categoryDto) {
         Category category = new Category();

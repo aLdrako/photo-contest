@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title th:text="#{page.title.user-update}">Photo Contest</title>
+  <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+
+<body class="user-update-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='update-user')}"></header>
+
+<main class="form-update">
+  <form th:replace="~{fragments/user-form :: user-form(context='update-user')}"></form>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+</body>
+</html>

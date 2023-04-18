@@ -2,11 +2,13 @@ package com.telerikacademy.web.photocontest.helpers;
 
 import com.telerikacademy.web.photocontest.exceptions.AuthorizationException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Component
@@ -33,6 +35,20 @@ public class AuthenticationHelper {
         } else {
             throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
         }
+    }
+    public User tryGetUser(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
+        }
+        return user;
+    }
+    public User tryGetOrganizer(HttpSession session) {
+        User user = tryGetUser(session);
+        if (!user.isOrganizer()) {
+            throw new UnauthorizedOperationException("Only organizers can access those resources.");
+        }
+        return user;
     }
 
     private String[] validateHeaderValues(String headerValue) {

@@ -127,6 +127,7 @@ public class UserServicesImpl implements UserServices {
 
     private void changeUserProperties(User userFromRepo) {
         userFromRepo.setDeleted(true);
+        userFromRepo.setOrganizer(false);
         userFromRepo.setFirstName(generateString());
         userFromRepo.setLastName(generateString());
         userFromRepo.setUsername(generateString());
