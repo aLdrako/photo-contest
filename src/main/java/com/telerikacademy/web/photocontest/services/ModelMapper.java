@@ -135,6 +135,7 @@ public class ModelMapper {
                     .map(contestResults -> {
                         Long id = contestResults.getResultEmbed().getPhoto().getId();
                         String photo = contestResults.getResultEmbed().getPhoto().getPhoto();
+                        Long userId = contestResults.getResultEmbed().getPhoto().getUserCreated().getId();
                         String userCreated = contestResults.getResultEmbed().getPhoto().getUserCreated().getUsername();
                         int totalScore = contestResults.getResults();
 
@@ -167,7 +168,7 @@ public class ModelMapper {
                             juriesMap.add(scoreDetails);
                         });
 
-                        return new ContestResultDto(id, photo, userCreated, juriesMap, totalScore);
+                        return new ContestResultDto(id, photo, userId, userCreated, juriesMap, totalScore);
                     }).toList();
         }
         return results;
@@ -182,6 +183,7 @@ public class ModelMapper {
                 photoMap.put("title", photo.getTitle());
                 photoMap.put("story", photo.getStory());
                 photoMap.put("photo", photo.getPhoto());
+                photoMap.put("userId", photo.getUserCreated().getId());
                 photoMap.put("userCreated", photo.getUserCreated().getUsername());
                 return photoMap;
             }).toList();
