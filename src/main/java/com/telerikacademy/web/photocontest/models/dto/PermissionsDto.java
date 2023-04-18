@@ -9,4 +9,11 @@ import javax.validation.constraints.NotNull;
 public class PermissionsDto {
     @NotNull(message = "Organizer field cannot be empty!")
     private Boolean organiser;
+
+    public PermissionsDto() {
+    }
+    public PermissionsDto(Boolean organiser) {
+        this.organiser = organiser;
+    }
+
 }

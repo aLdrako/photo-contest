@@ -1,26 +1,29 @@
 <form role="form" action="#" method="post" th:fragment="user-form" th:action="${requestURI}"
       th:object="${user}"
-      th:with="ctxRegister=${context == 'create-user'},
+      th:with="permissionsPath=${requestURI.endsWith('/permissions')},
+               ctxRegister=${context == 'create-user'},
                ctxUpdate=${context == 'update-user'},
-               ctxLogin=${context == 'login'}">
+               ctxLogin=${context == 'login'},
+               userMatch=${session.currentUser == session.updatedUserUsername}">
 
   <h1 class="h3 mb-3 fw-normal"  th:if="${ctxRegister}" th:text="#{user-form.create}">Create User</h1>
   <h1 class="h3 mb-3 fw-normal"  th:if="${ctxUpdate}" th:text="#{user-form.update}">Update User</h1>
   <h1 class="h3 mb-3 fw-normal"  th:if="${ctxLogin}" th:text="#{user-form.login}">Login</h1>
+  <h1 class="h3 mb-3 fw-normal" th:if="${permissionsPath}" th:text="#{user-form.permissions}">Permissions</h1>
 
-  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate)}">
+  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate) && !permissionsPath}">
     <input type="text" class="form-control" id="floatingFirstName" placeholder="First Name" name="firstName"
            th:errorclass="is-invalid" th:field="*{firstName}"/>
     <label class="form-label" for="floatingFirstName">First Name</label>
     <div id="validationFirstName" class="invalid-feedback" th:errors="*{firstName}">Error placeholder</div>
   </div>
-  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate)}">
+  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate) && !permissionsPath}">
     <input type="text" class="form-control" id="floatingLastName" placeholder="Last Name" name="lastName"
            th:errorclass="is-invalid" th:field="*{lastName}">
     <label for="floatingLastName">Last Name</label>
     <div id="validationLastName" class="invalid-feedback" th:errors="*{lastName}">Error placeholder</div>
   </div>
-  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate)}">
+  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate) && !permissionsPath}">
     <input type="email" class="form-control" id="floatingEmail" placeholder="Email" name="email"
            th:errorclass="is-invalid" th:field="*{email}">
     <label for="floatingEmail">Email</label>
@@ -32,19 +35,31 @@
     <label for="floatingUsername">Username</label>
     <div id="validationUsername" class="invalid-feedback" th:errors="*{username}">Error placeholder</div>
   </div>
-  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate || ctxLogin)}">
+  <div class="form-floating" th:if="${(!permissionsPath && userMatch) || ctxLogin || ctxRegister}">
     <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password"
            th:errorclass="is-invalid" th:field="*{password}">
-    <label for="floatingPassword" th:text="${ctxUpdate ? 'Password (optional)' : 'Password'}">Password</label>
+    <label for="floatingPassword" th:text="${ctxUpdate && userMatch ? 'Password (optional)' : 'Password'}">Password</label>
     <div id="validationPassword" class="invalid-feedback" th:errors="*{password}">Error placeholder</div>
   </div>
-  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate)}">
+  <div class="form-floating" th:if="${(!permissionsPath && userMatch && !ctxLogin) || ctxRegister}">
     <input type="password" class="form-control" id="floatingPasswordConfirm" placeholder="Password Confirmation"
            name="passwordConfirm" th:errorclass="is-invalid" th:field="*{passwordConfirm}">
     <label for="floatingPasswordConfirm">Password (confirmation)</label>
     <div id="validationPasswordConfirm" class="invalid-feedback" th:errors="*{passwordConfirm}">Error placeholder
     </div>
   </div>
+  <div class="list-group list-group-checkable d-grid gap-1 border-0 w-auto my-1"
+       th:if="${permissionsPath && session.user.isOrganizer()}">
+    <div>
+      <input class="list-group-item-check pe-none" type="checkbox" id="listGroupCheckableAdmin"
+             th:checked="*{organizer}" th:field="*{organizer}">
+      <label class="list-group-item rounded-3 py-3 admin-item" for="listGroupCheckableAdmin">
+        Organizer
+        <span class="d-block small opacity-50">Grants organizer rights</span>
+      </label>
+    </div>
+  </div>
+
   <button class="w-100 btn btn-lg btn-primary" type="submit" name="action" value="login" th:if="${ctxLogin}">
     Login
   </button>

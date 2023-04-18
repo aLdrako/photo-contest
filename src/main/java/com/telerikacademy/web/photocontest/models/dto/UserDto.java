@@ -38,5 +38,6 @@ public class UserDto {
     @NotEmpty(message = "Password confirmation can't be empty",
             groups = {CreateValidationGroup.class})
     private String passwordConfirm;
+    private boolean organizer;
     
 }

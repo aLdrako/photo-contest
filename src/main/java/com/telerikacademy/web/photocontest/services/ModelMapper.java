@@ -60,6 +60,7 @@ public class ModelMapper {
         userDto.setEmail(user.getEmail());
         userDto.setPassword(user.getPassword());
         userDto.setPasswordConfirm(user.getPassword());
+        userDto.setOrganizer(user.isOrganizer());
         return userDto;
     }
 

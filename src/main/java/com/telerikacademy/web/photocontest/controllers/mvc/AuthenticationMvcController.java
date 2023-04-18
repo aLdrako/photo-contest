@@ -32,7 +32,10 @@ public class AuthenticationMvcController extends BaseMvcController {
     private final AuthenticationHelper authenticationHelper;
 
     @GetMapping("/login")
-    public String showLoginPage(Model model) {
+    public String showLoginPage(Model model, HttpSession session) {
+        if (!session.isNew()) {
+            session.invalidate();
+        }
         model.addAttribute("user", new UserDto());
         return "LoginView";
     }
@@ -53,7 +56,10 @@ public class AuthenticationMvcController extends BaseMvcController {
         }
     }
     @GetMapping("/register")
-    public String showRegisterPage(Model model) {
+    public String showRegisterPage(Model model, HttpSession session) {
+        if (!session.isNew()) {
+            session.invalidate();
+        }
         model.addAttribute("user", new UserDto());
         return "RegisterView";
     }
