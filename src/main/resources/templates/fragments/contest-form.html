@@ -8,16 +8,18 @@
       <option value="true">Invitational</option>
       <option value="false">Open</option>
     </select>
-    <span class="input-group-text">Phase 1</span>
-    <input type="datetime-local" class="form-control" placeholder="Phase 1" name="phase1">
-    <span class="input-group-text">Phase 2</span>
-    <input type="datetime-local" class="form-control" placeholder="Phase 2" name="phase2">
-    <div class="input-group-text">
-      <label for="inputFinished" title="Is Finished">
-        <input class="form-check-input mt-1" id="inputFinished" type="checkbox" value="true" name="finished">
-        <span>Finished</span>
-      </label>
-    </div>
+    <select class="form-select" id="inputGroupPhase" name="phase">
+      <option selected value="all">All Phases</option>
+      <option value="phase1">Phase 1</option>
+      <option value="phase2">Phase 2</option>
+      <option value="finished">Finished</option>
+    </select>
+    <select class="form-select" id="inputGroupSort" name="sort">
+      <option selected value="">Sort by</option>
+      <option value="id">ID</option>
+      <option value="title">Title</option>
+      <option value="category.name">Category</option>
+    </select>
     <button class="btn btn-warning" type="submit">Filter</button>
   </div>
 </form>

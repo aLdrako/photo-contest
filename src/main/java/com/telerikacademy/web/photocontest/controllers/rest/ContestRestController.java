@@ -70,7 +70,7 @@ public class ContestRestController {
     public List<ContestResponseDto> filter(@RequestParam Map<String, String> parameters, Pageable page) {
         if (parameters.isEmpty()) return new ArrayList<>();
         FilterAndSortingHelper.Result result = getResult(parameters, page);
-        Page<Contest> contests = contestServices.filter(result.title(), result.categoryName(), result.isInvitational(), result.isFinished(), result.phase1(), result.phase2(), result.pageable());
+        Page<Contest> contests = contestServices.filter(result.title(), result.categoryName(), result.isInvitational(), result.isFinished(), result.phase(), result.now(), result.pageable());
         return contests.stream().map(modelMapper::objectToDto).toList();
     }
 

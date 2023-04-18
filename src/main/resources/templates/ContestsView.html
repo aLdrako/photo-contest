@@ -18,7 +18,7 @@
             <th:block th:each="contest : ${contests}">
                 <div class="col">
                     <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg contest-cards"
-                         th:style="'background-image: url(' + ${contest.coverPhoto} + ')'">
+                         th:style="${contest.coverPhoto != null ? 'background-image: url(' + contest.coverPhoto + ')' : ''}">
                         <div class="overlay">
                             <a href="#" class="btn btn-lg btn-warning btn-overlay rounded-4" th:href="@{/contest/{id}(id=${contest.id})}">View</a>
                         </div>
@@ -58,11 +58,15 @@
             </th:block>
         </div>
 
-        <nav aria-label="Page navigation">
+        <nav aria-label="Page navigation" th:with="title=${#session.getAttribute('filterParams')['title']},
+                                                   category=${#session.getAttribute('filterParams')['category']},
+                                                   type=${#session.getAttribute('filterParams')['type']},
+                                                   phase=${#session.getAttribute('filterParams')['phase']},
+                                                   sort=${#session.getAttribute('sortParams')}">
             <ul class="pagination justify-content-center" th:if="${contests.totalPages} > 1">
-                <li class="page-item" th:classappend="${contests.first} ? 'disabled'"><a class="page-link" th:href="@{contests(page=${contests.number - 1})}">Previous</a></li>
-                <li th:each="page : ${#numbers.sequence(0, contests.totalPages - 1)}" class="page-item" th:classappend="${contests.number == page ? 'active' : ''}"><a class="page-link" th:href="@{contests(page=${page})}" th:text="${page + 1}"></a></li>
-                <li class="page-item" th:classappend="${contests.last} ? 'disabled'"><a class="page-link" th:href="@{contests(page=${contests.number + 1})}">Next</a></li>
+                <li class="page-item" th:classappend="${contests.first} ? 'disabled'"><a class="page-link" th:href="@{contests(page=${contests.number - 1}, title=${title}, category=${category}, type=${type == null ? 'all' : type}, phase=${phase == null ? 'all' : phase}, sort=${sort})}">Previous</a></li>
+                <li th:each="page : ${#numbers.sequence(0, contests.totalPages - 1)}" class="page-item" th:classappend="${contests.number == page ? 'active' : ''}"><a class="page-link" th:href="@{contests(page=${page}, title=${title}, category=${category}, type=${type == null ? 'all' : type}, phase=${phase == null ? 'all' : phase}, sort=${sort})}" th:text="${page + 1}"></a></li>
+                <li class="page-item" th:classappend="${contests.last} ? 'disabled'"><a class="page-link" th:href="@{contests(page=${contests.number + 1}, title=${title}, category=${category}, type=${type == null ? 'all' : type}, phase=${phase == null ? 'all' : phase}, sort=${sort})}">Next</a></li>
             </ul>
         </nav>
 

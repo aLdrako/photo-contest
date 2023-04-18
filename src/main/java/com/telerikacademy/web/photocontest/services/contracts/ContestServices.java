@@ -14,7 +14,7 @@ public interface ContestServices {
     Contest update(Contest contest, User authenticatedUser);
     Contest uploadCover(Contest contest, User authenticatedUser);
     void deleteById(Long id, User authenticatedUser);
-    Page<Contest> filter(String title, String categoryName, Boolean isInvitational, Boolean isFinished, LocalDateTime phase1, LocalDateTime phase2, Pageable pageable);
+    Page<Contest> filter(String title, String categoryName, Boolean isInvitational, Boolean isFinished, String phase, LocalDateTime now, Pageable pageable);
     Contest join(Contest contest, User authenticatedUser);
     Contest addJury(Contest contest, User authenticatedUser, String username);
     Contest addParticipant(Contest contest, User authenticatedUser, String username);
