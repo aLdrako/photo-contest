@@ -6,10 +6,14 @@ import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.repositories.contracts.UserRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import org.hibernate.query.Query;
 
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -127,5 +131,30 @@ public class UserRepositoryImpl implements UserRepository {
             return session.createQuery(criteriaQuery).getResultList();
         }
     }
+
+    @Override
+    public Page<User> findAll(Pageable pageable) {
+        try (Session session = sessionFactory.openSession()) {
+            CriteriaQuery<User> query = getUserCriteriaQuery(session);
+
+            TypedQuery<User> typedQuery = session.createQuery(query);
+            typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+            typedQuery.setMaxResults(pageable.getPageSize());
+            List<User> users = typedQuery.getResultList();
+
+            return new PageImpl<>(users, pageable, getAll().size());
+        }
+
+    }
+    private CriteriaQuery<User> getUserCriteriaQuery(Session session) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<User> query = builder.createQuery(User.class);
+        Root<User> root = query.from(User.class);
+        query.select(root).where(builder.equal(root.get("isDeleted"), false));
+        return query;
+    }
+
+
+
 
 }

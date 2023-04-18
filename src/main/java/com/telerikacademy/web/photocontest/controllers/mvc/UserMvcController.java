@@ -11,6 +11,9 @@ import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGr
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,18 +32,25 @@ public class UserMvcController extends BaseMvcController{
     private final ModelMapper modelMapper;
 
     @GetMapping
-    private String showAllUsers(Model model, HttpSession session) {
+    private String showAllUsers(@RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "10") int size,
+                                Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetOrganizer(session);
+            Pageable pageable = PageRequest.of(page, size);
+            Page<User> userPage = userServices.findAll(pageable);
+
+            model.addAttribute("users", userPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("sizePage", size);
+            model.addAttribute("totalPages", userPage.getTotalPages());
+            return "UsersView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
         } catch (UnauthorizedOperationException e) {
             model.addAttribute("error", e.getMessage());
             return "AccessDeniedView";
         }
-
-        model.addAttribute("users", userServices.getAll());
-        return "UsersView";
     }
     @GetMapping("/{id}")
     private String showUser(@PathVariable Long id, Model model, HttpSession session) {

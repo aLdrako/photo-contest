@@ -30,6 +30,15 @@
     </tr>
     </tbody>
 </table>
+<nav aria-label="Page navigation"
+     th:if="${totalPages > 0}"
+     th:with="pageQuery=${'?page='},
+                  sizeQuery=${'&size='},
+                  linkQuery=${sizeQuery + sizePage}">
+
+    <ul th:replace="~{fragments/pagination :: pagination}"></ul>
+</nav>
+
 
 
 <div th:replace="~{fragments/footer :: footer}"></div>

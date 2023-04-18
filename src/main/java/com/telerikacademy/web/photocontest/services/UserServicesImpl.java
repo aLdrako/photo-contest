@@ -12,6 +12,8 @@ import com.telerikacademy.web.photocontest.repositories.contracts.UserRepository
 import com.telerikacademy.web.photocontest.services.contracts.RankingServices;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +33,11 @@ public class UserServicesImpl implements UserServices {
     public List<User> getAll() {
         return userRepository.getAll();
     }
+    @Override
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
 
     @Override
     public void update(User user, User userFromAuthorization) {
