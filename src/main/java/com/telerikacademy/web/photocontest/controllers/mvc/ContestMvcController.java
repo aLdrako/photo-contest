@@ -18,7 +18,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
@@ -37,11 +39,18 @@ public class ContestMvcController extends BaseMvcController {
     private final ModelMapper modelMapper;
 
     @GetMapping
-    public String showAllContests(@PageableDefault(size = 9, sort = "id") Pageable page, @RequestParam(required = false) Map<String, String> parameters, Model model, HttpSession session) {
-        FilterAndSortingHelper.Result result = getResult(parameters, page);
-        Page<Contest> contestPage = contestServices.filter(result.title(), result.categoryName(), result.isInvitational(), result.isFinished(), result.phase1(), result.phase2(), result.pageable());
+    public String showAllContests(@PageableDefault(size = 9, sort = "id") Pageable pageable, @RequestParam(required = false) Map<String, String> parameters, Model model, HttpServletRequest request, HttpSession session) {
+        FilterAndSortingHelper.Result result = getResult(parameters, pageable);
+        Page<Contest> contestPage = contestServices.filter(result.title(), result.categoryName(), result.isInvitational(), result.isFinished(), result.phase(), result.now(), result.pageable());
         List<ContestResponseDto> list = contestPage.stream().map(modelMapper::objectToDto).toList();
-        model.addAttribute("contests", new PageImpl<>(list, contestPage.getPageable(), contestPage.getTotalElements()));
+        Page<ContestResponseDto> page = new PageImpl<>(list, contestPage.getPageable(), contestPage.getTotalElements());
+
+        String sortParams = pageable.getSort().toString().replace(": ASC", "");
+        WebUtils.setSessionAttribute(request, "filterParams", parameters);
+        WebUtils.setSessionAttribute(request, "sortParams", sortParams);
+
+        model.addAttribute("contests", page);
         return "ContestsView";
     }
+
 }

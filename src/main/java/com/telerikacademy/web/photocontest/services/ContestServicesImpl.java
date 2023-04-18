@@ -82,8 +82,8 @@ public class ContestServicesImpl implements ContestServices {
     }
 
     @Override
-    public Page<Contest> filter(String title, String categoryName, Boolean isInvitational, Boolean isFinished, LocalDateTime phase1, LocalDateTime phase2, Pageable pageable) {
-        return contestRepository.filter(title, categoryName, isInvitational, isFinished, phase1, phase2, pageable);
+    public Page<Contest> filter(String title, String categoryName, Boolean isInvitational, Boolean isFinished, String phase, LocalDateTime now, Pageable pageable) {
+        return contestRepository.filter(title, categoryName, isInvitational, isFinished, phase, now, pageable);
     }
 
     @Override
