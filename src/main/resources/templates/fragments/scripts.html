@@ -16,3 +16,17 @@
     });
   });
 </script>
+
+<!-- Script for Opening Photo in Modal Window -->
+<script th:fragment="image-view">
+    document.addEventListener("DOMContentLoaded", function() {
+        const viewButtons = document.querySelectorAll("[data-bs-target='#photoView']");
+        viewButtons.forEach(function(button) {
+            button.addEventListener("click", function() {
+                const photo = this.closest(".card").querySelector("img").getAttribute("src");
+                document.querySelector("#photoView img").setAttribute("src", photo);
+                document.querySelector("#photoView a").setAttribute("href", photo);
+            });
+        });
+    });
+</script>

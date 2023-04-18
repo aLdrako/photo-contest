@@ -40,7 +40,8 @@ body {
             0 0 102px #212529;
 }
 
-.contest-cards {
+.contest-cards,
+.contest-view-section {
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -68,6 +69,10 @@ body {
     transform: translate(-50%, -50%);
     padding: 10px;
     cursor: pointer;
+}
+
+#photoView .modal-footer {
+    border-top: none !important;
 }
 
 /*PAGINATION*/

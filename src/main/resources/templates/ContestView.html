@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:java-time="http://www.thymeleaf.org/extras/java8time">
+
+<head>
+  <title th:text="#{page.title.contest}">Title (design)</title>
+  <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+<body class="contest-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='contest-view')}"></header>
+<main>
+
+  <section class="my-3 mx-auto text-center bg-dark container rounded-4 contest-view-section"
+           th:style="${contest.coverPhoto != null ? 'background-image: url(' + contest.coverPhoto + ')' : ''}"
+           th:with="phase1=${contest.dateCreated.isBefore(#temporals.createNow()) && contest.phase1.isAfter(#temporals.createNow())},
+                    phase2=${contest.phase1.isBefore(#temporals.createNow()) && contest.phase2.isAfter(#temporals.createNow())}">
+    <div class="row py-5">
+      <div class="col col-xl-8 mx-auto">
+        <h1 class="fw-light neon-text display-1" th:text="${contest.title}">Contest title (design)</h1>
+
+        <div class="d-flex justify-content-evenly mt-3">
+
+          <ul class="d-flex list-unstyled mt-auto">
+            <li class="d-flex align-items-center me-3">
+              <span class="badge d-flex align-items-center p-1 pe-2 text-dark bg-warning border border-warning rounded-pill">
+                <i class="bi" th:classappend="${contest.invitational ? 'bi-lock-fill' : 'bi-unlock-fill'}"></i>
+                <span class="vr mx-1"></span>
+                <small th:text="${contest.invitational ? 'Invitational' : 'Open'}">Open (design)</small>
+              </span>
+            </li>
+            <li class="d-flex align-items-center me-3">
+              <span class="badge d-flex align-items-center p-1 pe-2 text-dark bg-warning border border-warning rounded-pill">
+                <i class="bi bi-tag-fill"></i>
+                <span class="vr mx-1"></span>
+                <small th:text="${contest.category.name}">Category (design)</small>
+              </span>
+            </li>
+            <li class="d-flex align-items-center">
+              <span class="badge d-flex align-items-center p-1 pe-2 text-dark bg-warning border border-warning rounded-pill">
+                <i class="bi bi-clock-fill"></i>
+                <span class="vr mx-1"></span>
+                <small th:if="${phase1}">Phase I</small>
+                <small th:if="${phase2}">Phase II</small>
+                <small th:if="${contest.isFinished}">Finished</small>
+              </span>
+            </li>
+          </ul>
+
+        </div>
+
+        <div class="btn-group mt-3" role="group" aria-label="Basic mixed styles example">
+          <button type="button" class="btn btn-lg btn-warning disabled" th:if="${contest.isFinished}">Closed</button>
+          <button type="button" class="btn btn-lg btn-warning" th:if="${phase1 && !contest.isFinished}" th:text="${phase2 ? 'Closed' : 'Participate'}" th:classappend="${phase2 ? 'disabled' : ''}">Participate (design)</button>
+          <button type="button" class="btn btn-lg btn-dark disabled text-warning" th:if="${phase1 && !phase2}" th:text="${phase1Ends}">Closed in (design)</button>
+          <button type="button" class="btn btn-lg btn-warning disabled" th:if="${phase2}">Scoring</button>
+          <button type="button" class="btn btn-lg btn-dark disabled text-warning" th:if="${phase2}" th:text="${phase2Ends}">Until (design)</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="album py-5">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <th:block th:each="photo : ${contest.photos}">
+          <div class="col  rounded-4">
+            <div class="card shadow-sm">
+              <div class="card-header bg-warning text-dark" th:text="${photo.title.length() > 30 ? #strings.substring(photo.title, 0, 30) + '...' : photo.title}">Title (design)</div>
+              <img src="#" alt="#" height="200" th:src="${photo.photo}" th:alt="${photo.title}" />
+              <div class="card-body bg-dark rounded-bottom">
+                <p class="card-text text-warning"  th:text="${photo.story}"></p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-warning">Rate</button>
+                    <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#photoView">View</button>
+                  </div>
+                  <a class="btn btn-sm btn-warning" href="#" th:href="@{/users/{id}(id=${photo.userCreated.id})}" th:text="${photo.userCreated.username}">Username (design)</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </th:block>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- Modal Window for Photo View -->
+<div class="modal fade" id="photoView" tabindex="-1" aria-labelledby="photoViewLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-content bg-dark rounded-4">
+      <!--      <div class="modal-header">-->
+      <!--        <h1 class="modal-title fs-5" id="photoViewLabel">Modal title</h1>-->
+      <!--        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+      <!--      </div>-->
+      <div class="modal-body">
+        <img class="img-fluid" src="#" alt="#">
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-warning" target="_blank"><i class="bi bi-image-fill"></i></a>
+        <button class="btn btn-warning rounded-circle p-2 lh-1" type="button" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg"></i>
+          <span class="visually-hidden">Close</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: image-view}"></script>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+</body>
+</html>
