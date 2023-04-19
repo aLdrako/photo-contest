@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Photo</title>
+  <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+<body class="user-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='photo-create')}"></header>
+
+<div class="container mt-5">
+  <form th:replace="~{fragments/photo-form-new :: photo-form-new(context='create')}"></form>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+</body>
+</html>

@@ -30,3 +30,45 @@
         });
     });
 </script>
+<!-- Script for Quill with Highlight -->
+<script th:fragment="quilljs">
+    var formattedText = document.getElementById("floatingContent").value;
+
+    var quill = new Quill('#editor', {
+        modules: {
+            clipboard: {
+                matchVisual: true
+            },
+            toolbar: [
+                [{header: [1, 2, 3, 4, false]}],
+                ['bold', 'italic', 'underline', 'code-block', 'link'],
+                [{'list': 'ordered'}, {'list': 'bullet'}],
+                [{'color': []}, {'background': []}],
+                ['clean']
+            ]
+        },
+        placeholder: 'Compose an epic...',
+        theme: 'snow'  // or 'bubble'
+    });
+
+    quill.on('text-change', function () {
+        document.getElementById("floatingContent").value = quill.getText();
+        formattedText = quill.root.innerHTML;
+    });
+
+    quill.setContents(quill.clipboard.convert(formattedText));
+
+    function onSubmit() {
+        var text = quill.getText();
+        var minChars = 32;
+        var maxChars = 8196;
+
+        if (text.length < minChars || text.length > maxChars) {
+            quill.root.innerHTML = formattedText;
+            return false;
+        }
+
+        document.getElementById("floatingContent").value = quill.root.innerHTML;
+        return true;
+    }
+</script>

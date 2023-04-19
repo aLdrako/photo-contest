@@ -1,0 +1,47 @@
+<form th:fragment="photo-form" action="#" enctype="multipart/form-data" th:action="${requestURI}" th:object="${photo}" method="post">
+    <h1 th:if="${context == 'create'}" th:text="#{navbar.photo.create}">Create Photo</h1>
+
+    <div th:if="${context == 'create'}">
+        <div class="input-group">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="floatingTitle" placeholder="Title"
+                       th:errorclass="is-invalid" th:field="*{title}">
+                <label for="floatingTitle" th:text="#{photo.label.title}">Title</label>
+                <div id="validationTitle" class="invalid-feedback" th:errors="*{title}">Error placeholder</div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="floatingPhoto" class="form-label"></label>
+            <input type="file" class="form-control" id="floatingPhoto" th:field="*{file}">
+            <div id="validationPhoto" class="invalid-feedback" th:errors="*{file}">Error placeholder</div>
+        </div>
+        <div class="input-group mb-3">
+            <div class="form-floating">
+                <div id="editor" style=height:200px th:utext="${story}"></div>
+                <input type="hidden" id="floatingContent" style="height: 100px" th:errorclass="is-invalid"
+                       th:field="*{story}">
+                <div id="validationContent" class="invalid-feedback" th:errors="*{story}">Error placeholder</div>
+            </div>
+            <button class="btn btn-success input-group-text" type="submit" name="action" value="save"
+                    style="width: 100px" onclick="onSubmit()">Save
+            </button>
+        </div>
+    </div>
+    <script th:replace="~{fragments/scripts :: quilljs}"></script>
+</form>
+
+<!--<form method="get" action="#"
+      th:fragment="post-form-sort" th:action="${requestURI}">
+    <div class="input-group input-group-sm" th:if="${!posts.isEmpty()}">
+        <select class="form-select" id="inputGroupPostSort" name="sort">
+            <option value="title">Title</option>
+            <option value="likes">Likes</option>
+            <option selected value="dateCreated">Date Created</option>
+        </select>
+        <select class="form-select" id="inputGroupPostOrder" name="order">
+            <option selected value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
+        <button class="btn btn-primary" type="submit">Sort & Order</button>
+    </div>
+</form>-->

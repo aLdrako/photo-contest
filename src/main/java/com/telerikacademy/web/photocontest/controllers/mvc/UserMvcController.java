@@ -84,27 +84,6 @@ public class UserMvcController extends BaseMvcController{
             return "redirect:/auth/login";
         }
     }
-    /*@PostMapping("/{id}/permissions")
-    private String updateUser(@PathVariable Long id, Model model,
-                              BindingResult bindingResult, HttpSession session,
-                              @ModelAttribute("user") UserDto userDto) {
-        if (bindingResult.hasErrors()) return "UserUpdateView";
-        try {
-            User userFromSession = authenticationHelper.tryGetUser(session);
-            User userToUpdate = userServices.getById(id);
-            PermissionsDto permissionsDto = new PermissionsDto(userDto.isOrganizer());
-            userServices.updatePermissions(userToUpdate, userFromSession, permissionsDto);
-            return "redirect:/" + userToUpdate.getId();
-        } catch (EntityNotFoundException e) {
-            model.addAttribute("error", e.getMessage());
-            return "NotFoundView";
-        } catch (AuthorizationException e) {
-            return "redirect:/auth/login";
-        } catch (UnauthorizedOperationException e) {
-            model.addAttribute("error", e.getMessage());
-            return "AccessDeniedView";
-        }
-    }*/
     @PostMapping({"/{id}/update",
             "/{id}/permissions"})
     private String updateUser(@PathVariable Long id, Model model,
