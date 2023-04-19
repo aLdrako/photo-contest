@@ -13,7 +13,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@ToString
 @Table(name = "contests_results")
 public class ContestResults {
 

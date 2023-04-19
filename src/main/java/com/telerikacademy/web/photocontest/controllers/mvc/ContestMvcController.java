@@ -6,7 +6,6 @@ import com.telerikacademy.web.photocontest.helpers.AuthenticationHelper;
 import com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper;
 import com.telerikacademy.web.photocontest.models.Contest;
 import com.telerikacademy.web.photocontest.models.Photo;
-import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.models.dto.ContestResponseDto;
 import com.telerikacademy.web.photocontest.models.dto.PhotoDto;
 import com.telerikacademy.web.photocontest.models.validations.CreatePhotoViaContestGroup;
