@@ -70,7 +70,7 @@ public class PhotoServicesImpl implements PhotoServices {
         }
         checkDeletePermissions(photo, user);
         deletePhoto(photo.getPhoto());
-        contest.removePhotos();
+        contest.setPhotos(null);
         contestResultsRepository.deleteContestResultsByResultEmbed(new ResultEmbed(contest, photo));
         photoRepository.delete(photo);
     }

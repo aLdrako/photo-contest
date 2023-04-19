@@ -4,6 +4,7 @@ import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.models.*;
+import com.telerikacademy.web.photocontest.repositories.contracts.ContestResultsRepository;
 import com.telerikacademy.web.photocontest.repositories.contracts.PhotoRepository;
 import com.telerikacademy.web.photocontest.repositories.contracts.RankingRepository;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -32,6 +33,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 public class PhotoServicesImplTests {
     @Mock
     PhotoRepository mockRepository;
+    @Mock
+    ContestResultsRepository mockContestResultsRepository;
     @InjectMocks
     PhotoServicesImpl services;
 
@@ -103,6 +106,9 @@ public class PhotoServicesImplTests {
         Photo mockPhoto = createMockPhoto();
         User user = mockPhoto.getUserCreated();
         mockPhoto.getPostedOn().setPhase1(LocalDateTime.now().plusDays(1L));
+
+        Mockito.doNothing().when(mockContestResultsRepository).deleteContestResultsByResultEmbed(new ResultEmbed(mockPhoto.getPostedOn(),
+                mockPhoto));
         // Act
         services.delete(mockPhoto, user, mockPhoto.getPostedOn());
         // Assert
@@ -115,6 +121,8 @@ public class PhotoServicesImplTests {
         Photo mockPhoto = createMockPhoto();
         User organizer = createMockOrganizer();
         mockPhoto.getPostedOn().setPhase1(LocalDateTime.now().plusDays(1L));
+        Mockito.doNothing().when(mockContestResultsRepository).deleteContestResultsByResultEmbed(new ResultEmbed(mockPhoto.getPostedOn(),
+                mockPhoto));
         // Act
         services.delete(mockPhoto, organizer, mockPhoto.getPostedOn());
         // Assert

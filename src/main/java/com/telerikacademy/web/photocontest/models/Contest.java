@@ -73,10 +73,6 @@ public class Contest {
     @JsonIgnore
     @OneToMany(mappedBy = "resultEmbed.contest", cascade = CascadeType.ALL)
     private Set<ContestResults> results = new HashSet<>();
-
-    public void removePhotos() {
-        photos.clear();
-    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
