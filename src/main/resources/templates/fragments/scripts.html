@@ -28,8 +28,19 @@
                 document.querySelector("#photoView a").setAttribute("href", photo);
             });
         });
+
+        const copyButton = document.querySelector("#photoView .copy-btn");
+        copyButton.addEventListener("click", function() {
+            const photo = document.querySelector("#photoView img").getAttribute("src");
+            navigator.clipboard.writeText(photo).then(function() {
+                console.log('Image Src Copied');
+            }, function() {
+                console.log('Unable to copy Image Src');
+            });
+        });
     });
 </script>
+
 
 <!-- Script for Quill with Highlight -->
 <script th:fragment="quilljs">

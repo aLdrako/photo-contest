@@ -1,3 +1,59 @@
+<form th:fragment="contest-create" th:action="${requestURI}">
+  <div class="form-floating my-3">
+    <input type="text" class="form-control" id="floatingInput" placeholder="Some good title...">
+    <label for="floatingInput">Some good title...</label>
+  </div>
+  <div class="form-floating mb-3">
+    <select class="form-select" id="floatingSelect">
+      <option selected value="0">Select category</option>
+      <option value="1">One</option>
+    </select>
+    <label for="floatingSelect">Click to select category</label>
+  </div>
+  <div class="form-floating mb-3">
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="inputPhotoUploadUrl">Photo URL</span>
+      <input type="text" class="form-control" id="basic-url">
+    </div>
+    <div class="input-group">
+      <input type="file" class="form-control" id="inputPhotoUpload">
+      <button class="btn btn-outline-warning" type="button" id="inputPhotoUploadAddon">Upload</button>
+    </div>
+  </div>
+  <div class="input-group mb-3">
+    <span class="input-group-text d-none d-lg-block">Phase 1</span>
+    <div class="form-floating">
+      <input type="datetime-local" class="form-control" id="floatingInputGroup1">
+      <label for="floatingInputGroup1">In the future (in range 1 day - 1 month)</label>
+    </div>
+    <span class="input-group-text d-none d-lg-block">Phase 2</span>
+    <div class="form-floating">
+      <input type="datetime-local" class="form-control" id="floatingInputGroup2">
+      <label for="floatingInputGroup2">After Phase 1 ( in range 1 hour - 1 day)</label>
+    </div>
+  </div>
+  <div class="form-floating mb-3" id="invitational">
+    <div class="list-group">
+      <label class="list-group-item d-flex gap-3">
+        <input class="form-check-input flex-shrink-0" type="checkbox" value="false">
+        <span class="form-checked-content">
+                <strong>Invitational</strong>
+                <small class="text-body-secondary">
+                  Only invited users can participate
+                </small>
+              </span>
+      </label>
+    </div>
+  </div>
+  <select class="form-select my-3" multiple size="3">
+    <option selected>Select juries to add</option>
+    <option value="1">One</option>
+    <option value="2">Two</option>
+    <option value="3">Three</option>
+  </select>
+  <button class="btn btn-lg btn-warning mx-auto d-block mt-3" type="submit">Create Contest</button>
+</form>
+
 <form method="get" action="#"
       th:fragment="contest-form-sort" th:action="${requestURI}">
   <div class="input-group input-group">

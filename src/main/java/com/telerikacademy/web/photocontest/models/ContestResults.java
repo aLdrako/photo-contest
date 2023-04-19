@@ -3,13 +3,15 @@ package com.telerikacademy.web.photocontest.models;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
 @Table(name = "contests_results")
 public class ContestResults {
 
@@ -18,12 +20,20 @@ public class ContestResults {
     @Column(name = "results")
     private int results;
 
+    public ContestResults() {
+    }
+
+    public ContestResults(ResultEmbed resultEmbed, int results) {
+        this.resultEmbed = resultEmbed;
+        this.results = results;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         ContestResults that = (ContestResults) o;
-        return Objects.equals(resultEmbed, that.resultEmbed);
+        return getResultEmbed() != null && Objects.equals(getResultEmbed(), that.getResultEmbed());
     }
 
     @Override

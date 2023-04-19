@@ -5,6 +5,7 @@ import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.repositories.contracts.ContestRepository;
+import com.telerikacademy.web.photocontest.repositories.contracts.ContestResultsRepository;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.RankingServices;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
@@ -13,10 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -36,6 +37,8 @@ public class ContestServicesImpl implements ContestServices {
     private final UserServices userServices;
 
     private final RankingServices rankingServices;
+
+    private final ContestResultsRepository contestResultsRepository;
 
     @Override
     public Iterable<Contest> findAll() {
@@ -75,10 +78,18 @@ public class ContestServicesImpl implements ContestServices {
         return contestRepository.save(contest);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id, User authenticatedUser) {
         checkOrganizerPermissions(authenticatedUser);
-        contestRepository.deleteById(findById(id).getId());
+        Contest contest = findById(id);
+
+        contest.getPhotos().forEach(photo -> {
+            ResultEmbed resultEmbed = new ResultEmbed(contest, photo);
+            contestResultsRepository.deleteContestResultsByResultEmbed(resultEmbed);
+        });
+
+        contestRepository.deleteById(contest.getId());
     }
 
     @Override

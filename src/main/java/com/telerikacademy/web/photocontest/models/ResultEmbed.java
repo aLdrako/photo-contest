@@ -1,17 +1,15 @@
 package com.telerikacademy.web.photocontest.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import java.util.Objects;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 @Embeddable
 public class ResultEmbed implements Serializable {
     @ManyToOne
@@ -20,4 +18,25 @@ public class ResultEmbed implements Serializable {
     @ManyToOne
     @JoinColumn(name = "photo_id")
     private Photo photo;
+
+    public ResultEmbed() {
+    }
+
+    public ResultEmbed(Contest contest, Photo photo) {
+        this.contest = contest;
+        this.photo = photo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ResultEmbed that = (ResultEmbed) o;
+        return Objects.equals(contest, that.contest) && Objects.equals(photo, that.photo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(contest, photo);
+    }
 }

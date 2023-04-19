@@ -1,6 +1,5 @@
 package com.telerikacademy.web.photocontest.models.dto;
 
-import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.models.validations.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,5 +26,6 @@ public class ContestDto {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime phase2;
     private String coverPhoto;
-    private List<@Size(min = 4, max = 16, message = "Username should be between 4 and 16 symbols", groups = {CreateValidationGroup.class}) String> juries;
+    private List<@Size(min = 4, max = 16, message = "Username should be between 4 and 16 symbols", groups = {CreateValidationGroup.class})
+            String> juries;
 }

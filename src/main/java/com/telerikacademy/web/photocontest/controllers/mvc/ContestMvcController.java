@@ -6,14 +6,18 @@ import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.helpers.AuthenticationHelper;
 import com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper;
-import com.telerikacademy.web.photocontest.models.*;
+import com.telerikacademy.web.photocontest.models.Category;
 import com.telerikacademy.web.photocontest.models.Contest;
 import com.telerikacademy.web.photocontest.models.Photo;
+import com.telerikacademy.web.photocontest.models.User;
+import com.telerikacademy.web.photocontest.models.dto.ContestDto;
 import com.telerikacademy.web.photocontest.models.dto.ContestResponseDto;
 import com.telerikacademy.web.photocontest.models.dto.PhotoDto;
 import com.telerikacademy.web.photocontest.models.validations.CreatePhotoViaContestGroup;
+import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.photocontest.repositories.contracts.ContestResultsRepository;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
+import com.telerikacademy.web.photocontest.services.contracts.CategoryServices;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
@@ -45,37 +49,95 @@ import static com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper
 public class ContestMvcController extends BaseMvcController {
 
     private final AuthenticationHelper authenticationHelper;
+    private final CategoryServices categoryServices;
     private final ContestServices contestServices;
     private final PhotoServices photoServices;
     private final ModelMapper modelMapper;
 
+    @ModelAttribute("categories")
+    public Iterable<Category> populateCategories() {
+        return categoryServices.findAll();
+    }
+
     @GetMapping
-    public String showAllContests(@PageableDefault(size = 9, sort = "id") Pageable pageable, @RequestParam(required = false) Map<String, String> parameters, Model model, HttpServletRequest request, HttpSession session) {
-        FilterAndSortingHelper.Result result = getResult(parameters, pageable);
-        Page<Contest> contestPage = contestServices.filter(result.title(), result.categoryName(), result.isInvitational(), result.isFinished(), result.phase(), result.now(), result.pageable());
-        List<ContestResponseDto> list = contestPage.stream().map(modelMapper::objectToDto).toList();
-        Page<ContestResponseDto> page = new PageImpl<>(list, contestPage.getPageable(), contestPage.getTotalElements());
+    public String showAllContests(@PageableDefault(size = 9, sort = "id") Pageable pageable,
+                                  @RequestParam(required = false) Map<String, String> parameters,
+                                  Model model, HttpServletRequest request, HttpSession session) {
+        try {
+            authenticationHelper.tryGetUser(session);
+            FilterAndSortingHelper.Result result = getResult(parameters, pageable);
+            Page<Contest> contestPage = contestServices.filter(result.title(), result.categoryName(), result.isInvitational(), result.isFinished(),
+                    result.phase(), result.now(), result.pageable());
+            List<ContestResponseDto> list = contestPage.stream().map(modelMapper::objectToDto).toList();
+            Page<ContestResponseDto> page = new PageImpl<>(list, contestPage.getPageable(), contestPage.getTotalElements());
 
-        String sortParams = pageable.getSort().toString().replace(": ASC", "");
-        WebUtils.setSessionAttribute(request, "filterParams", parameters);
-        WebUtils.setSessionAttribute(request, "sortParams", sortParams);
+            String sortParams = pageable.getSort().toString().replace(": ASC", "");
+            WebUtils.setSessionAttribute(request, "filterParams", parameters);
+            WebUtils.setSessionAttribute(request, "sortParams", sortParams);
 
-        model.addAttribute("contests", page);
-        return "ContestsView";
+            model.addAttribute("contests", page);
+            return "ContestsView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+
     }
 
     @GetMapping("/{id}")
-    @ExceptionHandler(Exception.class)
-    public String showContest(@PathVariable Long id, Model model) {
-        Contest contest = contestServices.findById(id);
-        ContestResponseDto contestResponseDto = modelMapper.objectToDto(contest);
-        String phase1Ends = getPhaseRemainingTime(contest.getPhase1());
-        String phase2Ends = getPhaseRemainingTime(contest.getPhase2());
-        model.addAttribute("contest", contestResponseDto);
-        model.addAttribute("phase1Ends", phase1Ends);
-        model.addAttribute("phase2Ends", phase2Ends);
-        return "ContestView";
+    public String showContest(@PathVariable Long id, Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetUser(session);
+            Contest contest = contestServices.findById(id);
+            ContestResponseDto contestResponseDto = modelMapper.objectToDto(contest);
+            String phase1Ends = getPhaseRemainingTime(contest.getPhase1());
+            String phase2Ends = getPhaseRemainingTime(contest.getPhase2());
+            model.addAttribute("contest", contestResponseDto);
+            model.addAttribute("phase1Ends", phase1Ends);
+            model.addAttribute("phase2Ends", phase2Ends);
+            return "ContestView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "NotFoundView";
+        }
     }
+
+    @GetMapping("/create")
+    public String showCreateContest(Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetOrganizer(session);
+            model.addAttribute("contest", new ContestDto());
+            return "ContestCreateView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
+        }
+    }
+
+    @PostMapping
+    public String createContest(@Validated(CreateValidationGroup.class) @ModelAttribute("contest") ContestDto contestDto,
+                                BindingResult bindingResult, Model model,
+                                HttpSession session, HttpServletRequest request) {
+        if (bindingResult.hasErrors()) {
+            return "ContestCreateView";
+        }
+
+        try {
+            User user = authenticationHelper.tryGetOrganizer(session);
+            Contest contest = modelMapper.dtoToObject(contestDto);
+            contestServices.create(contest, user);
+            return "redirect:/contests/";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
+        }
+    }
+
     @GetMapping("/{id}/photos/new")
     public String showCreatePhotoPage(@PathVariable Long id, Model model,
                                       HttpSession session) {
@@ -91,6 +153,7 @@ public class ContestMvcController extends BaseMvcController {
             return "redirect:/auth/login";
         }
     }
+
     @PostMapping("/{id}/photos/new")
     public String createPhoto(@PathVariable Long id, Model model,
                               HttpSession session,
@@ -121,7 +184,6 @@ public class ContestMvcController extends BaseMvcController {
             return "AccessDeniedView";
         }
     }
-    private final ContestResultsRepository contestResultsRepository;
     @GetMapping("{id}/photos/{photoId}/delete")
     public String deletePhoto(@PathVariable Long id,
                               @PathVariable Long photoId,

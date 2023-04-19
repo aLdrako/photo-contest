@@ -85,13 +85,22 @@
                     <th:block th:each="result : ${contest.results}">
 
                       <th:block th:if="${result.photoId == photo.get('id')}" th:each="jury : ${result.juries}">
-                        <div class="card text-bg-warning mb-3">
-                          <div class="d-flex gap-2 w-100 justify-content-between px-3">
-                            <h5 class="card-title" th:text="${jury.get('jury')}">Score (design)</h5>
-                            <h5 class="card-title" th:text="${'Score: ' + jury.get('score')}">Score (design)</h5>
+                        <div class="card text-bg-dark mb-3">
+                          <div class="d-flex gap-2 w-100 justify-content-between py-1">
+
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-sm btn-warning">Jury</button>
+                              <button type="button" class="btn btn-sm btn-outline-warning" th:text="${jury.get('jury')}">Username (design)</button>
+                            </div>
+
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-sm btn-warning">Score</button>
+                              <button type="button" class="btn btn-sm btn-outline-warning" th:text="${jury.get('score')}">Score (design)</button>
+                            </div>
+
                           </div>
-                          <div class="card-body bg-dark">
-                              <p class="card-text text-warning" th:text="${jury.get('comment')}">Comment (design)</p>
+                          <div class="card-body text-bg-warning rounded">
+                              <p class="card-text" th:text="${jury.get('comment')}">Comment (design)</p>
                           </div>
                         </div>
                       </th:block>
@@ -126,7 +135,7 @@
             <img src="#" th:src="${winner.get('photo')}" class="card-img" alt="#" th:alt="${winner.get('userCreated')}">
             <div class="card-img-overlay">
               <div class="d-flex justify-content-between align-items-center">
-                <button type="button" class="btn btn-sm btn-dark" th:text="${winner.get('userCreated')}">Username (design)</button>
+                <button type="button" class="btn btn-sm btn-dark text-warning" th:text="${winner.get('userCreated')}">Username (design)</button>
                 <div class="btn-group">
                   <button type="button" class="btn btn-sm btn-warning">Score</button>
                   <button type="button" class="btn btn-sm btn-outline-warning" th:text="${winner.get('totalScore')}">Score (design)</button>
@@ -148,6 +157,7 @@
         <img class="img-fluid" src="#" alt="#">
       </div>
       <div class="modal-footer">
+        <button class="btn btn-warning copy-btn" type="button"><i class="bi bi-clipboard-fill"></i></button>
         <a href="#" class="btn btn-warning" target="_blank"><i class="bi bi-image-fill"></i></a>
         <button class="btn btn-warning rounded-circle p-2 lh-1" type="button" data-bs-dismiss="modal">
           <i class="bi bi-x-lg"></i>
