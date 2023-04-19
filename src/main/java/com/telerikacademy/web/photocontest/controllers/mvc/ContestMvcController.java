@@ -63,9 +63,10 @@ public class ContestMvcController extends BaseMvcController {
     @ExceptionHandler(Exception.class)
     public String showContest(@PathVariable Long id, Model model) {
         Contest contest = contestServices.findById(id);
+        ContestResponseDto contestResponseDto = modelMapper.objectToDto(contest);
         String phase1Ends = getPhaseRemainingTime(contest.getPhase1());
         String phase2Ends = getPhaseRemainingTime(contest.getPhase2());
-        model.addAttribute("contest", contest);
+        model.addAttribute("contest", contestResponseDto);
         model.addAttribute("phase1Ends", phase1Ends);
         model.addAttribute("phase2Ends", phase2Ends);
         return "ContestView";

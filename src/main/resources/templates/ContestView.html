@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:java-time="http://www.thymeleaf.org/extras/java8time">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <title th:text="#{page.title.contest}">Title (design)</title>
@@ -31,7 +31,7 @@
               <span class="badge d-flex align-items-center p-1 pe-2 text-dark bg-warning border border-warning rounded-pill">
                 <i class="bi bi-tag-fill"></i>
                 <span class="vr mx-1"></span>
-                <small th:text="${contest.category.name}">Category (design)</small>
+                <small th:text="${contest.category}">Category (design)</small>
               </span>
             </li>
             <li class="d-flex align-items-center">
@@ -62,20 +62,48 @@
   <div class="album py-5">
     <div class="container">
 
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      <div class="row row-cols-1 row-cols-sm-2 g-3">
         <th:block th:each="photo : ${contest.photos}">
           <div class="col  rounded-4">
             <div class="card shadow-sm">
               <div class="card-header bg-warning text-dark" th:text="${photo.title.length() > 30 ? #strings.substring(photo.title, 0, 30) + '...' : photo.title}">Title (design)</div>
-              <img src="#" alt="#" height="200" th:src="${photo.photo}" th:alt="${photo.title}" />
+              <img src="#" alt="#" class="img-fluid" th:src="${photo.photo}" th:alt="${photo.title}" />
               <div class="card-body bg-dark rounded-bottom">
-                <p class="card-text text-warning"  th:text="${photo.story}"></p>
+                <p class="card-text text-warning" th:text="${photo.story}"></p>
                 <div class="d-flex justify-content-between align-items-center">
+                  <button th:if="${contest.isFinished()}" class="btn btn-sm btn-warning" type="button" data-bs-toggle="collapse" th:data-bs-target="'#collapseResults-' + ${photo.id}" aria-expanded="false" th:aria-controls="'collapseResults-' + ${photo.id}">
+                    Results
+                  </button>
                   <div class="btn-group">
                     <button type="button" class="btn btn-sm btn-outline-warning">Rate</button>
                     <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#photoView">View</button>
                   </div>
-                  <a class="btn btn-sm btn-warning" href="#" th:href="@{/users/{id}(id=${photo.userCreated.id})}" th:text="${photo.userCreated.username}">Username (design)</a>
+                  <a class="link-warning" href="#" th:href="@{/users/{id}(id=${photo.userId})}" th:text="${photo.userCreated}">Username (design)</a>
+                </div>
+                <div th:class="'collapse'" th:id="'collapseResults-' + ${photo.id}">
+                  <div class="mt-2 bg-dark text-warning">
+                    <th:block th:each="result : ${contest.results}">
+
+                      <th:block th:if="${result.photoId == photo.id}" th:each="jury : ${result.juries}">
+                        <div class="card text-bg-warning mb-3">
+                          <div class="d-flex gap-2 w-100 justify-content-between px-3">
+                            <h5 class="card-title" th:text="${jury.get('jury')}">Score (design)</h5>
+                            <h5 class="card-title" th:text="${'Score: ' + jury.get('score')}">Score (design)</h5>
+                          </div>
+                          <div class="card-body bg-dark">
+                              <p class="card-text text-warning" th:text="${jury.get('comment')}">Comment (design)</p>
+                          </div>
+                        </div>
+                      </th:block>
+
+                      <div class="text-center">
+                        <div class="btn-group" th:if="${result.photoId == photo.id}">
+                          <button type="button" class="btn btn btn-warning">Total Score</button>
+                          <button type="button" class="btn btn btn-outline-warning" th:text="${result.totalScore}">Score (design)</button>
+                        </div>
+                      </div>
+                    </th:block>
+                  </div>
                 </div>
               </div>
             </div>
