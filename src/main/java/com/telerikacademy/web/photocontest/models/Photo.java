@@ -25,7 +25,7 @@ public class Photo {
     @Column(name = "photo")
     private String photo;
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User userCreated;
     @JsonIgnore

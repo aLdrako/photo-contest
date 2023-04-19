@@ -16,7 +16,6 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Table(name = "contests")
 @SecondaryTable(name = "cover_photos", pkJoinColumns = @PrimaryKeyJoinColumn(name = "contest_id"))
@@ -62,9 +61,12 @@ public class Contest {
     private Set<Photo> photos;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "resultEmbed.contest", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "resultEmbed.contest", cascade = CascadeType.ALL)
     private Set<ContestResults> results = new HashSet<>();
 
+    public void removePhotos() {
+        photos.clear();
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

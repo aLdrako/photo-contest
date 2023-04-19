@@ -104,7 +104,7 @@ public class PhotoServicesImplTests {
         User user = mockPhoto.getUserCreated();
         mockPhoto.getPostedOn().setPhase1(LocalDateTime.now().plusDays(1L));
         // Act
-        services.delete(mockPhoto, user);
+        services.delete(mockPhoto, user, mockPhoto.getPostedOn());
         // Assert
         Mockito.verify(mockRepository, Mockito.times(1))
                 .delete(mockPhoto);
@@ -116,7 +116,7 @@ public class PhotoServicesImplTests {
         User organizer = createMockOrganizer();
         mockPhoto.getPostedOn().setPhase1(LocalDateTime.now().plusDays(1L));
         // Act
-        services.delete(mockPhoto, organizer);
+        services.delete(mockPhoto, organizer, mockPhoto.getPostedOn());
         // Assert
         Mockito.verify(mockRepository, Mockito.times(1))
                 .delete(mockPhoto);
@@ -131,7 +131,18 @@ public class PhotoServicesImplTests {
 
         // Act, Assert
         Assertions.assertThrows(UnauthorizedOperationException.class,
-                () -> services.delete(mockPhoto, user));
+                () -> services.delete(mockPhoto, user, mockPhoto.getPostedOn()));
+    }
+    @Test
+    public void delete_Should_ThrowException_When_PhotoIsNotInTheContest() {
+        // Arrange
+        Photo mockPhoto = createMockPhoto();
+        User user = createMockUser();
+        mockPhoto.getPostedOn().setPhase1(LocalDateTime.now().plusDays(1L));
+        mockPhoto.getPostedOn().setPhotos(Set.of());
+        // Act, Assert
+        Assertions.assertThrows(EntityNotFoundException.class,
+                () -> services.delete(mockPhoto, user, mockPhoto.getPostedOn()));
     }
     @Test
     public void delete_Should_ThrowException_When_PhaseOneIsOver() {
@@ -141,7 +152,7 @@ public class PhotoServicesImplTests {
 
         // Act, Assert
         Assertions.assertThrows(UnauthorizedOperationException.class,
-                () -> services.delete(mockPhoto, user));
+                () -> services.delete(mockPhoto, user, mockPhoto.getPostedOn()));
     }
     @Test
     public void getById_Should_CallRepository() {

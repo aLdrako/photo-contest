@@ -42,6 +42,9 @@ public class Helpers {
         contest.setDateCreated(LocalDateTime.of(2023,1, 1, 0, 0, 0));
         contest.setJuries(Set.of());
         contest.setParticipants(Set.of());
+        Photo photo = new Photo();
+        photo.setId(1L);
+        contest.setPhotos(Set.of(photo));
         return contest;
     }
 

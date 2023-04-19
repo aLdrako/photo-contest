@@ -4,15 +4,16 @@ import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.models.*;
-import com.telerikacademy.web.photocontest.models.dto.PhotoResponseDto;
+import com.telerikacademy.web.photocontest.repositories.contracts.ContestRepository;
 import com.telerikacademy.web.photocontest.repositories.contracts.PhotoRepository;
+import com.telerikacademy.web.photocontest.repositories.contracts.ContestResultsRepository;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,8 @@ public class PhotoServicesImpl implements PhotoServices {
     public static final String NOT_A_PARTICIPANT_MESSAGE = "Only participants in the contest can upload a photo!";
     public static final String INVALID_PHOTO_DELETION_MESSAGE = "Deleting a photo is only possible during Phase One of a contest!";
     private final PhotoRepository photoRepository;
+    private final ContestResultsRepository contestResultsRepository;
+    private final ContestRepository contestRepository;
     @Override
     public List<Photo> getAll() {
         return photoRepository.findAll();
@@ -60,9 +63,15 @@ public class PhotoServicesImpl implements PhotoServices {
     }
 
     @Override
-    public void delete(Photo photo, User user) {
+    @Transactional
+    public void delete(Photo photo, User user, Contest contest) {
+        if (!contest.getPhotos().contains(photo)) {
+            throw new EntityNotFoundException("Contest", contest.getId(), "photo", photo.getId());
+        }
         checkDeletePermissions(photo, user);
         deletePhoto(photo.getPhoto());
+        contest.removePhotos();
+        contestResultsRepository.deleteContestResultsByResultEmbed(new ResultEmbed(contest, photo));
         photoRepository.delete(photo);
     }
 

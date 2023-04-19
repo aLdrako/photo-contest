@@ -1,6 +1,7 @@
 package com.telerikacademy.web.photocontest.controllers.mvc;
 
 import com.telerikacademy.web.photocontest.exceptions.AuthorizationException;
+import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.helpers.AuthenticationHelper;
@@ -114,6 +115,9 @@ public class UserMvcController extends BaseMvcController{
         } catch (UnauthorizedOperationException e) {
             model.addAttribute("error", e.getMessage());
             return "AccessDeniedView";
+        } catch (EntityDuplicateException e) {
+            bindingResult.rejectValue("email", "email_exists", e.getMessage());
+            return "RegisterView";
         }
     }
     @GetMapping("{id}/delete")

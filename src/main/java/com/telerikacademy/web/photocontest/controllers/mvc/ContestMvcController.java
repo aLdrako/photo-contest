@@ -1,26 +1,29 @@
 package com.telerikacademy.web.photocontest.controllers.mvc;
 
 import com.telerikacademy.web.photocontest.exceptions.AuthorizationException;
+import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.helpers.AuthenticationHelper;
 import com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper;
-import com.telerikacademy.web.photocontest.models.Contest;
-import com.telerikacademy.web.photocontest.models.Photo;
-import com.telerikacademy.web.photocontest.models.User;
+import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.models.dto.ContestResponseDto;
 import com.telerikacademy.web.photocontest.models.dto.PhotoDto;
 import com.telerikacademy.web.photocontest.models.validations.CreatePhotoViaContestGroup;
+import com.telerikacademy.web.photocontest.repositories.contracts.ContestResultsRepository;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.WebUtils;
@@ -90,9 +93,55 @@ public class ContestMvcController extends BaseMvcController {
     public String createPhoto(@PathVariable Long id, Model model,
                               HttpSession session,
                               @Validated(CreatePhotoViaContestGroup.class)
-                                  @ModelAttribute("photo") PhotoDto photoDto) {
+                                  @ModelAttribute("photo") PhotoDto photoDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) return "PhotoCreateView";
+        try {
+            User user = authenticationHelper.tryGetUser(session);
+            Contest contest = contestServices.findById(id);
+            Photo photo = modelMapper.dtoToObject(photoDto);
+            photo.setPostedOn(contest);
+            photo.setUserCreated(user);
+            photoServices.create(photo, photoDto.getFile());
+            return "redirect:/contests";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "NotFoundView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (EntityDuplicateException e) {
+            bindingResult.rejectValue("title", "photo_exists", e.getMessage());
+            return "PhotoCreateView";
+        } catch (FileUploadException e) {
+            bindingResult.rejectValue("file", "file_invalid", e.getMessage());
+            return "PhotoCreateView";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
+        }
+    }
+    private final ContestResultsRepository contestResultsRepository;
+    @GetMapping("{id}/photos/{photoId}/delete")
+    public String deletePhoto(@PathVariable Long id,
+                              @PathVariable Long photoId,
+                              Model model,
+                              HttpSession session) {
+        try {
+            User user = authenticationHelper.tryGetUser(session);
+            Contest contest = contestServices.findById(id);
+            Photo photo = photoServices.getById(photoId);
+            photoServices.delete(photo, user, contest);
+            return "redirect:/contests/";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "NotFoundView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (EntityDuplicateException e) {
 
-        Photo photo = modelMapper.dtoToObject(photoDto);
-        return null;
+            return "PhotoCreateView";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
+        }
     }
 }
