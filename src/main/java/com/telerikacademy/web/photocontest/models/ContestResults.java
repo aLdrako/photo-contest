@@ -9,6 +9,7 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
+@RequiredArgsConstructor
 @Table(name = "contests_results")
 public class ContestResults {
 

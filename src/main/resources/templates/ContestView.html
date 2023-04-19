@@ -48,7 +48,7 @@
         </div>
 
         <div class="btn-group mt-3" role="group" aria-label="Basic mixed styles example">
-          <button type="button" class="btn btn-lg btn-warning disabled" th:if="${contest.isFinished}">Closed</button>
+          <button type="button" class="btn btn-lg btn-warning" data-bs-toggle="modal" data-bs-target="#photoWinners" th:if="${contest.isFinished}">Winners</button>
           <button type="button" class="btn btn-lg btn-warning" th:if="${phase1 && !contest.isFinished}" th:text="${phase2 ? 'Closed' : 'Participate'}" th:classappend="${phase2 ? 'disabled' : ''}">Participate (design)</button>
           <button type="button" class="btn btn-lg btn-dark disabled text-warning" th:if="${phase1 && !phase2}" th:text="${phase1Ends}">Closed in (design)</button>
           <button type="button" class="btn btn-lg btn-warning disabled" th:if="${phase2}">Scoring</button>
@@ -66,25 +66,25 @@
         <th:block th:each="photo : ${contest.photos}">
           <div class="col  rounded-4">
             <div class="card shadow-sm">
-              <div class="card-header bg-warning text-dark" th:text="${photo.title.length() > 30 ? #strings.substring(photo.title, 0, 30) + '...' : photo.title}">Title (design)</div>
-              <img src="#" alt="#" class="img-fluid" th:src="${photo.photo}" th:alt="${photo.title}" />
+              <div class="card-header bg-warning text-dark" th:text="${#strings.length(photo.get('title')) > 30 ? #strings.substring(photo.get('title'), 0, 30) + '...' : photo.get('title')}">Title (design)</div>
+              <img src="#" alt="#" class="img-fluid" th:src="${photo.get('photo')}" th:alt="${photo.get('title')}" />
               <div class="card-body bg-dark rounded-bottom">
-                <p class="card-text text-warning" th:text="${photo.story}"></p>
+                <p class="card-text text-warning" th:text="${photo.get('story')}"></p>
                 <div class="d-flex justify-content-between align-items-center">
-                  <button th:if="${contest.isFinished()}" class="btn btn-sm btn-warning" type="button" data-bs-toggle="collapse" th:data-bs-target="'#collapseResults-' + ${photo.id}" aria-expanded="false" th:aria-controls="'collapseResults-' + ${photo.id}">
+                  <button th:if="${contest.isFinished()}" class="btn btn-sm btn-warning" type="button" data-bs-toggle="collapse" th:data-bs-target="'#collapseResults-' + ${photo.get('id')}" aria-expanded="false" th:aria-controls="'collapseResults-' + ${photo.get('id')}">
                     Results
                   </button>
                   <div class="btn-group">
                     <button type="button" class="btn btn-sm btn-outline-warning">Rate</button>
                     <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#photoView">View</button>
                   </div>
-                  <a class="link-warning" href="#" th:href="@{/users/{id}(id=${photo.userId})}" th:text="${photo.userCreated}">Username (design)</a>
+                  <a class="link-warning" href="#" th:href="@{/users/{id}(id=${photo.get('userId')})}" th:text="${photo.get('userCreated')}">Username (design)</a>
                 </div>
-                <div th:class="'collapse'" th:id="'collapseResults-' + ${photo.id}">
+                <div th:class="'collapse'" th:id="'collapseResults-' + ${photo.get('id')}">
                   <div class="mt-2 bg-dark text-warning">
                     <th:block th:each="result : ${contest.results}">
 
-                      <th:block th:if="${result.photoId == photo.id}" th:each="jury : ${result.juries}">
+                      <th:block th:if="${result.photoId == photo.get('id')}" th:each="jury : ${result.juries}">
                         <div class="card text-bg-warning mb-3">
                           <div class="d-flex gap-2 w-100 justify-content-between px-3">
                             <h5 class="card-title" th:text="${jury.get('jury')}">Score (design)</h5>
@@ -97,9 +97,9 @@
                       </th:block>
 
                       <div class="text-center">
-                        <div class="btn-group" th:if="${result.photoId == photo.id}">
-                          <button type="button" class="btn btn btn-warning">Total Score</button>
-                          <button type="button" class="btn btn btn-outline-warning" th:text="${result.totalScore}">Score (design)</button>
+                        <div class="btn-group" th:if="${result.photoId == photo.get('id')}">
+                          <button type="button" class="btn btn-warning">Total Score</button>
+                          <button type="button" class="btn btn-outline-warning" th:text="${result.totalScore}">Score (design)</button>
                         </div>
                       </div>
                     </th:block>
@@ -116,14 +116,34 @@
 
 </main>
 
+<!-- Modal Window for Winners View -->
+<div class="modal fade" id="photoWinners" tabindex="-1" aria-labelledby="photoWinnersLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content bg-dark rounded-4">
+      <div class="modal-body">
+        <th:block th:each="winner : ${contest.winners}">
+          <div class="card text-bg-dark my-2">
+            <img src="#" th:src="${winner.get('photo')}" class="card-img" alt="#" th:alt="${winner.get('userCreated')}">
+            <div class="card-img-overlay">
+              <div class="d-flex justify-content-between align-items-center">
+                <button type="button" class="btn btn-sm btn-dark" th:text="${winner.get('userCreated')}">Username (design)</button>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-warning">Score</button>
+                  <button type="button" class="btn btn-sm btn-outline-warning" th:text="${winner.get('totalScore')}">Score (design)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </th:block>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Window for Photo View -->
 <div class="modal fade" id="photoView" tabindex="-1" aria-labelledby="photoViewLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
     <div class="modal-content bg-dark rounded-4">
-      <!--      <div class="modal-header">-->
-      <!--        <h1 class="modal-title fs-5" id="photoViewLabel">Modal title</h1>-->
-      <!--        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-      <!--      </div>-->
       <div class="modal-body">
         <img class="img-fluid" src="#" alt="#">
       </div>
@@ -139,7 +159,7 @@
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
-<script th:replace="~{fragments/scripts :: image-view}"></script>
+<script th:replace="~{fragments/scripts :: photo-view}"></script>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>
 </body>
 </html>

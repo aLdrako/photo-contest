@@ -18,7 +18,7 @@
 </script>
 
 <!-- Script for Opening Photo in Modal Window -->
-<script th:fragment="image-view">
+<script th:fragment="photo-view">
     document.addEventListener("DOMContentLoaded", function() {
         const viewButtons = document.querySelectorAll("[data-bs-target='#photoView']");
         viewButtons.forEach(function(button) {
@@ -30,6 +30,7 @@
         });
     });
 </script>
+
 <!-- Script for Quill with Highlight -->
 <script th:fragment="quilljs">
     var formattedText = document.getElementById("floatingContent").value;

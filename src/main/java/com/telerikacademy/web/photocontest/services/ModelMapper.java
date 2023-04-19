@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -48,10 +47,13 @@ public class ModelMapper {
         if (contest.getParticipants() != null) participants = contest.getParticipants().stream().map(User::getUsername).toList();
         List<Map<String, Object>> photos = getPhotos(contest);
         List<ContestResultDto> results = getContestResultDto(contest);
+        List<Map<String, Object>> winners = getWinners(contest);
+
 
         return new ContestResponseDto(contest.getId(), contest.getTitle(), contest.getCategory().getName(), contest.getPhase1(), contest.getPhase2(),
-                contest.getDateCreated(), contest.getCoverPhoto(), contest.isInvitational(), contest.getIsFinished(), juries, participants, photos, results);
+                contest.getDateCreated(), contest.getCoverPhoto(), contest.isInvitational(), contest.getIsFinished(), juries, participants, photos, results, winners);
     }
+
     public UserDto objectToDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setFirstName(user.getFirstName());
@@ -189,5 +191,21 @@ public class ModelMapper {
             }).toList();
         }
         return photos;
+    }
+
+    private static List<Map<String, Object>> getWinners(Contest contest) {
+        int maxScore = contest.getResults().stream()
+                .mapToInt(ContestResults::getResults)
+                .max()
+                .orElse(0);
+        return contest.getResults().stream()
+                .filter(result -> result.getResults() == maxScore)
+                .map(contestResults -> {
+                    Map<String, Object> win = new HashMap<>();
+                    win.put("photo", contestResults.getResultEmbed().getPhoto().getPhoto());
+                    win.put("userCreated", contestResults.getResultEmbed().getPhoto().getUserCreated().getUsername());
+                    win.put("totalScore", contestResults.getResults());
+                    return win;
+                }).toList();
     }
 }
