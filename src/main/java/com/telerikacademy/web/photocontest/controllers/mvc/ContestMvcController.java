@@ -15,7 +15,6 @@ import com.telerikacademy.web.photocontest.models.dto.ContestResponseDto;
 import com.telerikacademy.web.photocontest.models.dto.PhotoDto;
 import com.telerikacademy.web.photocontest.models.validations.CreatePhotoViaContestGroup;
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
-import com.telerikacademy.web.photocontest.repositories.contracts.ContestResultsRepository;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.CategoryServices;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
