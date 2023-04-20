@@ -3,13 +3,12 @@ package com.telerikacademy.web.photocontest.services;
 import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
-import com.telerikacademy.web.photocontest.models.Contest;
-import com.telerikacademy.web.photocontest.models.Ranking;
-import com.telerikacademy.web.photocontest.models.Ranks;
-import com.telerikacademy.web.photocontest.models.User;
+import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.repositories.contracts.ContestRepository;
+import com.telerikacademy.web.photocontest.repositories.contracts.ContestResultsRepository;
 import com.telerikacademy.web.photocontest.services.contracts.RankingServices;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,6 +33,8 @@ public class ContestServicesImplTests {
     UserServices mockUserServices;
     @Mock
     RankingServices mockRankingService;
+    @Mock
+    ContestResultsRepository contestResultsRepository;
     @InjectMocks
     ContestServicesImpl contestServices;
 
@@ -76,13 +77,13 @@ public class ContestServicesImplTests {
     }
 
     @Test
-    public void update_Should_CallRepository_When_UserIsOrganizer() {
+    public void update_Should_CallRepository_When_UserIsOrganizer() throws FileUploadException {
         // Arrange
         Contest mockContest = createMockContest();
         User mockOrganizer = createMockOrganizer();
 
         // Act
-        contestServices.update(mockContest, mockOrganizer);
+        contestServices.update(mockContest, mockOrganizer, createMockFile());
 
         // Assert
         verify(mockContestRepository).save(mockContest);
@@ -96,7 +97,7 @@ public class ContestServicesImplTests {
 
         // Act, Assert
         assertThrows(UnauthorizedOperationException.class,
-                () -> contestServices.update(mockContest, mockUser));
+                () -> contestServices.update(mockContest, mockUser, createMockFile()));
     }
 
     @Test
@@ -130,6 +131,7 @@ public class ContestServicesImplTests {
         User mockOrganizer = createMockOrganizer();
 
         when(mockContestRepository.findById(mockContest.getId())).thenReturn(Optional.of(mockContest));
+        doNothing().when(contestResultsRepository).deleteContestResultsByResultEmbed_Contest(mockContest);
 
         // Act
         contestServices.deleteById(mockContest.getId(), mockOrganizer);
@@ -172,7 +174,7 @@ public class ContestServicesImplTests {
     }
 
     @Test
-    public void create_Should_CallRepository_WithoutAddedJuries() {
+    public void create_Should_CallRepository_WithoutAddedJuries() throws FileUploadException {
         // Arrange
         Contest mockContest = createMockContestDynamic();
         User mockOrganizer = createMockOrganizer();
@@ -183,14 +185,14 @@ public class ContestServicesImplTests {
         when(mockContestRepository.save(mockContest)).thenReturn(mockContest);
 
         // Act
-        contestServices.create(mockContest, mockOrganizer);
+        contestServices.create(mockContest, mockOrganizer, createMockFile());
 
         // Assert
         verify(mockContestRepository).save(mockContest);
     }
 
     @Test
-    public void create_Should_CallRepository_WithAddedJuries() {
+    public void create_Should_CallRepository_WithAddedJuries() throws FileUploadException {
         // Arrange
         Contest mockContest = createMockContestDynamic();
         User mockOrganizer = createMockOrganizer();
@@ -204,7 +206,7 @@ public class ContestServicesImplTests {
         when(mockContestRepository.save(mockContest)).thenReturn(mockContest);
 
         // Act
-        contestServices.create(mockContest, mockOrganizer);
+        contestServices.create(mockContest, mockOrganizer, createMockFile());
 
         // Assert
         verify(mockContestRepository, times(2)).save(mockContest);
@@ -218,7 +220,7 @@ public class ContestServicesImplTests {
 
         // Act, Assert
         assertThrows(UnauthorizedOperationException.class,
-                () -> contestServices.create(mockContest, mockUser));
+                () -> contestServices.create(mockContest, mockUser, createMockFile()));
     }
 
     @Test
@@ -231,7 +233,7 @@ public class ContestServicesImplTests {
 
         // Act, Assert
         assertThrows(EntityDuplicateException.class,
-                () -> contestServices.create(mockContest, mockOrganizer));
+                () -> contestServices.create(mockContest, mockOrganizer, createMockFile()));
     }
 
     @Test
@@ -246,9 +248,9 @@ public class ContestServicesImplTests {
         // Act, Assert
         assertAll(() -> {
             assertThrows(DateTimeException.class,
-                    () -> contestServices.create(mockContest1, mockOrganizer));
+                    () -> contestServices.create(mockContest1, mockOrganizer, createMockFile()));
             assertThrows(DateTimeException.class,
-                    () -> contestServices.create(mockContest2, mockOrganizer));
+                    () -> contestServices.create(mockContest2, mockOrganizer, createMockFile()));
         });
     }
 
@@ -267,7 +269,7 @@ public class ContestServicesImplTests {
 
         // Act, Assert
         assertThrows(UnauthorizedOperationException.class,
-                ()  ->  contestServices.create(mockContest, mockOrganizer));
+                ()  ->  contestServices.create(mockContest, mockOrganizer, createMockFile()));
     }
 
     @Test

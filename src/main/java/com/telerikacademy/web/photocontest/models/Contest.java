@@ -35,7 +35,7 @@ public class Contest {
     private boolean isInvitational;
 
     @Column(name = "is_finished")
-    private Boolean isFinished;
+    private Boolean isFinished = false;
 
     @Column(name = "phase1")
     private LocalDateTime phase1;

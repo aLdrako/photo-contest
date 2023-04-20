@@ -37,6 +37,7 @@ public class ModelMapper {
         if (!contest.getTitle().equals(contestDto.getTitle())) contestServices.checkUniqueness(contestDto.getTitle());
         if (contestDto.getCategoryId() != null) contest.setCategory(categoryServices.findById(contestDto.getCategoryId()));
         if (contestDto.getTitle() != null) contest.setTitle(contestDto.getTitle());
+        if (!contestDto.getCoverPhoto().isEmpty()) contest.setCoverPhoto(contestDto.getCoverPhoto());
         return contest;
     }
 
@@ -48,7 +49,6 @@ public class ModelMapper {
         List<Map<String, Object>> photos = getPhotos(contest);
         List<ContestResultDto> results = getContestResultDto(contest);
         List<Map<String, Object>> winners = getWinners(contest);
-
 
         return new ContestResponseDto(contest.getId(), contest.getTitle(), contest.getCategory().getName(), contest.getPhase1(), contest.getPhase2(),
                 contest.getDateCreated(), contest.getCoverPhoto(), contest.isInvitational(), contest.getIsFinished(), juries, participants, photos, results, winners);
@@ -93,8 +93,7 @@ public class ModelMapper {
         User userFromRepo = userServices.getById(id);
         if (userDto.getFirstName() != null) userFromRepo.setFirstName(userDto.getFirstName());
         if (userDto.getLastName() != null) userFromRepo.setLastName(userDto.getLastName());
-        if (userDto.getPassword() != null && !userDto.getPassword().isEmpty())
-            userFromRepo.setPassword(userDto.getPassword());
+        if (userDto.getPassword() != null) userFromRepo.setPassword(userDto.getPassword());
         if (userDto.getEmail() != null) userFromRepo.setEmail(userDto.getEmail());
 
         return userFromRepo;
