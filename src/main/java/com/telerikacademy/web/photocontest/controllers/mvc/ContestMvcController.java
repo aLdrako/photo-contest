@@ -31,6 +31,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.WebUtils;
@@ -169,10 +170,8 @@ public class ContestMvcController extends BaseMvcController {
     public String showUpdateContest(@PathVariable Long id,  Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetOrganizer(session);
-            Contest contest = contestServices.findById(id);
-            ContestDto contestDto = new ContestDto();
-            model.addAttribute("contestDto", contestDto);
-            model.addAttribute("contest", contest);
+            ContestDto contestDto = modelMapper.objectToDto(id);
+            model.addAttribute("contest", contestDto);
             return "ContestUpdateView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
@@ -183,7 +182,7 @@ public class ContestMvcController extends BaseMvcController {
     }
 
     @PostMapping("/{id}/update")
-    public String updateContest(@PathVariable Long id, @Validated(UpdateValidationGroup.class) ContestDto contestDto,
+    public String updateContest(@PathVariable Long id, @Validated(UpdateValidationGroup.class) @ModelAttribute("contest") ContestDto contestDto,
                                     BindingResult bindingResult, Model model, HttpSession session) {
         if (bindingResult.hasErrors()) return "ContestUpdateView";
 

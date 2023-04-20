@@ -24,8 +24,10 @@
         viewButtons.forEach(function(button) {
             button.addEventListener("click", function() {
                 const photo = this.closest(".card").querySelector("img").getAttribute("src");
+                const photoStory = this.closest(".card").querySelector(".card-text").innerText;
                 document.querySelector("#photoView img").setAttribute("src", photo);
                 document.querySelector("#photoView a").setAttribute("href", photo);
+                document.querySelector("button.photo-story").innerText = photoStory;
             });
         });
 
