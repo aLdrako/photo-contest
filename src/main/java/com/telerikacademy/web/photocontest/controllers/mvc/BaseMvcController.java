@@ -15,6 +15,4 @@ public class BaseMvcController {
         session.setAttribute("isAuthenticated", isAuthenticated);
         model.addAttribute("requestURI", request.getRequestURI());
     }
-
-
 }

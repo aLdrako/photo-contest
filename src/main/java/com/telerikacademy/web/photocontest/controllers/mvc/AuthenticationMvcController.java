@@ -33,9 +33,6 @@ public class AuthenticationMvcController extends BaseMvcController {
 
     @GetMapping("/login")
     public String showLoginPage(Model model, HttpSession session) {
-        if (!session.isNew()) {
-            session.invalidate();
-        }
         model.addAttribute("user", new UserDto());
         return "LoginView";
     }
@@ -48,6 +45,7 @@ public class AuthenticationMvcController extends BaseMvcController {
         try {
             User user = authenticationHelper.verifyLogin(userDto.getUsername(), userDto.getPassword());
             session.setAttribute("user", user);
+            session.setAttribute("userId", user.getId());
             session.setAttribute("currentUser", user.getUsername());
             return "redirect:/";
         } catch (AuthorizationException e) {

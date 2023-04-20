@@ -2,8 +2,7 @@
         th:fargment="header"
         th:with="ctxHome=${context == 'home'},
                  ctxDashboard=${context == 'dashboard'},
-                 ctxContests=${context == 'contests'},
-                 ctxUsers=${context == 'users'}"
+                 ctxContests=${context == 'contests'}"
 >
     <div class="px-3 py-2 text-bg-dark">
         <div class="container">
@@ -33,9 +32,13 @@
                         </a>
                     </li>
                     <li class="px-1">
-                        <a href="/users" class="nav-link rounded" th:href="@{/users}" th:classappend="${ctxUsers ? 'active-nav-link' : 'text-warning'}">
+                        <a class="nav-link rounded text-warning" th:if="${!session.isAuthenticated}" th:href="@{/auth/login}">
                             <span class="bi d-block mx-auto mb-1"><i class="bi bi-person-circle"></i></span>
-                            <span class="text-icon-item">Customers</span>
+                            <span class="text-icon-item">User</span>
+                        </a>
+                        <a class="nav-link rounded text-warning" th:if="${session.isAuthenticated}" th:href="@{/users/{id}(id=${session.userId})}">
+                            <span class="bi d-block mx-auto mb-1"><i class="bi bi-person-circle"></i></span>
+                            <span class="text-icon-item">User</span>
                         </a>
                     </li>
                 </ul>
