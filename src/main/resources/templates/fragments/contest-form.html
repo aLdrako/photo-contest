@@ -23,7 +23,7 @@
       <input type="file" class="form-control" id="inputPhotoUpload" name="file" th:field="*{coverPhotoUpload}" accept=".jpeg, .jpg, .png">
     </div>
   </div>
-  <div class="input-group mb-3">
+  <div class="input-group mb-3" th:if="${ctxCreate}">
     <span class="input-group-text d-none d-lg-block">Phase 1</span>
     <div class="form-floating">
       <input type="datetime-local" class="form-control" id="floatingInputPhase1" th:field="*{phase1}" th:errorclass="is-invalid">
@@ -60,7 +60,7 @@
   </div>
   <button class="btn btn-lg btn-warning mx-auto d-flex align-items-center justify-content-between mt-3" id="submit-button" type="submit">
     <span class="spinner-border spinner-border" id="spinner-loading" role="status" aria-hidden="true"></span>
-    <span class="px-3">Create Contest</span>
+    <span class="px-3" th:text="${ctxCreate ? 'Create Contest' : 'Update Contest'}"></span>
   </button>
 </form>
 

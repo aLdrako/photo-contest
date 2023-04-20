@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.deletePhoto;
+
 @Component
 @AllArgsConstructor
 public class ModelMapper {
@@ -34,11 +36,24 @@ public class ModelMapper {
 
     public Contest dtoToObject(Long id, ContestDto contestDto) {
         Contest contest = contestServices.findById(id);
-        if (!contest.getTitle().equals(contestDto.getTitle())) contestServices.checkUniqueness(contestDto.getTitle());
+        if (!contest.getTitle().equals(contestDto.getTitle())) {
+            contestServices.checkUniqueness(contestDto.getTitle());
+        }
         if (contestDto.getCategoryId() != null) contest.setCategory(categoryServices.findById(contestDto.getCategoryId()));
         if (contestDto.getTitle() != null) contest.setTitle(contestDto.getTitle());
-        if (!contestDto.getCoverPhoto().isEmpty()) contest.setCoverPhoto(contestDto.getCoverPhoto());
+        if (!contestDto.getCoverPhoto().isEmpty()) {
+            deletePhoto(contest.getCoverPhoto());
+            contest.setCoverPhoto(contestDto.getCoverPhoto());
+        }
         return contest;
+    }
+
+    public ContestDto objectToDto(Long id) {
+        Contest contest = contestServices.findById(id);
+        ContestDto contestDto = new ContestDto();
+        contestDto.setTitle(contest.getTitle());
+        contestDto.setCategoryId(contest.getCategory().getId());
+        return contestDto;
     }
 
     public ContestResponseDto objectToDto(Contest contest) {
