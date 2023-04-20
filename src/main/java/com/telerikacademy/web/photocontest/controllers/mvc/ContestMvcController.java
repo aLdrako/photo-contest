@@ -137,12 +137,28 @@ public class ContestMvcController extends BaseMvcController {
         }
     }
 
+    @GetMapping("/{contestId}/photos/{photoId}")
+    public String showPhoto(@PathVariable Long contestId, @PathVariable Long photoId,
+                            HttpSession session, Model model) {
+        try {
+            authenticationHelper.tryGetUser(session);
+            Photo photo = photoServices.getPhotoByContestId(photoId, contestId);
+            model.addAttribute("photo", photo);
+            return "PhotoViewTest";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "NotFoundView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+    }
+
     @GetMapping("/{id}/photos/new")
     public String showCreatePhotoPage(@PathVariable Long id, Model model,
                                       HttpSession session) {
         try {
-            contestServices.findById(id);
             authenticationHelper.tryGetUser(session);
+            contestServices.findById(id);
             model.addAttribute("photo", new PhotoDto());
             return "PhotoCreateView";
         } catch (EntityNotFoundException e) {
@@ -193,7 +209,7 @@ public class ContestMvcController extends BaseMvcController {
             Contest contest = contestServices.findById(id);
             Photo photo = photoServices.getById(photoId);
             photoServices.delete(photo, user, contest);
-            return "redirect:/contests/";
+            return "redirect:/contests/" + id;
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";

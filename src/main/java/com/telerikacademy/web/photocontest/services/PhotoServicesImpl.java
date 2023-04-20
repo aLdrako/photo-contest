@@ -7,6 +7,7 @@ import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.repositories.contracts.ContestRepository;
 import com.telerikacademy.web.photocontest.repositories.contracts.PhotoRepository;
 import com.telerikacademy.web.photocontest.repositories.contracts.ContestResultsRepository;
+import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -35,7 +36,7 @@ public class PhotoServicesImpl implements PhotoServices {
     public static final String INVALID_PHOTO_DELETION_MESSAGE = "Deleting a photo is only possible during Phase One/Two of a contest!";
     private final PhotoRepository photoRepository;
     private final ContestResultsRepository contestResultsRepository;
-    private final ContestRepository contestRepository;
+    private final ContestServices contestServices;
     @Override
     public List<Photo> getAll() {
         return photoRepository.findAll();
@@ -103,6 +104,16 @@ public class PhotoServicesImpl implements PhotoServices {
     public int getScoreOfPhoto(Long id) {
         photoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Photo", id));
         return photoRepository.getScoreOfPhoto(id);
+    }
+
+    @Override
+    public Photo getPhotoByContestId(Long photoId, Long contestId) {
+        Contest contest = contestServices.findById(contestId);
+        Photo photo = getById(photoId);
+        if (!contest.getPhotos().contains(photo)) {
+            throw new EntityNotFoundException("Contest", contest.getId(), "photo", photo.getId());
+        }
+        return photo;
     }
 
     @Override

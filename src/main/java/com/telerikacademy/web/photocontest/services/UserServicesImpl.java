@@ -142,7 +142,7 @@ public class UserServicesImpl implements UserServices {
         userFromRepo.setOrganizer(false);
         userFromRepo.setFirstName(generateString());
         userFromRepo.setLastName(generateString());
-        userFromRepo.setUsername(generateString());
+        userFromRepo.setUsername("deleted" + generateString());
         userFromRepo.setPassword(generateString());
         userFromRepo.setEmail(generateString());
         userFromRepo.setPoints(-1);

@@ -16,6 +16,7 @@ public interface PhotoServices {
     Photo getById(Long id);
     void postReview(PhotoScore photoScore, Photo photo, User user, PhotoReviewDetails photoReviewDetails);
     int getScoreOfPhoto(Long id);
+    Photo getPhotoByContestId(Long photoId, Long contestId);
 
     List<Photo> getPhotosOfContest(Contest contest);
 

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title th:text="#{page.title.photo}">Photo Contest</title>
+  <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+
+<body class="user-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='photo-details')}"></header>
+<div class="container mt-5">
+  <article class="blog-post">
+    <h2 class="blog-post-title text-center" th:text="${photo.getTitle()}">Sample photo title</h2>
+    <img src="#" alt="#" class="img-fluid rounded mx-auto d-block" th:src="${photo.getPhoto()}" th:alt="${photo.getTitle()}" />
+    <p th:utext="${photo.story}">This photo shows a few different types of story.</p>
+    <section>
+      <a class="btn" th:classappend="${session.isAuthenticated} ? 'btn-primary bi bi-reply-fill'"
+         data-bs-toggle="collapse" href="#collapseReply" role="button" aria-expanded="false"
+         aria-controls="collapseReply"></a>
+      <div class="collapse multi-collapse" id="collapseReply">
+        <!-- <form th:replace="~{fragments/review-form :: review-form(context='review-create')}"></form>-->
+      </div>
+      <hr>
+    </section>
+  </article>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+     aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete post?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <a href="#" th:href="@{${requestURI} + '/delete'}" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+</body>
+</html>
