@@ -15,7 +15,7 @@
                     phase2=${contest.phase1.isBefore(#temporals.createNow()) && contest.phase2.isAfter(#temporals.createNow())}">
     <div class="row py-5">
       <div class="col col-xl-8 mx-auto position-relative">
-        <div class="position-absolute top-0 start-50 translate-middle" th:if="${phase1}">
+        <div class="position-absolute top-0 start-50 translate-middle" th:if="${phase1 && session.user.organizer}">
           <div class="btn-group" role="group" aria-label="Basic mixed styles example">
             <a href="#" class="btn btn-outline-warning" th:href="@{${requestURI} + '/update'}"><i class="bi bi-pencil-square"></i></a>
             <a href="#" class="btn btn-outline-danger" th:href="@{${requestURI} + '/delete'}"><i class="bi bi-x-square"></i></a>
@@ -53,9 +53,12 @@
 
         </div>
 
-        <div class="btn-group mt-3" role="group" aria-label="Basic mixed styles example">
+        <div class="btn-group mt-3" role="group">
           <button type="button" class="btn btn-lg btn-warning" data-bs-toggle="modal" data-bs-target="#photoWinners" th:if="${contest.isFinished}">Winners</button>
-          <button type="button" class="btn btn-lg btn-warning" th:if="${phase1 && !contest.isFinished}" th:text="${phase2 ? 'Closed' : 'Participate'}" th:classappend="${phase2 ? 'disabled' : ''}">Participate (design)</button>
+          <a type="button" class="btn btn-lg btn-warning" th:if="${phase1 && !contest.invitational && !contest.isFinished && !contest.participants.contains(session.user.username)}" th:href="@{${requestURI} + '/join'}">Participate</a>
+          <a type="button" class="btn btn-lg btn-warning disabled" th:if="${phase1 && contest.invitational && !contest.isFinished && !session.user.organizer}">Invitational</a>
+          <a type="button" class="btn btn-lg btn-warning" th:if="${phase1 && contest.invitational && !contest.isFinished && session.user.organizer}" th:href="@{${requestURI} + '/add-participant'}">Invite</a>
+          <a type="button" class="btn btn-lg btn-warning" th:if="${phase1 && !contest.isFinished && contest.participants.contains(session.user.username)}" th:href="@{${requestURI} + '/photos/new'}">Upload</a>
           <button type="button" class="btn btn-lg btn-dark disabled text-warning" th:if="${phase1 && !phase2}" th:text="${phase1Ends}">Closed in (design)</button>
           <button type="button" class="btn btn-lg btn-warning disabled" th:if="${phase2}">Scoring</button>
           <button type="button" class="btn btn-lg btn-dark disabled text-warning" th:if="${phase2}" th:text="${phase2Ends}">Until (design)</button>

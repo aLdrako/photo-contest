@@ -95,7 +95,9 @@ public class ContestServicesImpl implements ContestServices {
     public void deleteById(Long id, User authenticatedUser) {
         checkOrganizerPermissions(authenticatedUser);
         Contest contest = findById(id);
-        deletePhoto(contest.getCoverPhoto());
+        if (contest.getCoverPhoto() != null && !contest.getCoverPhoto().isEmpty()) {
+            deletePhoto(contest.getCoverPhoto());
+        }
         contestResultsRepository.deleteContestResultsByResultEmbed_Contest(contest);
         contestRepository.deleteById(contest.getId());
     }

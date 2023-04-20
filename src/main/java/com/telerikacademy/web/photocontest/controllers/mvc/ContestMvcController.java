@@ -167,7 +167,7 @@ public class ContestMvcController extends BaseMvcController {
     }
 
     @GetMapping("/{id}/update")
-    public String showUpdateContest(@PathVariable Long id,  Model model, HttpSession session) {
+    public String showUpdateContest(@PathVariable Long id, Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetOrganizer(session);
             ContestDto contestDto = modelMapper.objectToDto(id);
@@ -202,6 +202,56 @@ public class ContestMvcController extends BaseMvcController {
         } catch (FileUploadException e) {
             bindingResult.rejectValue("file", "file_invalid", e.getMessage());
             return "ContestUpdateView";
+        }
+    }
+
+    @GetMapping("/{id}/join")
+    public String joinContest(@PathVariable Long id, Model model, HttpSession session) {
+        try {
+            User user = authenticationHelper.tryGetUser(session);
+            Contest contest = contestServices.findById(id);
+            Contest joinedContest = contestServices.join(contest, user);
+            model.addAttribute("contest", joinedContest);
+            return "redirect:/contests/" + id;
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "NotFoundView";
+        } catch (EntityDuplicateException | UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
+        }
+    }
+
+    // TODO finish method
+    @GetMapping("/{id}/add-participant")
+    public String enlistUser(@PathVariable Long id, Model model, HttpSession session) {
+        try {
+            User organizer = authenticationHelper.tryGetOrganizer(session);
+            Contest contest = contestServices.findById(id);
+            Contest addedParticipant = contestServices.addParticipant(contest, organizer, "Asd");
+            model.addAttribute("contest", addedParticipant);
+            return "redirect:/contests/" + id;
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+    }
+
+    @GetMapping("/{id}/delete")
+    public String deleteContest(@PathVariable Long id, Model model, HttpSession session) {
+        try {
+            User user = authenticationHelper.tryGetOrganizer(session);
+            contestServices.deleteById(id, user);
+            return "redirect:/contests";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "NotFoundView";
         }
     }
 
