@@ -41,6 +41,14 @@
     });
 </script>
 
+<!-- Script for Spinner Animation Show -->
+<script th:fragment="loading-spinner">
+    const submitButton = document.getElementById("submit-button");
+    submitButton.addEventListener("click", function() {
+        const spinner = document.getElementById("spinner-loading")
+        spinner.style.display = 'inline-block';
+    });
+</script>
 
 <!-- Script for Quill with Highlight -->
 <script th:fragment="quilljs">

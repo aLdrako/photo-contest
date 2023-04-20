@@ -10,15 +10,20 @@ import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.RankingServices;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.deletePhoto;
+import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.uploadPhoto;
 
 @Service
 @AllArgsConstructor
@@ -51,7 +56,7 @@ public class ContestServicesImpl implements ContestServices {
     }
 
     @Override
-    public Contest create(Contest contest, User authenticatedUser) {
+    public Contest create(Contest contest, User authenticatedUser, MultipartFile coverPhotoUpload) throws FileUploadException {
         checkOrganizerPermissions(authenticatedUser);
         checkUniqueness(contest.getTitle());
         validatePhases(contest);
@@ -63,12 +68,18 @@ public class ContestServicesImpl implements ContestServices {
             juries.addAll(userServices.getAllOrganizers());
         } else juries = new HashSet<>(userServices.getAllOrganizers());
         contest.setJuries(juries);
+        if (!coverPhotoUpload.isEmpty()) {
+            contest.setCoverPhoto(uploadPhoto(coverPhotoUpload));
+        }
         return contestRepository.save(contest);
     }
 
     @Override
-    public Contest update(Contest contest, User authenticatedUser) {
+    public Contest update(Contest contest, User authenticatedUser, MultipartFile coverPhotoUpload) throws FileUploadException {
         checkOrganizerPermissions(authenticatedUser);
+        if (!coverPhotoUpload.isEmpty()) {
+            contest.setCoverPhoto(uploadPhoto(coverPhotoUpload));
+        }
         return contestRepository.save(contest);
     }
 
@@ -83,12 +94,8 @@ public class ContestServicesImpl implements ContestServices {
     public void deleteById(Long id, User authenticatedUser) {
         checkOrganizerPermissions(authenticatedUser);
         Contest contest = findById(id);
-
-        contest.getPhotos().forEach(photo -> {
-            ResultEmbed resultEmbed = new ResultEmbed(contest, photo);
-            contestResultsRepository.deleteContestResultsByResultEmbed(resultEmbed);
-        });
-
+        deletePhoto(contest.getCoverPhoto());
+        contestResultsRepository.deleteContestResultsByResultEmbed_Contest(contest);
         contestRepository.deleteById(contest.getId());
     }
 
@@ -138,12 +145,14 @@ public class ContestServicesImpl implements ContestServices {
         checkIfEligibleJury(username);
         juries.add(juryToAdd);
         contest.setJuries(juries);
-        contest.getPhotos().forEach(photo -> {
-            PhotoScore photoScore = new PhotoScore();
-            photoScore.setReviewId(new ReviewId(photo, juryToAdd));
-            photoScore.setScore(3);
-            photo.addScore(photoScore);
-        });
+        if (contest.getPhotos() != null) {
+            contest.getPhotos().forEach(photo -> {
+                PhotoScore photoScore = new PhotoScore();
+                photoScore.setReviewId(new ReviewId(photo, juryToAdd));
+                photoScore.setScore(3);
+                photo.addScore(photoScore);
+            });
+        }
         return contestRepository.save(contest);
     }
 

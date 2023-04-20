@@ -75,6 +75,11 @@ body {
     border-top: none !important;
 }
 
+/*CREATE CONTEST*/
+.spinner-border {
+    display: none;
+}
+
 /*PAGINATION*/
 .page-link {
     position: relative;

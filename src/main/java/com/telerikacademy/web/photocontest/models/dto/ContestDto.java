@@ -3,6 +3,7 @@ package com.telerikacademy.web.photocontest.models.dto;
 import com.telerikacademy.web.photocontest.models.validations.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
@@ -28,4 +29,5 @@ public class ContestDto {
     private String coverPhoto;
     private List<@Size(min = 4, max = 16, message = "Username should be between 4 and 16 symbols", groups = {CreateValidationGroup.class})
             String> juries;
+    private MultipartFile coverPhotoUpload;
 }

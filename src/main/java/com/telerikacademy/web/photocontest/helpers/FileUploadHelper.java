@@ -15,9 +15,11 @@ public class FileUploadHelper {
         if (file.isEmpty()) {
             throw new FileUploadException("Please upload an actual photo");
         }
+
         if (!Objects.requireNonNull(file.getContentType()).contains("image/")) {
             throw new FileUploadException("jpg/jpeg/png file types are only supported");
         }
+
         int lastIndex = Objects.requireNonNull(file.getOriginalFilename()).lastIndexOf('.');
         String fileExtension = lastIndex != -1 ? file.getOriginalFilename().substring(lastIndex) : "";
         String fileName = generateString() + fileExtension;

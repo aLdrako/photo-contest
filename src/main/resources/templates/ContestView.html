@@ -10,11 +10,17 @@
 <main>
 
   <section class="my-3 mx-auto text-center bg-dark container rounded-4 contest-view-section"
-           th:style="${contest.coverPhoto != null ? 'background-image: url(' + contest.coverPhoto + ')' : ''}"
+           th:style="${(contest.coverPhoto != null && contest.coverPhoto.startsWith('http')) ? 'background-image: url(' + contest.coverPhoto + ')' : ''}"
            th:with="phase1=${contest.dateCreated.isBefore(#temporals.createNow()) && contest.phase1.isAfter(#temporals.createNow())},
                     phase2=${contest.phase1.isBefore(#temporals.createNow()) && contest.phase2.isAfter(#temporals.createNow())}">
     <div class="row py-5">
-      <div class="col col-xl-8 mx-auto">
+      <div class="col col-xl-8 mx-auto position-relative">
+        <div class="position-absolute top-0 start-50 translate-middle" th:if="${phase1}">
+          <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+            <button type="button" class="btn btn-outline-warning"><i class="bi bi-pencil-square"></i></button>
+            <button type="button" class="btn btn-outline-danger"><i class="bi bi-x-square"></i></button>
+          </div>
+        </div>
         <h1 class="fw-light neon-text display-1" th:text="${contest.title}">Contest title (design)</h1>
 
         <div class="d-flex justify-content-evenly mt-3">
@@ -157,8 +163,14 @@
         <img class="img-fluid" src="#" alt="#">
       </div>
       <div class="modal-footer">
-        <button class="btn btn-warning copy-btn" type="button"><i class="bi bi-clipboard-fill"></i></button>
-        <a href="#" class="btn btn-warning" target="_blank"><i class="bi bi-image-fill"></i></a>
+        <div class="btn-group">
+          <button class="btn btn-warning" type="button">Copy URL</button>
+          <button class="btn btn-outline-warning copy-btn" type="button"><i class="bi bi-clipboard-fill"></i></button>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-warning" type="button">Open Image</button>
+          <a href="#" class="btn btn-outline-warning" target="_blank"><i class="bi bi-image-fill"></i></a>
+        </div>
         <button class="btn btn-warning rounded-circle p-2 lh-1" type="button" data-bs-dismiss="modal">
           <i class="bi bi-x-lg"></i>
           <span class="visually-hidden">Close</span>

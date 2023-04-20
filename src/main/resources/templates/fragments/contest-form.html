@@ -1,57 +1,67 @@
-<form th:fragment="contest-create" th:action="${requestURI}">
+<form th:fragment="contest-create" method="post" enctype="multipart/form-data"
+      th:action="${requestURI}" th:object="${contest}"
+      th:with="ctxCreate=${context == 'contest-create'},
+               ctxUpdate=${context == 'contest-update'}"
+>
   <div class="form-floating my-3">
-    <input type="text" class="form-control" id="floatingInput" placeholder="Some good title...">
-    <label for="floatingInput">Some good title...</label>
+    <input type="text" class="form-control" id="floatingInputTitle" name="title" placeholder="Some good title..." th:field="*{title}" th:errorclass="is-invalid">
+    <label for="floatingInputTitle">Some good title...</label>
+    <div id="validationTitle" class="invalid-feedback" th:errors="*{title}">Error placeholder</div>
   </div>
   <div class="form-floating mb-3">
-    <select class="form-select" id="floatingSelect">
-      <option selected value="0">Select category</option>
-      <option value="1">One</option>
+    <select class="form-select" id="floatingSelectCategory" name="category" th:field="*{categoryId}" th:errorclass="is-invalid">
+      <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
     </select>
-    <label for="floatingSelect">Click to select category</label>
+    <label for="floatingSelectCategory">Click to select category</label>
+    <div id="validationCategory" class="invalid-feedback" th:errors="*{title}">Error placeholder</div>
   </div>
-  <div class="form-floating mb-3">
-    <div class="input-group mb-3">
-      <span class="input-group-text" id="inputPhotoUploadUrl">Photo URL</span>
-      <input type="text" class="form-control" id="basic-url">
+  <div class="form-floating mb-3 row">
+    <div class="col-md-6 mb-3 mb-md-0">
+        <input type="text" class="form-control" id="inputPhotoURL" placeholder="Photo URL" th:field="*{coverPhoto}">
     </div>
-    <div class="input-group">
-      <input type="file" class="form-control" id="inputPhotoUpload">
-      <button class="btn btn-outline-warning" type="button" id="inputPhotoUploadAddon">Upload</button>
+    <div class="col-md-6">
+      <input type="file" class="form-control" id="inputPhotoUpload" name="file" th:field="*{coverPhotoUpload}" accept=".jpeg, .jpg, .png">
     </div>
   </div>
   <div class="input-group mb-3">
     <span class="input-group-text d-none d-lg-block">Phase 1</span>
     <div class="form-floating">
-      <input type="datetime-local" class="form-control" id="floatingInputGroup1">
-      <label for="floatingInputGroup1">In the future (in range 1 day - 1 month)</label>
+      <input type="datetime-local" class="form-control" id="floatingInputPhase1" th:field="*{phase1}" th:errorclass="is-invalid">
+      <label for="floatingInputPhase1">In the future (in range 1 day - 1 month)</label>
+      <div id="validationPhase1" class="invalid-feedback" th:errors="*{phase1}">Error placeholder</div>
     </div>
     <span class="input-group-text d-none d-lg-block">Phase 2</span>
     <div class="form-floating">
-      <input type="datetime-local" class="form-control" id="floatingInputGroup2">
-      <label for="floatingInputGroup2">After Phase 1 ( in range 1 hour - 1 day)</label>
+      <input type="datetime-local" class="form-control" id="floatingInputPhase2" th:field="*{phase2}" th:errorclass="is-invalid">
+      <label for="floatingInputPhase2">After Phase 1 ( in range 1 hour - 1 day)</label>
+      <div id="validationPhase2" class="invalid-feedback" th:errors="*{phase2}">Error placeholder</div>
     </div>
   </div>
-  <div class="form-floating mb-3" id="invitational">
+  <div class="form-floating mb-3" id="invitational" th:if="${ctxCreate}">
     <div class="list-group">
       <label class="list-group-item d-flex gap-3">
-        <input class="form-check-input flex-shrink-0" type="checkbox" value="false">
+        <input class="form-check-input flex-shrink-0" type="checkbox" value="false" th:field="*{invitational}" th:errorclass="is-invalid">
         <span class="form-checked-content">
-                <strong>Invitational</strong>
-                <small class="text-body-secondary">
-                  Only invited users can participate
-                </small>
-              </span>
+          <strong>Invitational</strong>
+          <small class="text-body-secondary">
+            Only invited users can participate
+          </small>
+        </span>
       </label>
     </div>
+    <div id="validationInvitational" class="invalid-feedback" th:errors="*{invitational}">Error placeholder</div>
   </div>
-  <select class="form-select my-3" multiple size="3">
-    <option selected>Select juries to add</option>
-    <option value="1">One</option>
-    <option value="2">Two</option>
-    <option value="3">Three</option>
-  </select>
-  <button class="btn btn-lg btn-warning mx-auto d-block mt-3" type="submit">Create Contest</button>
+  <div class="form-floating mb-3" th:if="${ctxCreate}">
+    <select class="form-select" id="floatingJurySelect" name="juries" multiple th:field="*{juries}" th:errorclass="is-invalid">
+      <option th:each="jury : ${juries}" th:value="${jury.username}" th:text="${jury.username}"></option>
+    </select>
+    <label for="floatingJurySelect">Select jury (multiple)</label>
+    <div id="validationSelectJury" class="invalid-feedback" th:errors="*{juries}">Error placeholder</div>
+  </div>
+  <button class="btn btn-lg btn-warning mx-auto d-flex align-items-center justify-content-between mt-3" id="submit-button" type="submit">
+    <span class="spinner-border spinner-border" id="spinner-loading" role="status" aria-hidden="true"></span>
+    <span class="px-3">Create Contest</span>
+  </button>
 </form>
 
 <form method="get" action="#"

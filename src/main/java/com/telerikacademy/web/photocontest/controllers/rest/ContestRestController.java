@@ -80,7 +80,7 @@ public class ContestRestController {
         try {
             User authenticatedUser = authenticationHelper.tryGetUser(authorization);
             Contest contest = modelMapper.dtoToObject(contestDto);
-            Contest updatedContest = contestServices.create(contest, authenticatedUser);
+            Contest updatedContest = contestServices.create(contest, authenticatedUser, contestDto.getCoverPhotoUpload());
             return modelMapper.objectToDto(updatedContest);
         } catch (AuthorizationException | UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -88,7 +88,7 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (EntityDuplicateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        } catch (DateTimeException e) {
+        } catch (DateTimeException | FileUploadException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -160,7 +160,7 @@ public class ContestRestController {
         try {
             User authenticatedUser = authenticationHelper.tryGetUser(authorization);
             Contest contest = modelMapper.dtoToObject(id, contestDto);
-            Contest updatedContest = contestServices.update(contest, authenticatedUser);
+            Contest updatedContest = contestServices.update(contest, authenticatedUser, contestDto.getCoverPhotoUpload());
             return modelMapper.objectToDto(updatedContest);
         } catch (AuthorizationException | UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -168,7 +168,7 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (EntityDuplicateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        } catch (DateTimeException e) {
+        } catch (DateTimeException | FileUploadException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

@@ -18,7 +18,7 @@
             <th:block th:each="contest : ${contests}">
                 <div class="col">
                     <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg contest-cards"
-                         th:style="${contest.coverPhoto != null ? 'background-image: url(' + contest.coverPhoto + ')' : ''}">
+                         th:style="${(contest.coverPhoto != null && contest.coverPhoto.startsWith('http')) ? 'background-image: url(' + contest.coverPhoto + ')' : ''}">
                         <div class="overlay">
                             <a href="#" class="btn btn-lg btn-warning btn-overlay rounded-4" th:href="@{/contests/{id}(id=${contest.id})}">View</a>
                         </div>

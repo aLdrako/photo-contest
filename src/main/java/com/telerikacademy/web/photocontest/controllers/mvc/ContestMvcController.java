@@ -15,10 +15,12 @@ import com.telerikacademy.web.photocontest.models.dto.ContestResponseDto;
 import com.telerikacademy.web.photocontest.models.dto.PhotoDto;
 import com.telerikacademy.web.photocontest.models.validations.CreatePhotoViaContestGroup;
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
+import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.CategoryServices;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
+import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -35,6 +37,7 @@ import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.DateTimeException;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +54,7 @@ public class ContestMvcController extends BaseMvcController {
     private final CategoryServices categoryServices;
     private final ContestServices contestServices;
     private final PhotoServices photoServices;
+    private final UserServices userServices;
     private final ModelMapper modelMapper;
 
     @ModelAttribute("categories")
@@ -58,10 +62,20 @@ public class ContestMvcController extends BaseMvcController {
         return categoryServices.findAll();
     }
 
+    @ModelAttribute("photos")
+    public List<Photo> populatePhotos() {
+        return photoServices.getAll();
+    }
+
+    @ModelAttribute("juries")
+    public List<User> populateJuries() {
+        return userServices.getUsersWithJuryPermission();
+    }
+
     @GetMapping
     public String showAllContests(@PageableDefault(size = 9, sort = "id") Pageable pageable,
                                   @RequestParam(required = false) Map<String, String> parameters,
-                                  Model model, HttpServletRequest request, HttpSession session) {
+                                  Model model, HttpSession session, HttpServletRequest request) {
         try {
             authenticationHelper.tryGetUser(session);
             FilterAndSortingHelper.Result result = getResult(parameters, pageable);
@@ -79,7 +93,6 @@ public class ContestMvcController extends BaseMvcController {
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
         }
-
     }
 
     @GetMapping("/{id}")
@@ -116,24 +129,80 @@ public class ContestMvcController extends BaseMvcController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public String createContest(@Validated(CreateValidationGroup.class) @ModelAttribute("contest") ContestDto contestDto,
                                 BindingResult bindingResult, Model model,
                                 HttpSession session, HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            return "ContestCreateView";
-        }
+
+        if (bindingResult.hasErrors()) return "ContestCreateView";
 
         try {
             User user = authenticationHelper.tryGetOrganizer(session);
             Contest contest = modelMapper.dtoToObject(contestDto);
-            contestServices.create(contest, user);
-            return "redirect:/contests/";
+            contestServices.create(contest, user, contestDto.getCoverPhotoUpload());
+            return "redirect:/contests/" + contest.getId();
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
         } catch (UnauthorizedOperationException e) {
             model.addAttribute("error", e.getMessage());
             return "AccessDeniedView";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "NotFoundView";
+        } catch (EntityDuplicateException e) {
+            bindingResult.rejectValue("title", "duplicate_title", e.getMessage());
+            return "ContestCreateView";
+        } catch (DateTimeException e) {
+            if (e.getMessage().startsWith("Phase 1")) {
+                bindingResult.rejectValue("phase1", "phase1_invalid", e.getMessage());
+            } if (e.getMessage().startsWith("Phase 2")) {
+                bindingResult.rejectValue("phase2", "phase2_invalid", e.getMessage());
+            }
+            return "ContestCreateView";
+        } catch (FileUploadException e) {
+            bindingResult.rejectValue("file", "file_invalid", e.getMessage());
+            return "ContestCreateView";
+        }
+    }
+
+    @GetMapping("/{id}/update")
+    public String showUpdateContest(@PathVariable Long id,  Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetOrganizer(session);
+            Contest contest = contestServices.findById(id);
+            ContestDto contestDto = new ContestDto();
+            model.addAttribute("contestDto", contestDto);
+            model.addAttribute("contest", contest);
+            return "ContestUpdateView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
+        }
+    }
+
+    @PostMapping("/{id}/update")
+    public String updateContest(@PathVariable Long id, @Validated(UpdateValidationGroup.class) ContestDto contestDto,
+                                    BindingResult bindingResult, Model model, HttpSession session) {
+        if (bindingResult.hasErrors()) return "ContestUpdateView";
+
+        try {
+            User user = authenticationHelper.tryGetOrganizer(session);
+            Contest contest = modelMapper.dtoToObject(id, contestDto);
+            contestServices.update(contest, user, contestDto.getCoverPhotoUpload());
+            return "redirect:/contests/" + id;
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "NotFoundView";
+        } catch (EntityDuplicateException e) {
+            bindingResult.rejectValue("title", "duplicate_title", e.getMessage());
+            return "ContestUpdateView";
+        } catch (FileUploadException e) {
+            bindingResult.rejectValue("file", "file_invalid", e.getMessage());
+            return "ContestUpdateView";
         }
     }
 

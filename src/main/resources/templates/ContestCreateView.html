@@ -18,7 +18,7 @@
       <div class="bg-dark shadow-sm mx-auto rounded">
         <div class="w-75 p-3 mx-auto">
 
-        <form th:replace="~{fragments/contest-form :: contest-create(context='contest-create')}"></form>
+          <form th:replace="~{fragments/contest-form :: contest-create(context='contest-create')}"></form>
 
         </div>
       </div>
@@ -28,6 +28,7 @@
 
 </main>
 <div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: loading-spinner}"></script>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>
 </body>
 </html>
