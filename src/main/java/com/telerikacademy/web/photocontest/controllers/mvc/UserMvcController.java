@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
@@ -40,12 +41,38 @@ public class UserMvcController extends BaseMvcController{
             authenticationHelper.tryGetOrganizer(session);
             Pageable pageable = PageRequest.of(page, size);
             Page<User> userPage = userServices.findAll(pageable);
-
             model.addAttribute("users", userPage.getContent());
             model.addAttribute("currentPage", page);
             model.addAttribute("sizePage", size);
             model.addAttribute("totalPages", userPage.getTotalPages());
             return "UsersView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
+        }
+    }
+    @GetMapping("/photojunkies")
+    private String showAllPhotoJunkies(@RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "10") int size,
+                                       @RequestParam(required = false) Optional<String> sort,
+                                       @RequestParam(required = false) Optional<String> order,
+                                       Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetOrganizer(session);
+            Pageable pageable = PageRequest.of(page, size);
+            String sortBy = sort.orElse("id");
+            String orderBy = order.orElse("asc");
+            Page<User> userPage = userServices.findAllPhotoJunkies(pageable, sortBy, orderBy);
+
+            model.addAttribute("users", userPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("sort", sortBy);
+            model.addAttribute("order", orderBy);
+            model.addAttribute("sizePage", size);
+            model.addAttribute("totalPages", userPage.getTotalPages());
+            return "PhotoJunkiesView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
         } catch (UnauthorizedOperationException e) {

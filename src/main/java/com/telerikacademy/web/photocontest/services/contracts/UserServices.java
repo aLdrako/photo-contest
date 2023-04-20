@@ -20,4 +20,6 @@ public interface UserServices {
     void delete(Long id, User userFromAuthorization);
     List<User> search(Optional<String> keyword);
     void updatePermissions(User userFromRepo, User userFromAuthorization, PermissionsDto permissionsDto);
+
+    Page<User> findAllPhotoJunkies(Pageable pageable, String sort, String order);
 }

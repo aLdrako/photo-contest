@@ -21,4 +21,6 @@ public interface UserRepository {
     List<User> search(Optional<String> keyword);
 
     Page<User> findAll(Pageable pageable);
+
+    Page<User> findAllJunkies(Pageable pageable, String sortBy, String orderBy);
 }

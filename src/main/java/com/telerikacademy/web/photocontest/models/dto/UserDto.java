@@ -32,7 +32,7 @@ public class UserDto {
     private String username;
     @NotEmpty(message = "Password can't be empty",
             groups = {CreateValidationGroup.class, LoginValidationGroup.class})
-    @Size(min = 5, max = 16, message = "Password size must be between 5 and 16 characters!",
+    @OptionalWithSizeConstraint(min = 5, max = 16, message = "Password size must be between 5 and 16 characters!",
             groups = {CreateValidationGroup.class, UpdateValidationGroup.class, LoginValidationGroup.class})
     private String password;
     @NotEmpty(message = "Password confirmation can't be empty",

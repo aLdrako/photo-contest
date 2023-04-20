@@ -132,6 +132,11 @@ public class UserServicesImpl implements UserServices {
         userRepository.update(userFromRepo);
     }
 
+    @Override
+    public Page<User> findAllPhotoJunkies(Pageable pageable, String sortBy, String orderBy) {
+        return userRepository.findAllJunkies(pageable, sortBy, orderBy);
+    }
+
     private void changeUserProperties(User userFromRepo) {
         userFromRepo.setDeleted(true);
         userFromRepo.setOrganizer(false);

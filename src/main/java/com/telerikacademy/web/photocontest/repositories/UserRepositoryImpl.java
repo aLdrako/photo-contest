@@ -1,11 +1,13 @@
 package com.telerikacademy.web.photocontest.repositories;
 
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.photocontest.models.Ranking;
 import com.telerikacademy.web.photocontest.models.Ranks;
 import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.repositories.contracts.UserRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -14,10 +16,8 @@ import org.springframework.stereotype.Repository;
 import org.hibernate.query.Query;
 
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -136,16 +136,56 @@ public class UserRepositoryImpl implements UserRepository {
     public Page<User> findAll(Pageable pageable) {
         try (Session session = sessionFactory.openSession()) {
             CriteriaQuery<User> query = getUserCriteriaQuery(session);
-
-            TypedQuery<User> typedQuery = session.createQuery(query);
-            typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
-            typedQuery.setMaxResults(pageable.getPageSize());
-            List<User> users = typedQuery.getResultList();
-
-            return new PageImpl<>(users, pageable, getAll().size());
+            return getUsers(pageable, session, query);
         }
 
     }
+
+    @Override
+    public Page<User> findAllJunkies(Pageable pageable, String sortBy, String orderBy) {
+        try (Session session = sessionFactory.openSession()){
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+            Root<User> userRoot = criteriaQuery.from(User.class);
+            Join<User, Ranking> joinRank = userRoot.join("rank", JoinType.LEFT);
+            Expression<String> rankExpression = joinRank.get("name");
+
+            Order order = extractOrder(rankExpression, sortBy, orderBy, criteriaBuilder, userRoot);
+            Predicate predicate = criteriaBuilder.and(criteriaBuilder.equal(userRoot.get("isOrganizer"), false),
+                    criteriaBuilder.equal(userRoot.get("isDeleted"), false));
+
+            criteriaQuery.where(predicate)
+                    .orderBy(order);
+
+            return getUsers(pageable, session, criteriaQuery);
+        }
+    }
+
+    @NotNull
+    private Page<User> getUsers(Pageable pageable, Session session, CriteriaQuery<User> criteriaQuery) {
+        TypedQuery<User> typedQuery = session.createQuery(criteriaQuery);
+        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        typedQuery.setMaxResults(pageable.getPageSize());
+        List<User> users = typedQuery.getResultList();
+
+        return new PageImpl<>(users, pageable, getAll().size());
+    }
+
+    private Order extractOrder(Expression<String> rankExpression, String sortBy, String orderBy,
+                               CriteriaBuilder criteriaBuilder, Root<User> userRoot) {
+        List<String> rankOrder = Arrays.asList("Junkie", "Enthusiast", "Master",
+                "Wise and Benevolent Photo Dictator");
+        return orderBy.equals("desc") ? criteriaBuilder.desc(extractSort(criteriaBuilder,
+                sortBy, rankOrder, rankExpression, userRoot)) : criteriaBuilder.asc(extractSort(criteriaBuilder,
+                sortBy, rankOrder, rankExpression, userRoot));
+    }
+
+    private Expression<?> extractSort(CriteriaBuilder criteriaBuilder, String sortBy, List<String> rankOrder,
+                                      Expression<String> rankExpression, Root<User> userRoot) {
+        return sortBy.equals("rank") ? criteriaBuilder.function("FIELD", String.class, rankExpression,
+                criteriaBuilder.literal(rankOrder)) : userRoot.get("id");
+    }
+
     private CriteriaQuery<User> getUserCriteriaQuery(Session session) {
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<User> query = builder.createQuery(User.class);

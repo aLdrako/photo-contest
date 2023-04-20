@@ -26,13 +26,13 @@ import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.uploa
 public class PhotoServicesImpl implements PhotoServices {
     private static final String PHOTO_ALREADY_UPLOADED_BY_USER = "This user has already uploaded a photo in this contest!";
     private static final String NOT_IN_PHASE_ONE_MESSAGE = "Photos can be uploaded during Phase One of each contest!";
-    private static final String INVALID_REMOVE_MESSAGE = "Only organizers or creator can remove a photo!";
+    private static final String INVALID_REMOVE_MESSAGE = "Only organizers/juries and creators can remove a photo!";
     private static final String NOT_A_JURY_MESSAGE = "You are not a jury in this contest. " +
             "Therefore you cannot post reviews on photos!";
     private static final String DUPLICATE_REVIEW_MESSAGE = "This photo has already been reviewed by jury '%s'!";
     private static final String NOT_IN_PHASE_TWO_MESSAGE = "Reviews can be posted during Phase Two!";
     public static final String NOT_A_PARTICIPANT_MESSAGE = "Only participants in the contest can upload a photo!";
-    public static final String INVALID_PHOTO_DELETION_MESSAGE = "Deleting a photo is only possible during Phase One of a contest!";
+    public static final String INVALID_PHOTO_DELETION_MESSAGE = "Deleting a photo is only possible during Phase One/Two of a contest!";
     private final PhotoRepository photoRepository;
     private final ContestResultsRepository contestResultsRepository;
     private final ContestRepository contestRepository;
@@ -76,10 +76,11 @@ public class PhotoServicesImpl implements PhotoServices {
     }
 
     private void checkDeletePermissions(Photo photo, User user) {
-        if (!photo.getUserCreated().equals(user) && !user.isOrganizer()) {
+        if (!photo.getUserCreated().equals(user) && !user.isOrganizer() &&
+                !photo.getPostedOn().getJuries().contains(user)) {
             throw new UnauthorizedOperationException(INVALID_REMOVE_MESSAGE);
         }
-        if (photo.getPostedOn().getPhase1().isBefore(LocalDateTime.now())) {
+        if (photo.getPostedOn().getPhase2().isBefore(LocalDateTime.now())) {
             throw new UnauthorizedOperationException(INVALID_PHOTO_DELETION_MESSAGE);
         }
     }

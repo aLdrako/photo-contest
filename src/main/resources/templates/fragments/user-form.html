@@ -69,7 +69,19 @@
   <button class="w-100 btn btn-lg btn-primary" type="submit" name="action" value="update" th:if="${ctxUpdate}">
     Update
   </button>
+</form>
 
-
-
+<form method="get" action="#"
+      th:fragment="user-form-sort" th:action="${requestURI}">
+  <div class="input-group input-group">
+    <select class="form-select" id="inputGroupSort" name="sort">
+      <option selected value="">Sort by</option>
+      <option value="rank">Rank</option>
+    </select>
+    <select class="form-select" id="inputGroupOrder" name="order">
+      <option selected value="acs">Ascending</option>
+      <option value="desc">Descending</option>
+    </select>
+    <button class="btn btn-warning" type="submit">Sort</button>
+  </div>
 </form>

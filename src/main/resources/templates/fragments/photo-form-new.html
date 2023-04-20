@@ -1,19 +1,24 @@
 <form th:fragment="photo-form-new" action="#" th:action="${requestURI}" method="post"
       enctype="multipart/form-data" th:object="${photo}">
-  <div>
-    <label for="title">Title:</label>
-    <input type="text" id="title" name="title" th:field="*{title}">
-    <label  th:errors="*{title}">Name error placeholder</label>
+  <div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label">Title</label>
+    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Title" th:field="*{title}">
+    <label class="text-danger" th:errors="*{title}">Name error placeholder</label>
   </div>
-  <div>
-    <label for="story">Story:</label>
-    <textarea id="story" name="story" rows="10" th:field="*{story}"></textarea>
-    <label th:errors="*{story}">Name error placeholder</label>
+  <div class="mb-3">
+    <label class="form-label">Story</label>
+    <div id="editor" style=height:200px th:utext="${story}"></div>
+    <input type="hidden" id="floatingContent" style="height: 100px" th:errorclass="is-invalid"
+           th:field="*{story}">
+    <label class="text-danger" th:errors="*{story}">Name error placeholder</label>
   </div>
-  <div>
-    <label for="file">File:</label>
-    <input type="file" id="file" name="file" th:field="*{file}">
-    <label th:errors="*{file}">Name error placeholder</label>
+  <div class="mb-3">
+    <label for="formFile" class="form-label">Photo file</label>
+    <input class="form-control" type="file" id="formFile" th:field="*{file}">
+    <label class="text-danger" th:errors="*{file}">Name error placeholder</label>
   </div>
-  <button type="submit">Submit</button>
+  <button class="btn btn-success input-group-text" type="submit" name="action" value="save"
+          style="width: 100px" onclick="onSubmit()">Save
+  </button>
+  <script th:replace="~{fragments/scripts :: quilljs}"></script>
 </form>
