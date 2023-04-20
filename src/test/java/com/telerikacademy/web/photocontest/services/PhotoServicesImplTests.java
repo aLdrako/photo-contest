@@ -107,8 +107,7 @@ public class PhotoServicesImplTests {
         User user = mockPhoto.getUserCreated();
         mockPhoto.getPostedOn().setPhase1(LocalDateTime.now().plusDays(1L));
 
-        Mockito.doNothing().when(mockContestResultsRepository).deleteContestResultsByResultEmbed(new ResultEmbed(mockPhoto.getPostedOn(),
-                mockPhoto));
+        Mockito.doNothing().when(mockContestResultsRepository).deleteContestResultsByResultEmbed_Photo(mockPhoto);
         // Act
         services.delete(mockPhoto, user, mockPhoto.getPostedOn());
         // Assert
@@ -121,8 +120,7 @@ public class PhotoServicesImplTests {
         Photo mockPhoto = createMockPhoto();
         User organizer = createMockOrganizer();
         mockPhoto.getPostedOn().setPhase1(LocalDateTime.now().plusDays(1L));
-        Mockito.doNothing().when(mockContestResultsRepository).deleteContestResultsByResultEmbed(new ResultEmbed(mockPhoto.getPostedOn(),
-                mockPhoto));
+        Mockito.doNothing().when(mockContestResultsRepository).deleteContestResultsByResultEmbed_Photo(mockPhoto);
         // Act
         services.delete(mockPhoto, organizer, mockPhoto.getPostedOn());
         // Assert
