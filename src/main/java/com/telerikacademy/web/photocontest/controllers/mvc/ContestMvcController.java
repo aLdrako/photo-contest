@@ -300,7 +300,7 @@ public class ContestMvcController extends BaseMvcController {
             photo.setPostedOn(contest);
             photo.setUserCreated(user);
             photoServices.create(photo, photoDto.getFile());
-            return "redirect:/contests";
+            return "redirect:/contests/" + id;
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";

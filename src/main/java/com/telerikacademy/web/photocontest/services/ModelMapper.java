@@ -108,7 +108,8 @@ public class ModelMapper {
         User userFromRepo = userServices.getById(id);
         if (userDto.getFirstName() != null) userFromRepo.setFirstName(userDto.getFirstName());
         if (userDto.getLastName() != null) userFromRepo.setLastName(userDto.getLastName());
-        if (userDto.getPassword() != null) userFromRepo.setPassword(userDto.getPassword());
+        if (userDto.getPassword() != null && !userDto.getPassword().isEmpty())
+            userFromRepo.setPassword(userDto.getPassword());
         if (userDto.getEmail() != null) userFromRepo.setEmail(userDto.getEmail());
 
         return userFromRepo;

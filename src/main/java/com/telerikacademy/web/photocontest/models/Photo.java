@@ -29,7 +29,7 @@ public class Photo {
     @JoinColumn(name = "user_id")
     private User userCreated;
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "contest_id")
     private Contest postedOn;
     @JsonIgnore

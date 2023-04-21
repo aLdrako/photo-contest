@@ -6,10 +6,8 @@
     <label class="text-danger" th:errors="*{title}">Name error placeholder</label>
   </div>
   <div class="mb-3">
-    <label class="form-label">Story</label>
-    <div id="editor" style=height:200px th:utext="${story}"></div>
-    <input type="hidden" id="floatingContent" style="height: 100px" th:errorclass="is-invalid"
-           th:field="*{story}">
+    <label class="form-label" for="floatingContent">Story</label>
+    <textarea class="form-control" id="floatingContent" placeholder="Story" th:field="*{story}"></textarea>
     <label class="text-danger" th:errors="*{story}">Name error placeholder</label>
   </div>
   <div class="mb-3">
