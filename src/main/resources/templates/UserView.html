@@ -9,7 +9,8 @@
 <body class="user-view d-flex flex-column min-vh-100"
       th:with="permissionPath=${requestURI + '/permissions'},
                updatePath=${requestURI + '/update'},
-               deletePath=${requestURI + '/delete'}">
+               deletePath=${requestURI + '/delete'},
+               userMatch=${session.currentUser == user.username}">
 
 <header th:replace="~{fragments/navbar :: header(context='user-profile')}"></header>
 
@@ -47,6 +48,8 @@
                                                                             title="Update settings"></i></a>
           <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger"><i
                   class="bi bi-person-fill-slash" title="Delete account"></i></a>
+          <a th:if="${userMatch}" href="#" class="btn btn-success" th:href="@{/auth/logout}">
+            Logout</a>
         </div>
       </div>
     </div>
