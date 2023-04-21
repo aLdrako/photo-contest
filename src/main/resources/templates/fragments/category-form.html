@@ -1,0 +1,13 @@
+<form th:fragment="category-form" th:action="${requestURI}" method="post" th:object="${category}"
+      th:with="createCategory=${requestURI.endsWith('/create')},
+                   updateCategory=${requestURI.endsWith('/update')}"
+>
+  <div class="form-floating">
+    <div class="input-group">
+      <input type="text" class="form-control" id="floatingCategory" placeholder="Category" name="name"
+             th:errorclass="is-invalid" th:field="*{name}">
+      <button class="btn btn-lg btn-warning" type="submit" th:text="${createCategory ? 'Create' : 'Update'}">Submit (design)</button>
+      <div id="validationCategory" class="invalid-feedback" th:errors="*{name}">Error placeholder</div>
+    </div>
+  </div>
+</form>
