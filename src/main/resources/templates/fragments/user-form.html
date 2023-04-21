@@ -4,12 +4,22 @@
                ctxRegister=${context == 'create-user'},
                ctxUpdate=${context == 'update-user'},
                ctxLogin=${context == 'login'},
+               ctxForgottenPassword=${context == 'forgotten-password'},
+               ctxChangePassword=${context == 'change-password'},
                userMatch=${session.currentUser == session.updatedUserUsername}">
 
   <h1 class="h3 mb-3 fw-normal"  th:if="${ctxRegister}" th:text="#{user-form.create}">Create User</h1>
   <h1 class="h3 mb-3 fw-normal"  th:if="${ctxUpdate}" th:text="#{user-form.update}">Update User</h1>
   <h1 class="h3 mb-3 fw-normal"  th:if="${ctxLogin}" th:text="#{user-form.login}">Login</h1>
   <h1 class="h3 mb-3 fw-normal" th:if="${permissionsPath}" th:text="#{user-form.permissions}">Permissions</h1>
+  <h1 class="h3 mb-3 fw-normal"  th:if="${ctxForgottenPassword}" th:text="#{user-form.forgotten.password}">
+    Forgotten Password</h1>
+  <p class="fw-lighter fst-italic" th:if="${ctxForgottenPassword}">
+    (Please enter the username of your account!)</p>
+  <h1 class="h3 mb-3 fw-normal"  th:if="${ctxChangePassword}" th:text="#{user-form.change.password}">
+    Change Password</h1>
+  <p class="fw-lighter fst-italic" th:if="${ctxChangePassword}">
+    (Please enter your new password!)</p>
 
   <div class="form-floating" th:if="${(ctxRegister || ctxUpdate) && !permissionsPath}">
     <input type="text" class="form-control" id="floatingFirstName" placeholder="First Name" name="firstName"
@@ -29,19 +39,25 @@
     <label for="floatingEmail">Email</label>
     <div id="validationEmail" class="invalid-feedback" th:errors="*{email}">Error placeholder</div>
   </div>
-  <div class="form-floating" th:if="${ctxRegister || ctxLogin}">
+  <div class="form-floating" th:if="${ctxRegister || ctxLogin || ctxForgottenPassword}">
     <input type="text" class="form-control" id="floatingUsername" placeholder="Username" name="username"
            th:errorclass="is-invalid" th:field="*{username}">
     <label for="floatingUsername">Username</label>
     <div id="validationUsername" class="invalid-feedback" th:errors="*{username}">Error placeholder</div>
   </div>
-  <div class="form-floating" th:if="${(!permissionsPath && userMatch) || ctxLogin || ctxRegister}">
+  <div class="form-floating" th:if="${(!permissionsPath && userMatch && !ctxForgottenPassword) || ctxLogin || ctxRegister ||
+  ctxChangePassword}">
     <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password"
            th:errorclass="is-invalid" th:field="*{password}">
     <label for="floatingPassword" th:text="${ctxUpdate && userMatch ? 'Password (optional)' : 'Password'}">Password</label>
     <div id="validationPassword" class="invalid-feedback" th:errors="*{password}">Error placeholder</div>
   </div>
-  <div class="form-floating" th:if="${(!permissionsPath && userMatch && !ctxLogin) || ctxRegister}">
+  <div th:if="${ctxLogin}">
+    <a href="#" th:href="@{/auth/register}">Register</a>
+    <a href="#" th:href="@{/auth/forgottenpassword}">Forgotten Password</a>
+  </div>
+  <div class="form-floating" th:if="${(!permissionsPath && userMatch && !ctxLogin && !ctxForgottenPassword) || ctxRegister ||
+  ctxChangePassword}">
     <input type="password" class="form-control" id="floatingPasswordConfirm" placeholder="Password Confirmation"
            name="passwordConfirm" th:errorclass="is-invalid" th:field="*{passwordConfirm}">
     <label for="floatingPasswordConfirm">Password (confirmation)</label>
@@ -68,6 +84,9 @@
   </button>
   <button class="w-100 btn btn-lg btn-warning" type="submit" name="action" value="update" th:if="${ctxUpdate}">
     Update
+  </button>
+  <button class="w-100 btn btn-lg btn-warning" type="submit" name="action" value="update" th:if="${ctxForgottenPassword || ctxChangePassword}">
+    Submit
   </button>
 </form>
 

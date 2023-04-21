@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.*;
 @Data
 @EqualFields(baseField = "password", matchField = "passwordConfirm", message = "Passwords must be equal!",
-        groups = {CreateValidationGroup.class, UpdateValidationGroup.class})
+        groups = {CreateValidationGroup.class, UpdateValidationGroup.class, ChangePasswordGroup.class})
 public class UserDto {
     @NotEmpty(message = "First name can't be empty",
             groups = {CreateValidationGroup.class})
@@ -31,12 +31,13 @@ public class UserDto {
                     LoginValidationGroup.class})
     private String username;
     @NotEmpty(message = "Password can't be empty",
-            groups = {CreateValidationGroup.class, LoginValidationGroup.class})
+            groups = {CreateValidationGroup.class, LoginValidationGroup.class, ChangePasswordGroup.class})
     @OptionalWithSizeConstraint(min = 5, max = 16, message = "Password size must be between 5 and 16 characters!",
-            groups = {CreateValidationGroup.class, UpdateValidationGroup.class, LoginValidationGroup.class})
+            groups = {CreateValidationGroup.class, UpdateValidationGroup.class, LoginValidationGroup.class,
+                    ChangePasswordGroup.class})
     private String password;
     @NotEmpty(message = "Password confirmation can't be empty",
-            groups = {CreateValidationGroup.class})
+            groups = {CreateValidationGroup.class, ChangePasswordGroup.class})
     private String passwordConfirm;
     private boolean organizer;
     

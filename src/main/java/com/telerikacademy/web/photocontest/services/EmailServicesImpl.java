@@ -21,9 +21,9 @@ public class EmailServicesImpl implements EmailServices {
     private final JavaMailSender emailSender;
     @Override
     public void sendForgottenPasswordEmail(User recipient) throws MessagingException, IOException {
-        if (!isDeliverable(recipient.getEmail())) {
-            throw new MessagingException("Email does not exist! Please change your email to an existing one!");
-        }
+        //if (!isDeliverable(recipient.getEmail())) {
+        //    throw new MessagingException("Email does not exist! Please change your email to an existing one!");
+        //}
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(recipient.getEmail());
@@ -33,12 +33,13 @@ public class EmailServicesImpl implements EmailServices {
                 
                 It appears that you have forgotten your password.
                 Here's a link to reset it:
-                *link*
+               
+                http://localhost:8080/auth/changepassword/%s
                 
                 Best Regards,
                 Photo Contest Team!
                     
-                """, recipient.getUsername()));
+                """, recipient.getUsername(), recipient.getUsername()));
 
         emailSender.send(message);
     }
