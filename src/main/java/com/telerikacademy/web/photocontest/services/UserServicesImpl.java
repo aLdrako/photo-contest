@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import static com.telerikacademy.web.photocontest.helpers.RandomStringGenerator.generateString;
+
 @Service
 @AllArgsConstructor
 public class UserServicesImpl implements UserServices {
@@ -147,11 +149,6 @@ public class UserServicesImpl implements UserServices {
         userFromRepo.setEmail(generateString());
         userFromRepo.setPoints(-1);
         userFromRepo.setRank(rankingServices.getJunkie());
-    }
-    private String generateString() {
-        return new Random().ints(48, 123)
-                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97)).limit(15)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
     }
 
 }

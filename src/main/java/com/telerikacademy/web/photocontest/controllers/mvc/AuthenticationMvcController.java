@@ -97,31 +97,38 @@ public class AuthenticationMvcController extends BaseMvcController {
     @PostMapping("/forgottenpassword")
     public String handleForgottenPassword(Model model, @Validated(EnlistUserValidationGroup.class)
                                             @ModelAttribute("user") UserDto userDTO,
-                                          BindingResult bindingResult) {
+                                          BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) return "ForgottenPasswordView";
         try {
             User user = userServices.getByUsername(userDTO.getUsername());
-            emailServices.sendForgottenPasswordEmail(user);
+            emailServices.sendForgottenPasswordEmail(user, session);
             return "EmailSentView";
         } catch (EntityNotFoundException | MessagingException | IOException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
         }
     }
-    @GetMapping("/changepassword/{username}")
-    public String showChangePasswordPage(@PathVariable String username, Model model) {
+    @GetMapping("/changepassword/{urlKey}")
+    public String showChangePasswordPage(@PathVariable String urlKey, HttpSession session, Model model) {
         try {
-            User user = userServices.getByUsername(username);
-            UserDto userDto = modelMapper.objectToDto(user);
-            model.addAttribute("user", userDto);
-            return "ChangePassword";
+            if (Objects.equals(session.getAttribute("urlKey"), urlKey)) {
+                UserDto userDto = modelMapper
+                        .objectToDto((User) Objects.requireNonNull(session
+                                .getAttribute("recipient")));
+                model.addAttribute("user", userDto);
+                return "ChangePassword";
+            } else {
+                model.addAttribute("error", "Page Not Found!");
+                return "NotFoundView";
+            }
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
         }
     }
-    @PostMapping("/changepassword/{username}")
-    public String handleChangePassword(@PathVariable String username, Model model,
+    @PostMapping("/changepassword/{urlKey}")
+    public String handleChangePassword(@PathVariable String urlKey, Model model,
+                                       HttpSession session,
                                        @Validated(ChangePasswordGroup.class)
                                        @ModelAttribute("user") UserDto userDTO,
                                        BindingResult bindingResult) {
@@ -131,10 +138,18 @@ public class AuthenticationMvcController extends BaseMvcController {
         }
         if (bindingResult.hasErrors()) return "ChangePassword";
         try {
-            User user = userServices.getByUsername(username);
-            user.setPassword(userDTO.getPassword());
-            userServices.update(user, user);
-            return "redirect:/auth/login";
+            if (Objects.equals(session.getAttribute("urlKey"), urlKey)) {
+                User user = (User) Objects.requireNonNull(session
+                        .getAttribute("recipient"));
+                user.setPassword(userDTO.getPassword());
+                userServices.update(user, user);
+                session.removeAttribute("urlKey");
+                session.removeAttribute("recipient");
+                return "redirect:/auth/login";
+            } else {
+                model.addAttribute("error", "Page Not Found!");
+                return "NotFoundView";
+            }
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";

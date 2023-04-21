@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -43,10 +45,10 @@ public class UserRestController {
     private final ModelMapper modelMapper;
     private final EmailServices emailServices;
     @GetMapping("/{id}/password")
-    public void sendEmail(@PathVariable Long id) {
+    public void sendEmail(@PathVariable Long id, HttpSession session) {
         try {
             User user = userServices.getById(id);
-            emailServices.sendForgottenPasswordEmail(user);
+            emailServices.sendForgottenPasswordEmail(user, session);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (MessagingException | IOException e) {

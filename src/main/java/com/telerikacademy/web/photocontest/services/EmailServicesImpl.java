@@ -10,17 +10,21 @@ import org.json.JSONObject;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+
+import static com.telerikacademy.web.photocontest.helpers.RandomStringGenerator.generateString;
 
 @Service
 @AllArgsConstructor
 public class EmailServicesImpl implements EmailServices {
     private final JavaMailSender emailSender;
     @Override
-    public void sendForgottenPasswordEmail(User recipient) throws MessagingException, IOException {
+    public void sendForgottenPasswordEmail(User recipient, HttpSession session) throws MessagingException {
         //if (!isDeliverable(recipient.getEmail())) {
         //    throw new MessagingException("Email does not exist! Please change your email to an existing one!");
         //}
@@ -28,6 +32,7 @@ public class EmailServicesImpl implements EmailServices {
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(recipient.getEmail());
         helper.setSubject("Forgotten Password Reset");
+        String uniqueUrlKey = generateString();
         helper.setText(String.format("""
                 Hello, '%s'
                 
@@ -39,8 +44,9 @@ public class EmailServicesImpl implements EmailServices {
                 Best Regards,
                 Photo Contest Team!
                     
-                """, recipient.getUsername(), recipient.getUsername()));
-
+                """, recipient.getUsername(), uniqueUrlKey));
+        session.setAttribute("urlKey", uniqueUrlKey);
+        session.setAttribute("recipient", recipient);
         emailSender.send(message);
     }
 
