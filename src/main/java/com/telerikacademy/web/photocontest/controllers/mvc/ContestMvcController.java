@@ -13,8 +13,10 @@ import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.models.dto.ContestDto;
 import com.telerikacademy.web.photocontest.models.dto.ContestResponseDto;
 import com.telerikacademy.web.photocontest.models.dto.PhotoDto;
+import com.telerikacademy.web.photocontest.models.dto.UserDto;
 import com.telerikacademy.web.photocontest.models.validations.CreatePhotoViaContestGroup;
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
+import com.telerikacademy.web.photocontest.models.validations.EnlistUserValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.CategoryServices;
@@ -28,12 +30,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -224,17 +228,57 @@ public class ContestMvcController extends BaseMvcController {
         }
     }
 
-    // TODO finish method
-    @GetMapping("/{id}/add-participant")
+    @GetMapping({
+            "/{id}/add-jury",
+            "/{id}/add-participant"
+    })
     public String enlistUser(@PathVariable Long id, Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetOrganizer(session);
+            model.addAttribute("user", new UserDto());
+            return "ContestEnlistView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
+        }
+    }
+
+    @PostMapping({
+            "/{id}/add-jury",
+            "/{id}/add-participant"
+    })
+    public String enlistUser(@PathVariable Long id, @Validated(EnlistUserValidationGroup.class) @ModelAttribute("user") UserDto userDto,
+                             BindingResult bindingResult, Model model, HttpSession session, HttpServletRequest request) {
+
+        if (bindingResult.hasErrors()) return "ContestEnlistView";
+
         try {
             User organizer = authenticationHelper.tryGetOrganizer(session);
             Contest contest = contestServices.findById(id);
-            Contest addedParticipant = contestServices.addParticipant(contest, organizer, "Asd");
-            model.addAttribute("contest", addedParticipant);
+            Contest updatedContest;
+            if (request.getRequestURI().endsWith("/add-jury")) {
+                updatedContest = contestServices.addJury(contest, organizer, userDto.getUsername());
+            } else if (request.getRequestURI().endsWith("/add-participant")) {
+                updatedContest = contestServices.addParticipant(contest, organizer, userDto.getUsername());
+            } else {
+                model.addAttribute("error", "Invalid Endpoint!");
+                return "NotFoundView";
+            }
+            model.addAttribute("contest", updatedContest);
             return "redirect:/contests/" + id;
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
+        } catch (EntityNotFoundException e) {
+            bindingResult.rejectValue("username",  "user_not_found", e.getMessage());
+            return "ContestEnlistView";
+        } catch (EntityDuplicateException e) {
+            bindingResult.rejectValue("username", "duplicate_user", e.getMessage());
+            return "ContestEnlistView";
+        } catch (UnauthorizedOperationException e) {
+            bindingResult.rejectValue("username", "user_cannot_participate", e.getMessage());
+            return "ContestEnlistView";
         }
     }
 

@@ -1,5 +1,5 @@
-<form th:fragment="contest-create" method="post" enctype="multipart/form-data"
-      th:action="${requestURI}" th:object="${contest}"
+<form  method="post" enctype="multipart/form-data"
+      th:fragment="contest-create" th:action="${requestURI}" th:object="${contest}"
       th:with="ctxCreate=${context == 'contest-create'},
                ctxUpdate=${context == 'contest-update'}"
 >
@@ -64,8 +64,25 @@
   </button>
 </form>
 
+
+<form th:fragment="contest-enlist" th:action="${requestURI}" method="post" th:object="${user}"
+      th:with="addJury=${requestURI.endsWith('/add-jury')},
+                   addParticipant=${requestURI.endsWith('/add-participant')}"
+>
+  <div class="form-floating">
+    <div class="input-group">
+      <input type="text" class="form-control" id="floatingUsername" placeholder="Username" name="username"
+             th:errorclass="is-invalid" th:field="*{username}">
+      <button class="btn btn-lg btn-warning" type="submit" th:text="${addJury ? 'Add Jury' : 'Add Participant'}">Add User (design)</button>
+      <div id="validationUsername" class="invalid-feedback" th:errors="*{username}">Error placeholder</div>
+    </div>
+  </div>
+</form>
+
+
 <form method="get" action="#"
-      th:fragment="contest-form-sort" th:action="${requestURI}">
+      th:fragment="contest-form-sort" th:action="${requestURI}"
+>
   <div class="input-group input-group">
     <input type="text" class="form-control" placeholder="Title" name="title">
     <input type="text" class="form-control" placeholder="Category" name="category">

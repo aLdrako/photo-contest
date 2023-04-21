@@ -29,9 +29,9 @@ import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.uploa
 @AllArgsConstructor
 public class ContestServicesImpl implements ContestServices {
     private static final String UNAUTHORIZED_MANIPULATION_MESSAGE = "Only users with Organizer role can create, update, delete contests or add juries and participants!";
-    private static final String USER_ALREADY_IN_LIST_MESSAGE = "Current user already in the list of participants or juries!";
-    private static final String USER_AS_JURY_NOT_ELIGIBLE_MESSAGE = "Only users with ranking 'Master' or above are eligible to be selected as jury!";
-    private static final String JURI_AS_PARTICIPANT_NOT_ELIGIBLE_MESSAGE = "Juries cannot participate within the same contest where they are jury!";
+    private static final String USER_ALREADY_IN_LIST_MESSAGE = "User %s already in the list of participants or juries!";
+    private static final String USER_AS_JURY_NOT_ELIGIBLE_MESSAGE = "User %s must be with ranking 'Master' or above to be eligible for jury role!";
+    private static final String JURI_AS_PARTICIPANT_NOT_ELIGIBLE_MESSAGE = "Jury %s cannot participate within the same contest where he is jury!";
     private static final String PHASE_1_VALIDATION_MESSAGE = "Phase 1 should be in the future in bounds of one day to one month";
     private static final String PHASE_2_VALIDATION_MESSAGE = "Phase 2 should be after Phase 1 in bounds of one hour to one day";
     private static final String INVITATIONAL_CONTEST_MESSAGE = "This contest is Invitational, only Organizers can invite participants";
@@ -199,19 +199,19 @@ public class ContestServicesImpl implements ContestServices {
 
     private static void checkIfEnlisted(Set<User> participantsOrJuries, String username) {
         if (participantsOrJuries.stream().anyMatch(user -> user.getUsername().equals(username))) {
-            throw new EntityDuplicateException(USER_ALREADY_IN_LIST_MESSAGE);
+            throw new EntityDuplicateException(String.format(USER_ALREADY_IN_LIST_MESSAGE, username));
         }
     }
 
     private static void checkIfIsJury(Contest contest, User authenticatedUser) {
         if (contest.getJuries().stream().anyMatch(user -> user.getUsername().equals(authenticatedUser.getUsername()))) {
-            throw new UnauthorizedOperationException(JURI_AS_PARTICIPANT_NOT_ELIGIBLE_MESSAGE);
+            throw new UnauthorizedOperationException(String.format(JURI_AS_PARTICIPANT_NOT_ELIGIBLE_MESSAGE, authenticatedUser.getUsername()));
         }
     }
 
     private void checkIfEligibleJury(String username) {
         if (userServices.getUsersWithJuryPermission().stream().noneMatch(user -> user.getUsername().equals(username))) {
-            throw new UnauthorizedOperationException(USER_AS_JURY_NOT_ELIGIBLE_MESSAGE);
+            throw new UnauthorizedOperationException(String.format(USER_AS_JURY_NOT_ELIGIBLE_MESSAGE, username));
         }
     }
 

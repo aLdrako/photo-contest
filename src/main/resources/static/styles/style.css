@@ -75,9 +75,14 @@ body {
     border-top: none !important;
 }
 
-/*CREATE CONTEST*/
+/*CREATE/UPDATE CONTEST*/
 .spinner-border {
     display: none;
+}
+
+.contest-create-view .invalid-feedback,
+.contest-update-view .invalid-feedback {
+    color: #ffc107 !important;
 }
 
 /*PAGINATION*/

@@ -57,7 +57,9 @@
           <button type="button" class="btn btn-lg btn-warning" data-bs-toggle="modal" data-bs-target="#photoWinners" th:if="${contest.isFinished}">Winners</button>
           <a type="button" class="btn btn-lg btn-warning" th:if="${phase1 && !contest.invitational && !contest.isFinished && !contest.participants.contains(session.user.username)}" th:href="@{${requestURI} + '/join'}">Participate</a>
           <a type="button" class="btn btn-lg btn-warning disabled" th:if="${phase1 && contest.invitational && !contest.isFinished && !session.user.organizer}">Invitational</a>
-          <a type="button" class="btn btn-lg btn-warning" th:if="${phase1 && contest.invitational && !contest.isFinished && session.user.organizer}" th:href="@{${requestURI} + '/add-participant'}">Invite</a>
+          <button type="button" class="btn btn-lg btn-warning disabled" th:if="${phase1 && contest.invitational && !contest.isFinished && session.user.organizer}">Invite</button>
+          <a type="button" class="btn btn-lg btn-outline-warning" th:if="${phase1 && contest.invitational && !contest.isFinished && session.user.organizer}" th:href="@{${requestURI} + '/add-participant'}">User</a>
+          <a type="button" class="btn btn-lg btn-outline-warning" th:if="${phase1 && contest.invitational && !contest.isFinished && session.user.organizer}" th:href="@{${requestURI} + '/add-jury'}">Jury</a>
           <a type="button" class="btn btn-lg btn-warning" th:if="${phase1 && !contest.isFinished && contest.participants.contains(session.user.username)}" th:href="@{${requestURI} + '/photos/new'}">Upload</a>
           <button type="button" class="btn btn-lg btn-dark disabled text-warning" th:if="${phase1 && !phase2}" th:text="${phase1Ends}">Closed in (design)</button>
           <button type="button" class="btn btn-lg btn-warning disabled" th:if="${phase2}">Scoring</button>
