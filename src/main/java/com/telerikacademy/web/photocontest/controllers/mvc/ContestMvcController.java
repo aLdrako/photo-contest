@@ -1,19 +1,14 @@
 package com.telerikacademy.web.photocontest.controllers.mvc;
 
+import com.sun.net.httpserver.HttpsServer;
 import com.telerikacademy.web.photocontest.exceptions.AuthorizationException;
 import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.helpers.AuthenticationHelper;
 import com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper;
-import com.telerikacademy.web.photocontest.models.Category;
-import com.telerikacademy.web.photocontest.models.Contest;
-import com.telerikacademy.web.photocontest.models.Photo;
-import com.telerikacademy.web.photocontest.models.User;
-import com.telerikacademy.web.photocontest.models.dto.ContestDto;
-import com.telerikacademy.web.photocontest.models.dto.ContestResponseDto;
-import com.telerikacademy.web.photocontest.models.dto.PhotoDto;
-import com.telerikacademy.web.photocontest.models.dto.UserDto;
+import com.telerikacademy.web.photocontest.models.*;
+import com.telerikacademy.web.photocontest.models.dto.*;
 import com.telerikacademy.web.photocontest.models.validations.CreatePhotoViaContestGroup;
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.EnlistUserValidationGroup;
@@ -42,6 +37,7 @@ import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.time.DateTimeException;
 import java.util.List;
 import java.util.Map;
@@ -377,12 +373,51 @@ public class ContestMvcController extends BaseMvcController {
             return "NotFoundView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
-        } catch (EntityDuplicateException e) {
-
-            return "PhotoCreateView";
         } catch (UnauthorizedOperationException e) {
             model.addAttribute("error", e.getMessage());
             return "AccessDeniedView";
+        }
+    }
+    @GetMapping("/{contestId}/photos/{photoId}/review")
+    public String showCreateReview(@PathVariable Long contestId, @PathVariable Long photoId,
+                                   Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetUser(session);
+            photoServices.getPhotoByContestId(photoId, contestId);
+            model.addAttribute("review", new PhotoReviewDto());
+            return "CreateReviewView";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "NotFoundView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+    }
+    @PostMapping("/{contestId}/photos/{photoId}/review")
+    public String handleCreateReview(@PathVariable Long contestId, @PathVariable Long photoId,
+                                     Model model, HttpSession session,
+                                     @Valid @ModelAttribute("review") PhotoReviewDto photoReviewDto,
+                                     BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) return "CreateReviewView";
+
+        try {
+            User user = authenticationHelper.tryGetUser(session);
+            Photo photo = photoServices.getPhotoByContestId(photoId, contestId);
+            PhotoScore photoScore = modelMapper.dtoToObject(photoReviewDto);
+            PhotoReviewDetails photoReviewDetails = modelMapper.dtoToReviewDetails(photoReviewDto);
+            photoServices.postReview(photoScore, photo, user, photoReviewDetails);
+            return "redirect:/contests/" + contestId;
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "NotFoundView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
+        } catch (EntityDuplicateException e) {
+            bindingResult.rejectValue("comment", "review_exists", e.getMessage());
+            return "CreateReviewView";
         }
     }
 }

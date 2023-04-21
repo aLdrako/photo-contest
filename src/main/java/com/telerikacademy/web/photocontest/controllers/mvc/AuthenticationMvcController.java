@@ -36,7 +36,7 @@ public class AuthenticationMvcController extends BaseMvcController {
     private final EmailServices emailServices;
 
     @GetMapping("/login")
-    public String showLoginPage(Model model, HttpSession session) {
+    public String showLoginPage(Model model) {
         model.addAttribute("user", new UserDto());
         return "LoginView";
     }

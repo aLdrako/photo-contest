@@ -85,12 +85,8 @@ public class PhotoRestController {
         try {
             User user = authenticationHelper.tryGetUser(authorization);
             Photo photo = photoServices.getById(id);
-            ReviewId reviewId = new ReviewId(photo, user);
-
             PhotoScore photoScore = modelMapper.dtoToObject(photoReviewDto);
             PhotoReviewDetails photoReviewDetails = modelMapper.dtoToReviewDetails(photoReviewDto);
-            photoScore.setReviewId(reviewId);
-            photoReviewDetails.setReviewId(reviewId);
             photoServices.postReview(photoScore, photo, user, photoReviewDetails);
             photoReviewDetails.setPhotoScore(photoScore);
             return modelMapper.objectToDto(photoReviewDetails);

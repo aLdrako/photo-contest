@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title th:text="#{page.review}">Photo Contest</title>
+  <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+<body class="register-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='create-photo-review')}"></header>
+<div class="container mt-5 mb-4">
+  <form th:replace="~{fragments/photo-review-form :: photo-review-form}"></form>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+</body>
+</html>

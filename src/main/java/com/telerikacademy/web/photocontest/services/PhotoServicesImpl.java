@@ -94,6 +94,9 @@ public class PhotoServicesImpl implements PhotoServices {
     @Override
     public void postReview(PhotoScore photoScore, Photo photo, User user,
                            PhotoReviewDetails photoReviewDetails) {
+        ReviewId reviewId = new ReviewId(photo, user);
+        photoScore.setReviewId(reviewId);
+        photoReviewDetails.setReviewId(reviewId);
         checkReviewPostPermissions(photoReviewDetails, photo, user);
         photo.addReviewDetails(photoReviewDetails);
         photo.updateScore(photoScore);
