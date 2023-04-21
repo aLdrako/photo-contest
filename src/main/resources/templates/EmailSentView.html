@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
+<head>
+    <title th:text="#{email.sent}">Photo Contest</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+<body class="register-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='email-sent')}"></header>
+<div class="container mt-5 alert alert-info text-center" role="alert">
+    We've sent a link to your email for password reset!
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
 </body>
 </html>
