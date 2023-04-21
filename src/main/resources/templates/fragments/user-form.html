@@ -52,10 +52,6 @@
     <label for="floatingPassword" th:text="${ctxUpdate && userMatch ? 'Password (optional)' : 'Password'}">Password</label>
     <div id="validationPassword" class="invalid-feedback" th:errors="*{password}">Error placeholder</div>
   </div>
-  <div th:if="${ctxLogin}">
-    <a href="#" th:href="@{/auth/register}">Register</a>
-    <a href="#" th:href="@{/auth/forgottenpassword}">Forgotten Password</a>
-  </div>
   <div class="form-floating" th:if="${(!permissionsPath && userMatch && !ctxLogin && !ctxForgottenPassword) || ctxRegister ||
   ctxChangePassword}">
     <input type="password" class="form-control" id="floatingPasswordConfirm" placeholder="Password Confirmation"
@@ -76,7 +72,7 @@
     </div>
   </div>
 
-  <button class="w-100 btn btn-lg btn-warning" type="submit" name="action" value="login" th:if="${ctxLogin}">
+  <button class="w-100 btn btn-lg btn-warning my-2" type="submit" name="action" value="login" th:if="${ctxLogin}">
     Login
   </button>
   <button class="w-100 btn btn-lg btn-warning" type="submit" name="action" value="register" th:if="${ctxRegister}">
@@ -88,6 +84,12 @@
   <button class="w-100 btn btn-lg btn-warning" type="submit" name="action" value="update" th:if="${ctxForgottenPassword || ctxChangePassword}">
     Submit
   </button>
+  <div class="text-center" th:if="${ctxLogin}">
+    <span>You don't have an account?
+    <a href="#" th:href="@{/auth/register}">Sign up</a>
+    </span>
+    <a href="#" th:href="@{/auth/forgottenpassword}">Forgot password?</a>
+  </div>
 </form>
 
 <form method="get" action="#"
