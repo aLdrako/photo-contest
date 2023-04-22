@@ -81,7 +81,9 @@ body {
 }
 
 .contest-create-view .invalid-feedback,
-.contest-update-view .invalid-feedback {
+.contest-update-view .invalid-feedback,
+.category-create-view .invalid-feedback,
+.category-update-view .invalid-feedback  {
     color: #ffc107 !important;
 }
 

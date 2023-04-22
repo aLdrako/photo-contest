@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title th:text="#{page.title.category-create}">Title (design)</title>
+  <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+
+<body class="category-create-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='category-create')}"></header>
+<main>
+
+  <div class="container mt-3">
+    <div class="text-center overflow-hidden mb-5">
+      <div class="my-3">
+        <h2 class="display-4">Create category</h2>
+      </div>
+      <div class="bg-dark shadow-sm mx-auto rounded">
+        <div class="w-50 p-3 mx-auto">
+
+          <form th:replace="~{fragments/category-form :: category-form(context='category-create')}"></form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: loading-spinner}"></script>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+</body>
+</html>

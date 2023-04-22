@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title th:text="#{page.title.categories}">Title (design)</title>
+  <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+
+<body class="category-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='categories')}"></header>
+<main>
+
+  <div class="container">
+
+    <div class="text-center overflow-hidden mb-5">
+      <div class="my-3">
+        <h2 class="display-4">Categories</h2>
+      </div>
+        <div class="w-75 p-3 mx-auto">
+          <div class="btn-group m-2" th:each="category : ${categories}">
+            <button type="button" class="btn btn-lg btn-warning" th:text="${category.name}">Category (design)</button>
+            <a href="#" class="btn btn-lg btn-outline-warning" th:href="@{/categories/{id}/update(id=${category.id})}"><i class="bi bi-pencil-square"></i></a>
+            <a href="#" class="btn btn-lg btn-outline-danger" th:href="@{/categories/{id}/delete(id=${category.id})}"><i class="bi bi-x-square"></i></a>
+          </div>
+        </div>
+    </div>
+
+  </div>
+
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+</body>
+</html>
