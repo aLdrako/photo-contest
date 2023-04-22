@@ -1,21 +1,37 @@
 <form th:fragment="photo-review-form" action="#" th:action="${requestURI}" th:object="${review}" method="post">
-  <div class="mb-3">
+  <!--<div class="mb-3">
     <input type="text" class="form-control" id="floatingComment" placeholder="Comment"
            th:errorclass="is-invalid" th:field="*{comment}">
     <label for="floatingComment" th:text="#{photo.label.comment}">Comment</label>
     <label class="text-danger" th:errors="*{comment}">Name error placeholder</label>
+  </div>-->
+  <div class="form-floating my-3">
+    <input type="text" class="form-control" id="floatingInputTitle" name="comment" placeholder="Comment" th:field="*{comment}" th:errorclass="is-invalid">
+    <label for="floatingInputTitle">Comment</label>
+    <div id="validationTitle" class="invalid-feedback" th:errors="*{comment}">Error placeholder</div>
   </div>
-  <div class="mb-3 form-check">
-    <label class="form-check-label">Fits Category
-      <input type="checkbox" value="false" th:field="*{fitsCategory}" th:errorclass="is-invalid">
-    </label>
+  <div class="form-floating mb-3" id="fitsCategory">
+    <div class="list-group">
+      <label class="list-group-item d-flex gap-3">
+        <input class="form-check-input flex-shrink-0" type="checkbox" value="false" th:field="*{fitsCategory}" th:errorclass="is-invalid">
+        <span class="form-checked-content">
+          <strong>Fits Category</strong>
+          <small class="text-body-secondary">
+            If not checked, the photo will receive a score of "0".
+          </small>
+        </span>
+      </label>
+    </div>
   </div>
-  <div class="mb-3">
-    <label for="number">Score:</label>
-    <input type="number" id="number" th:field="*{score}" min="1" max="10">
-    <label class="text-danger" th:errors="*{score}">Name error placeholder</label>
+  <div class="form-floating">
+    <input type="number" class="form-control" min="1" max="10" id="number" th:field="*{score}" th:errorclass="is-invalid">
+    <label for="number">Score</label>
+    <div id="validationPhase2" class="invalid-feedback" th:errors="*{score}">Error placeholder</div>
   </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <button class="btn btn-lg btn-warning mx-auto d-flex align-items-center justify-content-between mt-3" id="submit-button" type="submit">
+    <span class="spinner-border spinner-border" id="spinner-loading" role="status" aria-hidden="true"></span>
+    <span class="px-3" th:text="#{photo-review.create}">Create Review</span>
+  </button>
 </form>
 
 

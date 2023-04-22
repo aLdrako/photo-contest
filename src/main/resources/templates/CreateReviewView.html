@@ -7,8 +7,17 @@
 </head>
 <body class="register-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='create-photo-review')}"></header>
-<div class="container mt-5 mb-4">
-  <form th:replace="~{fragments/photo-review-form :: photo-review-form}"></form>
+<div class="container mt-3">
+  <div class="text-center overflow-hidden mb-5">
+    <div class="my-3">
+      <h2 class="display-4">Create Review</h2>
+    </div>
+    <div class="bg-dark shadow-sm mx-auto rounded">
+      <div class="w-75 p-3 mx-auto">
+        <form th:replace="~{fragments/photo-review-form :: photo-review-form}"></form>
+      </div>
+    </div>
+  </div>
 </div>
 <div th:replace="~{fragments/footer :: footer}"></div>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>
