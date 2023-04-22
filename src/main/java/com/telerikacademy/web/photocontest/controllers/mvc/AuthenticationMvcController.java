@@ -118,8 +118,7 @@ public class AuthenticationMvcController extends BaseMvcController {
                 model.addAttribute("user", userDto);
                 return "ChangePassword";
             } else {
-                model.addAttribute("error", "Page Not Found!");
-                return "NotFoundView";
+                return "index";
             }
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
@@ -147,8 +146,7 @@ public class AuthenticationMvcController extends BaseMvcController {
                 session.removeAttribute("recipient");
                 return "redirect:/auth/login";
             } else {
-                model.addAttribute("error", "Page Not Found!");
-                return "NotFoundView";
+                return "index";
             }
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());

@@ -1,9 +1,11 @@
 package com.telerikacademy.web.photocontest.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -47,6 +49,24 @@ public class User {
     private int points;
     @OneToMany(mappedBy = "userCreated", fetch = FetchType.EAGER)
     private Set<Photo> photos;
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "participants",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "contest_id")
+    )
+    @Where(clause = "is_finished = true")
+    private Set<Contest> finishedContests;
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "participants",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "contest_id")
+    )
+    @Where(clause = "is_finished = false")
+    private Set<Contest> activeContests;
 
     @Override
     public boolean equals(Object o) {
