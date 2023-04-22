@@ -1,22 +1,24 @@
 <form th:fragment="photo-form-new" action="#" th:action="${requestURI}" method="post"
       enctype="multipart/form-data" th:object="${photo}">
-  <div class="mb-3">
-    <label for="exampleFormControlInput1" class="form-label">Title</label>
-    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Title" th:field="*{title}">
-    <label class="text-danger" th:errors="*{title}">Name error placeholder</label>
+  <div class="form-floating my-3">
+    <input type="text" class="form-control" id="floatingInputTitle" name="title" placeholder="Some good title..." th:field="*{title}" th:errorclass="is-invalid">
+    <label for="floatingInputTitle">Some good title...</label>
+    <div id="validationTitle" class="invalid-feedback" th:errors="*{title}">Error placeholder</div>
   </div>
-  <div class="mb-3">
-    <label class="form-label" for="floatingContent">Story</label>
-    <textarea class="form-control" id="floatingContent" placeholder="Story" th:field="*{story}"></textarea>
-    <label class="text-danger" th:errors="*{story}">Name error placeholder</label>
+  <div class="form-floating my-3">
+    <textarea class="form-control" id="floatingInputStory" name="story" placeholder="Story" th:field="*{story}" th:errorclass="is-invalid"></textarea>
+    <label for="floatingInputStory">Story</label>
+    <div id="validationStory" class="invalid-feedback" th:errors="*{story}">Error placeholder</div>
   </div>
-  <div class="mb-3">
-    <label for="formFile" class="form-label">Photo file</label>
-    <input class="form-control" type="file" id="formFile" th:field="*{file}">
-    <label class="text-danger" th:errors="*{file}">Name error placeholder</label>
+  <div class="form-floating mb-3 row">
+    <div class="col-md-6">
+      <input type="file" class="form-control" id="inputPhotoUpload" th:field="*{file}" name="file" accept=".jpeg, .jpg, .png" th:errorclass="is-invalid">
+      <div id="validationFile" class="invalid-feedback" th:errors="*{file}">Error placeholder</div>
+    </div>
   </div>
-  <button class="btn btn-success input-group-text" type="submit" name="action" value="save"
-          style="width: 100px" onclick="onSubmit()">Save
+  <button class="btn btn-lg btn-warning mx-auto d-flex align-items-center justify-content-between mt-3" id="submit-button" type="submit">
+    <span class="spinner-border spinner-border" id="spinner-loading" role="status" aria-hidden="true"></span>
+    <span class="px-3" th:text="#{navbar.photo.create}">Create Photo</span>
   </button>
   <script th:replace="~{fragments/scripts :: quilljs}"></script>
 </form>
