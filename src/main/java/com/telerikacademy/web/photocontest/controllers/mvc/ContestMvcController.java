@@ -36,6 +36,7 @@ import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
@@ -139,6 +140,7 @@ public class ContestMvcController extends BaseMvcController {
         }
     }
 
+    @Transactional
     @PostMapping("/create")
     public String createContest(@Validated(CreateValidationGroup.class) @ModelAttribute("contest") ContestDto contestDto,
                                 BindingResult bindingResult, Model model,

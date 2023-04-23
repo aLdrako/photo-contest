@@ -30,7 +30,7 @@ public class ModelMapper {
         contest.setPhase2(contestDto.getPhase2());
         contest.setInvitational(contestDto.isInvitational());
         if (contestDto.getJuries() != null) contest.setJuries(new HashSet<>(contestDto.getJuries().stream().map(userServices::getByUsername).toList()));
-        contest.setCoverPhoto(contestDto.getCoverPhoto());
+        if (contestDto.getCoverPhoto() != null && !contestDto.getCoverPhoto().isEmpty()) contest.setCoverPhoto(contestDto.getCoverPhoto());
         return contest;
     }
 

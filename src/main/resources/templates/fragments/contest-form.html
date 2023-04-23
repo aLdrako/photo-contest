@@ -84,6 +84,7 @@
       th:fragment="contest-form-sort" th:action="${requestURI}"
 >
   <div class="input-group input-group">
+    <a class="btn btn-warning" href="#" th:href="@{/contests/create}">Create</a>
     <input type="text" class="form-control" placeholder="Title" name="title">
     <input type="text" class="form-control" placeholder="Category" name="category">
     <select class="form-select" id="inputGroupType" name="type">

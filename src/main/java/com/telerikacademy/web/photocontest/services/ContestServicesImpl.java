@@ -56,6 +56,7 @@ public class ContestServicesImpl implements ContestServices {
         return contestRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Contest", id));
     }
 
+    @Transactional
     @Override
     public Contest create(Contest contest, User authenticatedUser, MultipartFile coverPhotoUpload) throws FileUploadException {
         checkOrganizerPermissions(authenticatedUser);
@@ -69,6 +70,7 @@ public class ContestServicesImpl implements ContestServices {
             juries.addAll(userServices.getAllOrganizers());
         } else juries = new HashSet<>(userServices.getAllOrganizers());
         contest.setJuries(juries);
+        Hibernate.initialize(contest.getJuries());
         if (!coverPhotoUpload.isEmpty()) {
             contest.setCoverPhoto(uploadPhoto(coverPhotoUpload));
         }
