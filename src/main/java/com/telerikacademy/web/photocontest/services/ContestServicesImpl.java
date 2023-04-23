@@ -78,7 +78,7 @@ public class ContestServicesImpl implements ContestServices {
     public Contest update(Contest contest, User authenticatedUser, MultipartFile coverPhotoUpload) throws FileUploadException {
         checkOrganizerPermissions(authenticatedUser);
         if (!coverPhotoUpload.isEmpty()) {
-            deletePhoto(contest.getCoverPhoto());
+            if (contest.getCoverPhoto() != null) deletePhoto(contest.getCoverPhoto());
             contest.setCoverPhoto(uploadPhoto(coverPhotoUpload));
         }
         return contestRepository.save(contest);

@@ -7,12 +7,11 @@
 </head>
 <body class="contest-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='contest-view')}"></header>
-<main>
+<main th:with="phase1=${contest.dateCreated.isBefore(#temporals.createNow()) && contest.phase1.isAfter(#temporals.createNow())},
+                    phase2=${contest.phase1.isBefore(#temporals.createNow()) && contest.phase2.isAfter(#temporals.createNow())}">
 
   <section class="my-3 mx-auto text-center bg-dark container rounded-4 contest-view-section"
-           th:style="${(contest.coverPhoto != null && contest.coverPhoto.startsWith('http')) ? 'background-image: url(' + contest.coverPhoto + ')' : ''}"
-           th:with="phase1=${contest.dateCreated.isBefore(#temporals.createNow()) && contest.phase1.isAfter(#temporals.createNow())},
-                    phase2=${contest.phase1.isBefore(#temporals.createNow()) && contest.phase2.isAfter(#temporals.createNow())}">
+           th:style="${(contest.coverPhoto != null && contest.coverPhoto.startsWith('http')) ? 'background-image: url(' + contest.coverPhoto + ')' : ''}">
     <div class="row py-5">
       <div class="col col-xl-8 mx-auto position-relative">
         <div class="position-absolute top-0 start-50 translate-middle" th:if="${phase1 && session.user.organizer}">
@@ -56,7 +55,7 @@
         <div class="btn-group mt-3" role="group">
           <button type="button" class="btn btn-lg btn-warning" data-bs-toggle="modal" data-bs-target="#photoWinners" th:if="${contest.isFinished}">Winners</button>
           <a type="button" class="btn btn-lg btn-warning" th:if="${phase1 && !contest.invitational && !contest.isFinished && !contest.participants.contains(session.user.username)}" th:href="@{${requestURI} + '/join'}">Participate</a>
-          <a type="button" class="btn btn-lg btn-warning disabled" th:if="${phase1 && contest.invitational && !contest.isFinished && !session.user.organizer}">Invitational</a>
+          <a type="button" class="btn btn-lg btn-warning disabled" th:if="${phase1 && contest.invitational && !contest.isFinished && !session.user.organizer && !contest.participants.contains(session.user.username)}">Invitational</a>
           <button type="button" class="btn btn-lg btn-warning disabled" th:if="${phase1 && contest.invitational && !contest.isFinished && session.user.organizer}">Invite</button>
           <a type="button" class="btn btn-lg btn-outline-warning" th:if="${phase1 && contest.invitational && !contest.isFinished && session.user.organizer}" th:href="@{${requestURI} + '/add-participant'}">User</a>
           <a type="button" class="btn btn-lg btn-outline-warning" th:if="${phase1 && contest.invitational && !contest.isFinished && session.user.organizer}" th:href="@{${requestURI} + '/add-jury'}">Jury</a>
@@ -86,7 +85,7 @@
                     Results
                   </button>
                   <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-warning">Rate</button>
+                    <a th:if="${phase2}" href="#" type="button" class="btn btn-sm btn-outline-warning" th:href="@{/contests/{contestId}/photos/{photoId}/review(contestId=${contest.id},photoId=${photo.get('id')})}">Rate</a>
                     <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#photoView">View</button>
                   </div>
                   <a class="link-warning" href="#" th:href="@{/users/{id}(id=${photo.get('userId')})}" th:text="${photo.get('userCreated')}">Username (design)</a>
@@ -170,7 +169,7 @@
       <div class="modal-footer">
         <div class="d-flex gap-2 w-100 justify-content-between py-1">
           <div class="btn-group">
-            <button class="btn btn-warning" type="button">Story</button>
+            <button class="btn btn-warning text-truncate" type="button">Story</button>
             <button class="btn btn-outline-warning photo-story" type="button"></button>
           </div>
           <div>

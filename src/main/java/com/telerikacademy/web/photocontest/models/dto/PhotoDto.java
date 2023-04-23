@@ -1,9 +1,6 @@
 package com.telerikacademy.web.photocontest.models.dto;
 
-import com.telerikacademy.web.photocontest.models.validations.CreatePhotoGroup;
-import com.telerikacademy.web.photocontest.models.validations.CreatePhotoViaContestGroup;
-import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
-import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
+import com.telerikacademy.web.photocontest.models.validations.*;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +19,7 @@ public class PhotoDto {
             groups = {CreatePhotoViaContestGroup.class, CreatePhotoGroup.class})
     @Size(min = 20, max = 8196, message = "Story should be between 20 and 8196 symbols!",
             groups = {CreatePhotoViaContestGroup.class, CreatePhotoGroup.class})
+    @LongWordsConstraint(groups = {CreatePhotoViaContestGroup.class, CreatePhotoGroup.class})
     private String story;
     @NotNull(message = "An actual photo file needs to be uploaded",
     groups = {CreatePhotoGroup.class, CreatePhotoViaContestGroup.class})
