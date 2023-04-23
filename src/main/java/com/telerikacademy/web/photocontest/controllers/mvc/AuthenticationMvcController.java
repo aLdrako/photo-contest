@@ -86,7 +86,9 @@ public class AuthenticationMvcController extends BaseMvcController {
     }
     @GetMapping("/logout")
     public String handleLogout(HttpSession session) {
-        session.invalidate();
+        if (session.getAttribute("currentUser") != null) {
+            session.invalidate();
+        }
         return "redirect:/auth/login";
     }
     @GetMapping("/forgottenpassword")
