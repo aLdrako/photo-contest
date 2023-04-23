@@ -20,7 +20,11 @@
                         </a>
                     </li>
                     <li class="px-1">
-                        <a href="/dashboard" class="nav-link rounded" th:href="@{/dashboard}" th:classappend="${ctxDashboard ? 'active-nav-link' : 'text-warning'}">
+                        <a href="/dashboard" class="nav-link rounded" th:if="${session.isAuthenticated}" th:href="@{/users/{id}(id=${session.userId})}" th:classappend="${ctxDashboard ? 'active-nav-link' : 'text-warning'}">
+                            <span class="bi d-block mx-auto mb-1"><i class="bi bi-speedometer2"></i></span>
+                            <span class="text-icon-item">Dashboard</span>
+                        </a>
+                        <a href="/dashboard" class="nav-link rounded" th:if="${!session.isAuthenticated}" th:href="@{/auth/login}" th:classappend="${ctxDashboard ? 'active-nav-link' : 'text-warning'}">
                             <span class="bi d-block mx-auto mb-1"><i class="bi bi-speedometer2"></i></span>
                             <span class="text-icon-item">Dashboard</span>
                         </a>
@@ -33,12 +37,12 @@
                     </li>
                     <li class="px-1">
                         <a class="nav-link rounded text-warning" th:if="${!session.isAuthenticated}" th:href="@{/auth/login}">
-                            <span class="bi d-block mx-auto mb-1"><i class="bi bi-person-circle"></i></span>
-                            <span class="text-icon-item">User</span>
+                            <span class="bi d-block mx-auto mb-1"><i class="bi bi-box-arrow-in-right"></i></span>
+                            <span class="text-icon-item">Log in</span>
                         </a>
-                        <a class="nav-link rounded text-warning" th:if="${session.isAuthenticated}" th:href="@{/users/{id}(id=${session.userId})}">
-                            <span class="bi d-block mx-auto mb-1"><i class="bi bi-person-circle"></i></span>
-                            <span class="text-icon-item">User</span>
+                        <a class="nav-link rounded text-warning" th:if="${session.isAuthenticated}" th:href="@{/auth/logout}">
+                            <span class="bi d-block mx-auto mb-1"><i class="bi bi-box-arrow-left"></i></span>
+                            <span class="text-icon-item">Log out</span>
                         </a>
                     </li>
                 </ul>
