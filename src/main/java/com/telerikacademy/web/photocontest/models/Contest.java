@@ -51,7 +51,7 @@ public class Contest {
     @Column(name = "cover_photo", table = "cover_photos")
     private String coverPhoto;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "juries",
             joinColumns = @JoinColumn(name = "contest_id"),

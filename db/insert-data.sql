@@ -288,7 +288,7 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `email`, `pass
 (5, 'Reserved3', 'Reserved3', 'reserved3', 'reserved3@mail.com', 'reserved3', '2023-04-10 00:00:00', 1, 0),
 (6, 'Alexandra', 'Silcock', 'silcock', 'silcock@dailynews.com', 'silcock', '2023-04-12 12:01:03', 2, 90),
 (7, 'Margot', 'Rashleig', 'rashleig', 'rashleig@yahoo.com', 'rashleig', '2023-04-12 12:01:30', 4, 1502),
-(8, 'Brian', 'Mussalli', 'mussalli', 'mussalli@skynet.com', 'mussalli', '2023-04-12 12:01:46', 1, 1206),
+(8, 'Brian', 'Mussalli', 'mussalli', 'mussalli@skynet.com', 'mussalli', '2023-04-12 12:01:46', 4, 1206),
 (9, 'Orion', 'Wahner', 'owahnert', 'owahnert@tinyurl.com', 'owahnert', '2023-04-12 12:02:01', 2, 56),
 (10, 'Reed', 'Flynn', 'rflynn12', 'rflynn12@php.net', 'rflynn12', '2023-04-12 12:02:19', 2, 125),
 (11, 'Deleted', 'Deleted', 'deleted', 'deleted@mail.com', 'deleted', '2023-04-12 12:03:00', 1, 0),

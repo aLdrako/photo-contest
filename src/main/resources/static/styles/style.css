@@ -3,6 +3,13 @@ body {
     padding-top: 100px;
 }
 
+/*MAIN PAGE*/
+.carousel-item img {
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #ffc107;
+}
+
 /*NAVBAR*/
 .nav-link .bi {
     width: 24px;
@@ -71,8 +78,11 @@ body {
     cursor: pointer;
 }
 
-#photoView .modal-footer {
+#photoView .modal-footer,
+#deleteContest .modal-header,
+#deleteContest .modal-footer {
     border-top: none !important;
+    border-bottom: none !important;
 }
 
 /*CREATE/UPDATE CONTEST*/
@@ -83,7 +93,9 @@ body {
 .contest-create-view .invalid-feedback,
 .contest-update-view .invalid-feedback,
 .category-create-view .invalid-feedback,
-.category-update-view .invalid-feedback  {
+.category-update-view .invalid-feedback,
+.create-photo-view .invalid-feedback,
+.rate-view .invalid-feedback {
     color: #ffc107 !important;
 }
 

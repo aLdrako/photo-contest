@@ -12,7 +12,9 @@
 
     <div class="container px-4 py-5" id="custom-cards">
         <h2 class="pb-2 text-center display-2" th:text="${!contests.isEmpty() ? 'Contests' : 'No Contests'}">Contests (design)</h2>
-        <form th:replace="~{fragments/contest-form :: contest-form-sort}"></form>
+        <th:block th:if="${session.user.organizer}">
+            <form th:replace="~{fragments/contest-form :: contest-form-sort}"></form>
+        </th:block>
 
         <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 align-items-stretch g-4 py-5">
             <th:block th:each="contest : ${contests}">

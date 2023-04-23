@@ -11,6 +11,7 @@ import com.telerikacademy.web.photocontest.services.contracts.RankingServices;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,7 @@ public class ContestServicesImpl implements ContestServices {
         return contestRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Contest", id));
     }
 
+    @Transactional
     @Override
     public Contest create(Contest contest, User authenticatedUser, MultipartFile coverPhotoUpload) throws FileUploadException {
         checkOrganizerPermissions(authenticatedUser);
@@ -68,6 +70,7 @@ public class ContestServicesImpl implements ContestServices {
             juries.addAll(userServices.getAllOrganizers());
         } else juries = new HashSet<>(userServices.getAllOrganizers());
         contest.setJuries(juries);
+        Hibernate.initialize(contest.getJuries());
         if (!coverPhotoUpload.isEmpty()) {
             contest.setCoverPhoto(uploadPhoto(coverPhotoUpload));
         }

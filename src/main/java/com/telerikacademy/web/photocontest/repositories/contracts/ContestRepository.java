@@ -24,7 +24,6 @@ public interface ContestRepository extends JpaRepository<Contest, Long> {
             (:phase = 'phase2' AND (c.phase1 <= :now AND c.phase2 >= :now))
         ))
     """)
-
 Page<Contest> filter(
             @Param("title") String title,
             @Param("categoryName") String categoryName,
@@ -37,4 +36,5 @@ Page<Contest> filter(
 
     boolean existsByTitleEqualsIgnoreCase(String title);
     List<Contest> findByPhase2IsBeforeAndIsFinishedFalse(LocalDateTime now);
+    List<Contest> findTop5ByIsFinishedTrue();
 }
