@@ -13,6 +13,7 @@ import com.telerikacademy.web.photocontest.models.validations.CreatePhotoViaCont
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.EnlistUserValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
+import com.telerikacademy.web.photocontest.repositories.contracts.ContestRepository;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.CategoryServices;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
@@ -23,6 +24,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -36,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.time.DateTimeException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -75,18 +78,27 @@ public class ContestMvcController extends BaseMvcController {
                                   @RequestParam(required = false) Map<String, String> parameters,
                                   Model model, HttpSession session, HttpServletRequest request) {
         try {
-            authenticationHelper.tryGetUser(session);
-            FilterAndSortingHelper.Result result = getResult(parameters, pageable);
-            Page<Contest> contestPage = contestServices.filter(result.title(), result.categoryName(), result.isInvitational(), result.isFinished(),
-                    result.phase(), result.now(), result.pageable());
-            List<ContestResponseDto> list = contestPage.stream().map(modelMapper::objectToDto).toList();
-            Page<ContestResponseDto> page = new PageImpl<>(list, contestPage.getPageable(), contestPage.getTotalElements());
+            User user = authenticationHelper.tryGetUser(session);
+            if (user.isOrganizer()) {
+                FilterAndSortingHelper.Result result = getResult(parameters, pageable);
+                Page<Contest> contestPage = contestServices.filter(result.title(), result.categoryName(), result.isInvitational(), result.isFinished(),
+                        result.phase(), result.now(), result.pageable());
+                List<ContestResponseDto> list = contestPage.stream().map(modelMapper::objectToDto).toList();
+                Page<ContestResponseDto> page = new PageImpl<>(list, contestPage.getPageable(), contestPage.getTotalElements());
+
+                model.addAttribute("contests", page);
+            } else {
+                PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
+                Page<Contest> contests = contestServices.filter(null, null, false, false, "phase1", LocalDateTime.now(), pageRequest);
+                List<ContestResponseDto> contestList = contests.stream().map(modelMapper::objectToDto).toList();
+                Page<ContestResponseDto> page = new PageImpl<>(contestList, contests.getPageable(), contests.getTotalElements());
+                model.addAttribute("contests", page);
+            }
 
             String sortParams = pageable.getSort().toString().replace(": ASC", "");
             WebUtils.setSessionAttribute(request, "filterParams", parameters);
             WebUtils.setSessionAttribute(request, "sortParams", sortParams);
 
-            model.addAttribute("contests", page);
             return "ContestsView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";

@@ -16,8 +16,8 @@
       <div class="col col-xl-8 mx-auto position-relative">
         <div class="position-absolute top-0 start-50 translate-middle" th:if="${phase1 && session.user.organizer}">
           <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-            <a href="#" class="btn btn-outline-warning" th:href="@{${requestURI} + '/update'}"><i class="bi bi-pencil-square"></i></a>
-            <a href="#" class="btn btn-outline-danger" th:href="@{${requestURI} + '/delete'}"><i class="bi bi-x-square"></i></a>
+            <a href="#" class="btn btn-sm btn-warning" th:href="@{${requestURI} + '/update'}"><i class="bi bi-pencil-square"></i></a>
+            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteContest"><i class="bi bi-x-square"></i></button>
           </div>
         </div>
         <h1 class="fw-light neon-text display-1" th:text="${contest.title}">Contest title (design)</h1>
@@ -54,11 +54,11 @@
 
         <div class="btn-group mt-3" role="group">
           <button type="button" class="btn btn-lg btn-warning" data-bs-toggle="modal" data-bs-target="#photoWinners" th:if="${contest.isFinished}">Winners</button>
-          <a type="button" class="btn btn-lg btn-warning" th:if="${phase1 && !contest.invitational && !contest.isFinished && !contest.participants.contains(session.user.username)}" th:href="@{${requestURI} + '/join'}">Participate</a>
+          <a type="button" class="btn btn-lg btn-warning" th:if="${phase1 && !contest.invitational && !session.user.organizer && !contest.isFinished && !contest.participants.contains(session.user.username)}" th:href="@{${requestURI} + '/join'}">Participate</a>
           <a type="button" class="btn btn-lg btn-warning disabled" th:if="${phase1 && contest.invitational && !contest.isFinished && !session.user.organizer && !contest.participants.contains(session.user.username)}">Invitational</a>
-          <button type="button" class="btn btn-lg btn-warning disabled" th:if="${phase1 && contest.invitational && !contest.isFinished && session.user.organizer}">Invite</button>
+          <button type="button" class="btn btn-lg btn-warning disabled" th:if="${phase1 && !contest.isFinished && session.user.organizer}">Invite</button>
           <a type="button" class="btn btn-lg btn-outline-warning" th:if="${phase1 && contest.invitational && !contest.isFinished && session.user.organizer}" th:href="@{${requestURI} + '/add-participant'}">User</a>
-          <a type="button" class="btn btn-lg btn-outline-warning" th:if="${phase1 && contest.invitational && !contest.isFinished && session.user.organizer}" th:href="@{${requestURI} + '/add-jury'}">Jury</a>
+          <a type="button" class="btn btn-lg btn-outline-warning" th:if="${phase1 && !contest.isFinished && session.user.organizer}" th:href="@{${requestURI} + '/add-jury'}">Jury</a>
           <a type="button" class="btn btn-lg btn-warning" th:if="${phase1 && !contest.isFinished && contest.participants.contains(session.user.username)}" th:href="@{${requestURI} + '/photos/new'}">Upload</a>
           <button type="button" class="btn btn-lg btn-dark disabled text-warning" th:if="${phase1 && !phase2}" th:text="${phase1Ends}">Closed in (design)</button>
           <button type="button" class="btn btn-lg btn-warning disabled" th:if="${phase2}">Scoring</button>
@@ -134,6 +134,24 @@
   </div>
 
 </main>
+
+<!-- Modal Window for Delete Confirmation -->
+<div class="modal fade" id="deleteContest" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content bg-dark">
+      <div class="modal-header bg-dark">
+        <h1 class="modal-title fs-5 text-warning" id="exampleModalLabel">Delete Confirmation</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer bg-dark">
+        <div class="btn-group">
+          <button type="button" class="btn btn-sm btn-warning">Are you sure you want to delete contest?</button>
+          <a type="button" class="btn btn-sm btn-danger" th:href="@{${requestURI} + '/delete'}">Delete</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Modal Window for Winners View -->
 <div class="modal fade" id="photoWinners" tabindex="-1" aria-labelledby="photoWinnersLabel" aria-hidden="true">
