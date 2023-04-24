@@ -1,12 +1,6 @@
 <form th:fragment="photo-review-form" action="#" th:action="${requestURI}" th:object="${review}" method="post">
-  <!--<div class="mb-3">
-    <input type="text" class="form-control" id="floatingComment" placeholder="Comment"
-           th:errorclass="is-invalid" th:field="*{comment}">
-    <label for="floatingComment" th:text="#{photo.label.comment}">Comment</label>
-    <label class="text-danger" th:errors="*{comment}">Name error placeholder</label>
-  </div>-->
   <div class="form-floating my-3">
-    <input type="text" class="form-control" id="floatingInputTitle" name="comment" placeholder="Comment" th:field="*{comment}" th:errorclass="is-invalid">
+    <textarea class="form-control" id="floatingInputTitle" name="comment" placeholder="Comment" th:field="*{comment}" th:errorclass="is-invalid"></textarea>
     <label for="floatingInputTitle">Comment</label>
     <div id="validationTitle" class="invalid-feedback" th:errors="*{comment}">Error placeholder</div>
   </div>
@@ -33,27 +27,3 @@
     <span class="px-3" th:text="#{photo-review.create}">Create Review</span>
   </button>
 </form>
-
-
-<!--
-<form th:fragment="photo-review-form" action="#" th:action="${requestURI}" method="post"
-       th:object="${review}">
-  <div class="mb-3">
-    <label for="exampleFormControlInput1" class="form-label">Comment</label>
-    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Comment" th:field="*{comment}">
-    <label class="text-danger" th:errors="*{comment}">Name error placeholder</label>
-  </div>
-  <div class="mb-3">
-    <label for="floatingContent">Fit Category</label>
-    <input type="checkbox" class="form-control" id="floatingContent" th:field="*{fitsCategory}">
-  </div>
-  <div class="mb-3">
-    <label for="formScore" class="form-label">Score</label>
-    <input class="form-control" type="number" min="1" max="10" id="formScore" th:field="*{score}">
-    <label class="text-danger" th:errors="*{score}">Name error placeholder</label>
-  </div>
-  <button class="btn btn-success input-group-text" type="submit" name="action" value="save"
-          style="width: 100px" onclick="onSubmit()">Save
-  </button>
-  <script th:replace="~{fragments/scripts :: quilljs}"></script>
-</form>-->
