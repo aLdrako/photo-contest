@@ -15,7 +15,11 @@
 <header th:replace="~{fragments/navbar :: header(context='user-profile')}"></header>
 
 <div class="container mt-5">
-
+  <div class="text-center mb-2">
+    <a href="#" class="btn btn-warning" th:if="${user.isOrganizer}" th:href="@{/users}">All Users</a>
+    <a href="#" class="btn btn-warning" th:if="${user.isOrganizer}" th:href="@{/users/photojunkies}">Photo Junkies</a>
+    <a href="#" class="btn btn-warning" th:if="${user.isOrganizer}" th:href="@{/categories}">Categories</a>
+  </div>
   <div class="row justify-content-center">
     <div class="col-lg-6">
       <div class="card">
@@ -59,8 +63,6 @@
              class="card-footer text-center text-dark bg-light">
           <a th:if="${session.user.isOrganizer()}" href="#" class="btn btn-success" th:href="@{${permissionPath}}"><i
                   class="bi bi-toggles" title="Update permissions"></i></a>
-          <a href="#" class="btn btn-warning" th:if="${user.isOrganizer}" th:href="@{/users}">All Users</a>
-          <a href="#" class="btn btn-warning" th:if="${user.isOrganizer}" th:href="@{/users/photojunkies}">Photo Junkies</a>
           <a href="#" class="btn btn-warning" th:href="@{${updatePath}}"><i class="bi bi-person-lines-fill"
                                                                             title="Update settings"></i></a>
           <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger"><i
