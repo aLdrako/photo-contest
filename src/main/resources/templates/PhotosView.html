@@ -9,9 +9,11 @@
 <body class="login-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='all-photos')}"></header>
 <h3 class="pb-2 text-center display-2" th:text="${!photos.isEmpty() ? 'Photos' : 'No Photos'}">Photos (design)</h3>
-<div class="album py-5">
+<div class="album">
+  <div class="container px-5 py-3">
+    <form th:replace="~{fragments/photos-search :: photos-search}"></form>
+  </div>
   <div class="container">
-
     <div class="row row-cols-1 row-cols-sm-2 g-3">
       <th:block th:each="photo : ${photos}">
         <div class="col  rounded-4">

@@ -7,13 +7,16 @@ import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/photos")
@@ -22,15 +25,15 @@ public class PhotoMvcController extends BaseMvcController{
     private final PhotoServices photoServices;
     private final AuthenticationHelper authenticationHelper;
 
-    @ModelAttribute("photos")
-    private List<Photo> getAllPhotos() {
-        return photoServices.getAll();
-    }
 
     @GetMapping
-    public String showAllPhotos(HttpSession session) {
+    public String showAllPhotos(@RequestParam(required = false) Optional<String> title, HttpSession session,
+                                Model model) {
         try {
+             List<Photo> photos = title.isPresent() ? photoServices.search(title, Optional.empty()) :
+                    photoServices.getAll();
             authenticationHelper.tryGetUser(session);
+            model.addAttribute("photos", photos);
             return "PhotosView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
