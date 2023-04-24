@@ -22,8 +22,27 @@
     <label for="number">Score</label>
     <div id="validationPhase2" class="invalid-feedback" th:errors="*{score}">Error placeholder</div>
   </div>
-  <button class="btn btn-lg btn-warning mx-auto d-flex align-items-center justify-content-between mt-3" id="submit-button" type="submit">
+  <a role="button" data-bs-toggle="modal" data-bs-target="#createModalToggle">
     <span class="spinner-border spinner-border" id="spinner-loading" role="status" aria-hidden="true"></span>
-    <span class="px-3" th:text="#{photo-review.create}">Create Review</span>
-  </button>
+    <button class="btn btn-lg btn-warning mx-auto d-flex align-items-center justify-content-between mt-3" th:text="#{photo-review.create}">Create Review</button>
+  </a>
+
+  <div class="modal fade" id="createModalToggle" data-bs-backdrop="static" aria-hidden="true"
+       aria-labelledby="createModalLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createModalLabel">Confirm Review</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Once the photo review is uploaded, it cannot be edited. Are you sure you want to continue?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-warning" type="submit">Upload Review</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </form>
