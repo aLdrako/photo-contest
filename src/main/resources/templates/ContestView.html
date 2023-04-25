@@ -6,6 +6,11 @@
   <th:block th:replace="~{fragments/head :: head}"></th:block>
 </head>
 <body class="contest-view d-flex flex-column min-vh-100">
+
+<!--Facebook Sharing Button-->
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0" nonce="ja7ktFwi"></script>
+
 <header th:replace="~{fragments/navbar :: header(context='contest-view')}"></header>
 <main th:with="phase1=${contest.dateCreated.isBefore(#temporals.createNow()) && contest.phase1.isAfter(#temporals.createNow())},
                     phase2=${contest.phase1.isBefore(#temporals.createNow()) && contest.phase2.isAfter(#temporals.createNow())}">
@@ -91,6 +96,7 @@
                     <a th:if="${phase1 && session.user.organizer}" href="#" type="button" class="btn btn-sm btn-outline-danger" th:href="@{/contests/{contestId}/photos/{photoId}/delete(contestId=${contest.id},photoId=${photo.get('id')})}">Delete</a>
                   </div>
                   <a class="link-warning" href="#" th:href="@{/users/{id}(id=${photo.get('userId')})}" th:text="${photo.get('userCreated')}">Username (design)</a>
+
                 </div>
                 <div th:class="'collapse'" th:id="'collapseResults-' + ${photo.get('id')}">
                   <div class="mt-2 bg-dark text-warning">
@@ -160,24 +166,6 @@
   </div>
 </div>
 
-<!--&lt;!&ndash; Modal Window for Delete Photo Confirmation &ndash;&gt;-->
-<!--<div class="modal fade" id="photoDeleteModal" tabindex="-1" aria-hidden="true">-->
-<!--  <div class="modal-dialog modal-dialog-centered modal-sm">-->
-<!--    <div class="modal-content bg-dark">-->
-<!--      <div class="modal-header bg-dark">-->
-<!--        <h1 class="modal-title fs-5 text-warning">Delete Confirmation</h1>-->
-<!--        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--      </div>-->
-<!--      <div class="modal-footer bg-dark">-->
-<!--        <div class="btn-group">-->
-<!--          <button type="button" class="btn btn-sm btn-warning">Are you sure you want to delete this photo?</button>-->
-<!--          <a href="#" class="btn btn-sm btn-danger">Delete</a>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
-
 <!-- Modal Window for Delete Confirmation -->
 <div class="modal fade" id="deleteContest" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -207,6 +195,9 @@
             <div class="card-img-overlay">
               <div class="d-flex justify-content-between align-items-center">
                 <button type="button" class="btn btn-sm btn-dark text-warning" th:text="${winner.get('userCreated')}">Username (design)</button>
+                <div th:if="${winner.get('userCreated') == session.user.username}" class="fb-share-button" data-href="" data-layout="button" data-size="">
+                  <a target="_blank" href="#" class="fb-xfbml-parse-ignore btn btn-sm btn-warning">Share</a>
+                </div>
                 <div class="btn-group">
                   <button type="button" class="btn btn-sm btn-warning">Score</button>
                   <button type="button" class="btn btn-sm btn-outline-warning" th:text="${winner.get('totalScore')}">Score (design)</button>
@@ -249,8 +240,10 @@
   </div>
 </div>
 
+
+
 <div th:replace="~{fragments/footer :: footer}"></div>
-<!--<script th:replace="~{fragments/scripts :: photo-delete}"></script>-->
+<script th:replace="~{fragments/scripts :: facebook-sharing}"></script>
 <script th:replace="~{fragments/scripts :: photo-view}"></script>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>
 </body>
