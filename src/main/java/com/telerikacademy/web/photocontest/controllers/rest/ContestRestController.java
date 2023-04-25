@@ -14,12 +14,19 @@ import com.telerikacademy.web.photocontest.models.validations.*;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,7 +57,7 @@ public class ContestRestController {
     private final ModelMapper modelMapper;
 
     @GetMapping
-    public Iterable<ContestResponseDto> findAll() {
+    public List<ContestResponseDto> findAll() {
         Iterable<Contest> contests = contestServices.findAll();
         return StreamSupport.stream(contests.spliterator(), false)
                 .map(modelMapper::objectToDto).toList();
@@ -67,7 +74,7 @@ public class ContestRestController {
     }
 
     @GetMapping("/filter")
-    public List<ContestResponseDto> filter(@RequestParam Map<String, String> parameters, Pageable page) {
+    public List<ContestResponseDto> filter(@RequestParam(required = false) Map<String, String> parameters, Pageable page) {
         if (parameters.isEmpty()) return new ArrayList<>();
         FilterAndSortingHelper.Result result = getResult(parameters, page);
         Page<Contest> contests = contestServices.filter(result.title(), result.categoryName(), result.isInvitational(), result.isFinished(), result.phase(), result.now(), result.pageable());

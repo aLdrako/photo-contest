@@ -90,13 +90,23 @@ body {
 #deleteContest .modal-header,
 #deleteContest .modal-footer,
 #participantsModal .modal-header,
-#participantsModal .modal-footer {
+#participantsModal .modal-footer,
+.deletePhotoModal .modal-header,
+.deletePhotoModal .modal-footer {
     border-top: none !important;
     border-bottom: none !important;
 }
 
 #participantsModal .modal-footer {
     justify-content: flex-start !important;
+}
+
+#deleteContest .modal-footer,
+#deleteContest .modal-header,
+#participantsModal .modal-header,
+.deletePhotoModal .modal-header,
+.deletePhotoModal .modal-footer {
+    justify-content: center !important;
 }
 
 /*CREATE/UPDATE CONTEST*/
