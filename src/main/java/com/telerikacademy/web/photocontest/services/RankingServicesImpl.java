@@ -37,7 +37,7 @@ public class RankingServicesImpl implements RankingServices {
             return rankingRepository.getByName(ranking.toString());
         } catch (EntityNotFoundException e) {
             Ranking newRanking = new Ranking(ranking.toString());
-            rankingRepository.create(newRanking);
+            rankingRepository.save(newRanking);
             return newRanking;
         }
     }

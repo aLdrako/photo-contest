@@ -43,18 +43,6 @@ public class UserRestController {
     private final UserServices userServices;
     private final AuthenticationHelper authenticationHelper;
     private final ModelMapper modelMapper;
-    private final EmailServices emailServices;
-    @GetMapping("/{id}/password")
-    public void sendEmail(@PathVariable Long id, HttpSession session) {
-        try {
-            User user = userServices.getById(id);
-            emailServices.sendForgottenPasswordEmail(user, session);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (MessagingException | IOException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-    }
 
     @GetMapping
     public List<User> getAll() {

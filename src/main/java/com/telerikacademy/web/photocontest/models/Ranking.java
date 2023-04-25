@@ -19,9 +19,6 @@ public class Ranking {
     private int id;
     @Column(name = "name")
     private String name;
-    @JsonIgnore
-    @OneToMany
-    private Set<User> users;
 
     public Ranking() {
     }

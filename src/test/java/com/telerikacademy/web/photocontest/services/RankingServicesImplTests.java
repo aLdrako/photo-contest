@@ -47,7 +47,7 @@ public class RankingServicesImplTests {
 
         Mockito.when(mockRepository.getByName(anyString()))
                 .thenThrow(EntityNotFoundException.class);
-        Mockito.doNothing().when(mockRepository).create(any());
+        Mockito.when(mockRepository.save(any())).thenReturn(mockRanking);
         // Act
         Ranking ranking = services.getJunkie();
 
@@ -76,7 +76,7 @@ public class RankingServicesImplTests {
 
         Mockito.when(mockRepository.getByName(anyString()))
                 .thenThrow(EntityNotFoundException.class);
-        Mockito.doNothing().when(mockRepository).create(any());
+        Mockito.when(mockRepository.save(any())).thenReturn(mockRanking);
         // Act
         Ranking ranking = services.getEnthusiast();
 
@@ -104,7 +104,7 @@ public class RankingServicesImplTests {
 
         Mockito.when(mockRepository.getByName(anyString()))
                 .thenThrow(EntityNotFoundException.class);
-        Mockito.doNothing().when(mockRepository).create(any());
+        Mockito.when(mockRepository.save(any())).thenReturn(mockRanking);
         // Act
         Ranking ranking = services.getMaster();
 
@@ -132,7 +132,7 @@ public class RankingServicesImplTests {
 
         Mockito.when(mockRepository.getByName(anyString()))
                 .thenThrow(EntityNotFoundException.class);
-        Mockito.doNothing().when(mockRepository).create(any());
+        Mockito.when(mockRepository.save(any())).thenReturn(mockRanking);
         // Act
         Ranking ranking = services.getWiseAndBenevolentPhotoDictator();
 
