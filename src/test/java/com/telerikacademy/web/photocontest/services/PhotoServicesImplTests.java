@@ -7,6 +7,7 @@ import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.repositories.contracts.ContestResultsRepository;
 import com.telerikacademy.web.photocontest.repositories.contracts.PhotoRepository;
 import com.telerikacademy.web.photocontest.repositories.contracts.RankingRepository;
+import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.telerikacademy.web.photocontest.helpers.Helpers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,10 +36,21 @@ public class PhotoServicesImplTests {
     @Mock
     PhotoRepository mockRepository;
     @Mock
+    ContestServices mockContestServices;
+    @Mock
     ContestResultsRepository mockContestResultsRepository;
     @InjectMocks
     PhotoServicesImpl services;
 
+    @Test
+    public void getAll_Should_CallRepository() {
+        // Arrange, Act
+        services.getAll();
+
+        // Assert
+        Mockito.verify(mockRepository, Mockito.times(1))
+                .findAll();
+    }
     @Test
     public void create_Should_CallRepository() throws FileUploadException {
         // Arrange
@@ -109,7 +122,7 @@ public class PhotoServicesImplTests {
 
         Mockito.doNothing().when(mockContestResultsRepository).deleteContestResultsByResultEmbed_Photo(mockPhoto);
         // Act
-        services.delete(mockPhoto, user, mockPhoto.getPostedOn());
+        services.delete(mockPhoto, user);
         // Assert
         Mockito.verify(mockRepository, Mockito.times(1))
                 .delete(mockPhoto);
@@ -122,7 +135,7 @@ public class PhotoServicesImplTests {
         mockPhoto.getPostedOn().setPhase2(LocalDateTime.now().plusDays(1L));
         Mockito.doNothing().when(mockContestResultsRepository).deleteContestResultsByResultEmbed_Photo(mockPhoto);
         // Act
-        services.delete(mockPhoto, organizer, mockPhoto.getPostedOn());
+        services.delete(mockPhoto, organizer);
         // Assert
         Mockito.verify(mockRepository, Mockito.times(1))
                 .delete(mockPhoto);
@@ -137,18 +150,7 @@ public class PhotoServicesImplTests {
 
         // Act, Assert
         Assertions.assertThrows(UnauthorizedOperationException.class,
-                () -> services.delete(mockPhoto, user, mockPhoto.getPostedOn()));
-    }
-    @Test
-    public void delete_Should_ThrowException_When_PhotoIsNotInTheContest() {
-        // Arrange
-        Photo mockPhoto = createMockPhoto();
-        User user = createMockUser();
-        mockPhoto.getPostedOn().setPhase1(LocalDateTime.now().plusDays(1L));
-        mockPhoto.getPostedOn().setPhotos(Set.of());
-        // Act, Assert
-        Assertions.assertThrows(EntityNotFoundException.class,
-                () -> services.delete(mockPhoto, user, mockPhoto.getPostedOn()));
+                () -> services.delete(mockPhoto, user));
     }
     @Test
     public void delete_Should_ThrowException_When_PhaseOneIsOver() {
@@ -158,7 +160,7 @@ public class PhotoServicesImplTests {
 
         // Act, Assert
         Assertions.assertThrows(UnauthorizedOperationException.class,
-                () -> services.delete(mockPhoto, user, mockPhoto.getPostedOn()));
+                () -> services.delete(mockPhoto, user));
     }
     @Test
     public void getById_Should_CallRepository() {
@@ -284,4 +286,79 @@ public class PhotoServicesImplTests {
         Assertions.assertThrows(EntityDuplicateException.class,
                 () -> services.postReview(photoScore, mockPhoto, jury, photoReviewDetails));
     }
+    @Test
+    public void getPhotosOfContest_Should_Call_Repository() {
+        // Arrange
+        Contest contest = createMockContest();
+        // Act
+        services.getPhotosOfContest(contest);
+
+        // Assert
+        Mockito.verify(mockRepository, Mockito.times(1))
+                .findAllByPostedOn(contest);
+    }
+    @Test
+    public void getPhotoByContestId_Should_ReturnPhoto_When_BothExistAndPhotoBelongsToContest() {
+        // Arrange
+        Contest contest = createMockContest();
+        Photo photo = createMockPhoto();
+        contest.setPhotos(Set.of(photo));
+
+        Mockito.when(mockRepository.findById(anyLong()))
+                .thenReturn(Optional.of(photo));
+        Mockito.when(mockContestServices.findById(anyLong()))
+                .thenReturn(contest);
+        // Act
+        Photo photo1 = services.getPhotoByContestId(photo.getId(), contest.getId());
+
+        // Assert
+        Assertions.assertEquals(photo, photo1);
+    }
+    @Test
+    public void getPhotoByContestId_Should_ThrowException_When_PhotoDoesNotExist() {
+        // Arrange
+        Contest contest = createMockContest();
+        Photo photo = createMockPhoto();
+        contest.setPhotos(Set.of(photo));
+
+        Mockito.when(mockRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
+        Mockito.when(mockContestServices.findById(anyLong()))
+                .thenReturn(contest);
+
+        // Act, Assert
+        Assertions.assertThrows(EntityNotFoundException.class,
+                () -> services.getPhotoByContestId(photo.getId(), contest.getId()));
+    }
+    @Test
+    public void getPhotoByContestId_Should_ThrowException_When_ContestDoesNotExist() {
+        // Arrange
+        Contest contest = createMockContest();
+        Photo photo = createMockPhoto();
+        contest.setPhotos(Set.of(photo));
+
+        Mockito.when(mockContestServices.findById(anyLong()))
+                .thenThrow(EntityNotFoundException.class);
+
+        // Act, Assert
+        Assertions.assertThrows(EntityNotFoundException.class,
+                () -> services.getPhotoByContestId(photo.getId(), contest.getId()));
+    }
+    @Test
+    public void getPhotoByContestId_Should_ThrowException_When_PhotoDoesNotBelongToContest() {
+        // Arrange
+        Contest contest = createMockContest();
+        Photo photo = createMockPhoto();
+        contest.setPhotos(Set.of());
+
+        Mockito.when(mockRepository.findById(anyLong()))
+                .thenReturn(Optional.of(photo));
+        Mockito.when(mockContestServices.findById(anyLong()))
+                .thenReturn(contest);
+
+        // Act, Assert
+        Assertions.assertThrows(EntityNotFoundException.class,
+                () -> services.getPhotoByContestId(photo.getId(), contest.getId()));
+    }
+
 }

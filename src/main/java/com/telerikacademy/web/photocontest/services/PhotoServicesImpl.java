@@ -65,13 +65,10 @@ public class PhotoServicesImpl implements PhotoServices {
 
     @Override
     @Transactional
-    public void delete(Photo photo, User user, Contest contest) {
-        if (!contest.getPhotos().contains(photo)) {
-            throw new EntityNotFoundException("Contest", contest.getId(), "photo", photo.getId());
-        }
+    public void delete(Photo photo, User user) {
         checkDeletePermissions(photo, user);
         deletePhoto(photo.getPhoto());
-        contest.setPhotos(null);
+        photo.getPostedOn().setPhotos(null);
         contestResultsRepository.deleteContestResultsByResultEmbed_Photo(photo);
         photoRepository.delete(photo);
     }

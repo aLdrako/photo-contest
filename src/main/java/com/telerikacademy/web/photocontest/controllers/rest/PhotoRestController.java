@@ -104,7 +104,7 @@ public class PhotoRestController {
         try {
             User user = authenticationHelper.tryGetUser(authorization);
             Photo photo = photoServices.getById(id);
-            photoServices.delete(photo, user, photo.getPostedOn());
+            photoServices.delete(photo, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException | UnauthorizedOperationException e) {

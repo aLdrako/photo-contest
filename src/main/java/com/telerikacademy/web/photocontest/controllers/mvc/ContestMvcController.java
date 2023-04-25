@@ -375,9 +375,8 @@ public class ContestMvcController extends BaseMvcController {
                               HttpSession session) {
         try {
             User user = authenticationHelper.tryGetUser(session);
-            Contest contest = contestServices.findById(id);
-            Photo photo = photoServices.getById(photoId);
-            photoServices.delete(photo, user, contest);
+            Photo photo = photoServices.getPhotoByContestId(photoId, id);
+            photoServices.delete(photo, user);
             return "redirect:/contests/" + id;
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());

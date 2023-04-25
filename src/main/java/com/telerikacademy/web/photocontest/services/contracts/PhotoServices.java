@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface PhotoServices {
     List<Photo> getAll();
     void create(Photo photo, MultipartFile file) throws FileUploadException;
-    void delete(Photo photo, User user, Contest contest);
+    void delete(Photo photo, User user);
     Photo getById(Long id);
     void postReview(PhotoScore photoScore, Photo photo, User user, PhotoReviewDetails photoReviewDetails);
     int getScoreOfPhoto(Long id);
