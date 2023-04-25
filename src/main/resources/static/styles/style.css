@@ -80,9 +80,15 @@ body {
 
 #photoView .modal-footer,
 #deleteContest .modal-header,
-#deleteContest .modal-footer {
+#deleteContest .modal-footer,
+#participantsModal .modal-header,
+#participantsModal .modal-footer {
     border-top: none !important;
     border-bottom: none !important;
+}
+
+#participantsModal .modal-footer {
+    justify-content: flex-start !important;
 }
 
 /*CREATE/UPDATE CONTEST*/

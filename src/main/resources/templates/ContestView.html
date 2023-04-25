@@ -14,11 +14,12 @@
            th:style="${(contest.coverPhoto != null && contest.coverPhoto.startsWith('http')) ? 'background-image: url(' + contest.coverPhoto + ')' : ''}">
     <div class="row py-5">
       <div class="col col-xl-8 mx-auto position-relative">
-        <div class="position-absolute top-0 start-50 translate-middle" th:if="${phase1 && session.user.organizer}">
-          <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-            <a href="#" class="btn btn-sm btn-warning" th:href="@{${requestURI} + '/update'}"><i class="bi bi-pencil-square"></i></a>
-            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteContest"><i class="bi bi-x-square"></i></button>
+        <div class="position-absolute top-0 start-50 translate-middle">
+          <div class="btn-group" role="group">
+            <a href="#" class="btn btn-sm btn-warning" th:if="${phase1 && session.user.organizer}" th:href="@{${requestURI} + '/update'}"><i class="bi bi-pencil-square"></i></a>
+            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteContest" th:if="${phase1 && session.user.organizer}"><i class="bi bi-x-square"></i></button>
           </div>
+          <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#participantsModal"><i class="bi bi-people"></i></button>
         </div>
         <h1 class="fw-light neon-text display-1" th:text="${contest.title}">Contest title (design)</h1>
 
@@ -135,12 +136,34 @@
 
 </main>
 
+<!-- Modal Window for showing Participants -->
+<div class="modal fade" id="participantsModal" tabindex="-1" aria-labelledby="participantsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark">
+      <div class="modal-header bg-dark">
+        <h1 class="modal-title fs-5 text-warning" id="participantsModalLabel">Enlisted Users</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer bg-dark">
+        <div class="btn-group mb-2" style="display: block">
+          <button type="button" class="btn btn-sm btn-warning mb-1">Juries</button>
+          <button type="button" class="btn btn-sm btn-outline-warning disable mb-1" th:each="jury : ${contest.juries}" th:text="${jury}">Juries (design)</button>
+        </div>
+        <div class="btn-group" style="display: block">
+          <button type="button" class="btn btn-sm btn-warning mb-1">Participants</button>
+          <button type="button" class="btn btn-sm btn-outline-warning disable mb-1" th:each="participant : ${contest.participants}" th:text="${participant}">Participants (design)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Window for Delete Confirmation -->
-<div class="modal fade" id="deleteContest" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteContest" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content bg-dark">
       <div class="modal-header bg-dark">
-        <h1 class="modal-title fs-5 text-warning" id="exampleModalLabel">Delete Confirmation</h1>
+        <h1 class="modal-title fs-5 text-warning" id="deleteModalLabel">Delete Confirmation</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-footer bg-dark">
