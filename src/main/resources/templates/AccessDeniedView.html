@@ -11,8 +11,8 @@
   <span class='error-num'>4</span>
   <div class='eye'></div>
   <span class='error-num'>3</span>
-  <p class='alert alert-dark' th:text="${error}">Forbidden Action</p>
-  <a href='#' th:href="@{/}" class="btn btn-light text-dark">Go back</a>
+  <p class='alert alert-warning' th:text="${error}">Forbidden Action</p>
+  <a href='#' th:href="@{/}" class="btn btn-warning text-dark">Go back</a>
 </div>
 
 <script th:replace="~{fragments/scripts :: error-page}"></script>

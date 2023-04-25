@@ -1,8 +1,10 @@
 <header class="fixed-top"
         th:fargment="header"
         th:with="ctxHome=${context == 'home'},
-                 ctxDashboard=${context == 'dashboard'},
-                 ctxContests=${context == 'contests'}"
+                 ctxAuth=${context == 'register' || context == 'login' || context == 'forgotten-password' || context == 'email-sent'},
+                 ctxContests=${context == 'contests' || context == 'contest-view' || context == 'contest-update' || context == 'create-photo-review' || context == 'photo-create'},
+                 ctxDashboard=${context == 'dashboard' || context == 'users' || context == 'user-profile' || context == 'update-user' || context == 'photo-junkies' ||
+                        context == 'categories' || context == 'category-create' || context == 'category-update' || context == 'all-photos' || context == 'photo-details'}"
 >
     <div class="px-3 py-2 text-bg-dark">
         <div class="container">
@@ -36,11 +38,11 @@
                         </a>
                     </li>
                     <li class="px-1">
-                        <a class="nav-link rounded text-warning" th:if="${!session.isAuthenticated}" th:href="@{/auth/login}">
+                        <a class="nav-link rounded" th:if="${!session.isAuthenticated}" th:href="@{/auth/login}" th:classappend="${ctxAuth ? 'active-nav-link' : 'text-warning'}">
                             <span class="bi d-block mx-auto mb-1"><i class="bi bi-box-arrow-in-right"></i></span>
                             <span class="text-icon-item">Log in</span>
                         </a>
-                        <a class="nav-link rounded text-warning" th:if="${session.isAuthenticated}" th:href="@{/auth/logout}">
+                        <a class="nav-link rounded" th:if="${session.isAuthenticated}" th:href="@{/auth/logout}" th:classappend="${ctxAuth ? 'active-nav-link' : 'text-warning'}">
                             <span class="bi d-block mx-auto mb-1"><i class="bi bi-box-arrow-left"></i></span>
                             <span class="text-icon-item">Log out</span>
                         </a>

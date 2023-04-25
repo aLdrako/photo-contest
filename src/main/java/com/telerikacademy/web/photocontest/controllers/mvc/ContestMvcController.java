@@ -1,6 +1,5 @@
 package com.telerikacademy.web.photocontest.controllers.mvc;
 
-import com.sun.net.httpserver.HttpsServer;
 import com.telerikacademy.web.photocontest.exceptions.AuthorizationException;
 import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
@@ -13,7 +12,6 @@ import com.telerikacademy.web.photocontest.models.validations.CreatePhotoViaCont
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.EnlistUserValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
-import com.telerikacademy.web.photocontest.repositories.contracts.ContestRepository;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.CategoryServices;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
