@@ -6,12 +6,14 @@ import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationExcep
 import com.telerikacademy.web.photocontest.models.Category;
 import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.repositories.contracts.CategoryRepository;
+import com.telerikacademy.web.photocontest.repositories.contracts.ContestRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.telerikacademy.web.photocontest.helpers.Helpers.*;
@@ -23,6 +25,8 @@ public class CategoryServicesImplTests {
 
     @Mock
     CategoryRepository mockCategoryRepository;
+    @Mock
+    ContestRepository mockContestRepository;
     @InjectMocks
     CategoryServicesImpl categoryServices;
 
@@ -107,9 +111,13 @@ public class CategoryServicesImplTests {
     public void deleteById_Should_CallRepository_WhenCategoryExists() {
         // Arrange
         Category mockCategory = createMockCategory();
+        Category mockDefaultCategory = createMockCategory();
+        mockDefaultCategory.setId(1L);
         User mockOrganizer = createMockOrganizer();
 
+        when(mockCategoryRepository.findById(mockDefaultCategory.getId())).thenReturn(Optional.of(mockDefaultCategory));
         when(mockCategoryRepository.findById(mockCategory.getId())).thenReturn(Optional.of(mockCategory));
+        when(mockContestRepository.findAll()).thenReturn(List.of());
 
         // Act
         categoryServices.deleteById(mockCategory.getId(), mockOrganizer);

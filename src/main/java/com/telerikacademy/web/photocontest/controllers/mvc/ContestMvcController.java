@@ -42,6 +42,7 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 
 import static com.telerikacademy.web.photocontest.helpers.DateTimeFormatHelper.getPhaseRemainingTime;
 import static com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper.getResult;
@@ -61,7 +62,8 @@ public class ContestMvcController extends BaseMvcController {
 
     @ModelAttribute("categories")
     public Iterable<Category> populateCategories() {
-        return categoryServices.findAll();
+        Iterable<Category> categories = categoryServices.findAll();
+        return StreamSupport.stream(categories.spliterator(), false).filter(category -> category.getId() != 1L).toList();
     }
 
     @ModelAttribute("photos")
