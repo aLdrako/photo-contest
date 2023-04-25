@@ -1,13 +1,10 @@
 package com.telerikacademy.web.photocontest.services;
 
-import com.telerikacademy.web.photocontest.exceptions.AuthorizationException;
 import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
-import com.telerikacademy.web.photocontest.models.Ranking;
 import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.models.dto.PermissionsDto;
-import com.telerikacademy.web.photocontest.repositories.contracts.RankingRepository;
 import com.telerikacademy.web.photocontest.repositories.contracts.UserRepository;
 import com.telerikacademy.web.photocontest.services.contracts.RankingServices;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
@@ -18,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import static com.telerikacademy.web.photocontest.helpers.RandomStringGenerator.generateString;
 
@@ -33,11 +29,12 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     public List<User> getAll() {
-        return userRepository.getAll();
+        return userRepository.findAllByIsDeletedFalse();
     }
     @Override
-    public Page<User> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public Page<User> findAll(Pageable pageable, boolean withOrganizers) {
+        return withOrganizers ? userRepository.findAllByIsDeletedFalse(pageable) :
+                userRepository.findAllByIsOrganizerFalseAndIsDeletedFalse(pageable);
     }
 
 
@@ -45,7 +42,7 @@ public class UserServicesImpl implements UserServices {
     public void update(User user, User userFromAuthorization) {
         checkAuthorizationPermissions(user, userFromAuthorization);
         checkForDuplicateEmail(user);
-        userRepository.update(user);
+        userRepository.save(user);
     }
 
     private void checkAuthorizationPermissions(User user, User userFromAuthorization) {
@@ -59,7 +56,7 @@ public class UserServicesImpl implements UserServices {
     public void create(User user) {
         checkForDuplicateEmail(user);
         checkForDuplicateUsername(user);
-        userRepository.create(user);
+        userRepository.save(user);
     }
 
     private void checkForDuplicateUsername(User user) {
@@ -116,12 +113,13 @@ public class UserServicesImpl implements UserServices {
         User userFromRepo = userRepository.getById(id);
         checkAuthorizationPermissions(userFromRepo, userFromAuthorization);
         changeUserProperties(userFromRepo);
-        userRepository.update(userFromRepo);
+        userRepository.save(userFromRepo);
     }
 
     @Override
     public List<User> search(Optional<String> keyword) {
-        return userRepository.search(keyword);
+        String query = keyword.orElse("");
+        return userRepository.search(query);
     }
 
     @Override
@@ -131,13 +129,13 @@ public class UserServicesImpl implements UserServices {
             throw new UnauthorizedOperationException(UNAUTHORIZED_UPDATE_PERMISSIONS_MESSAGE);
         }
         userFromRepo.setOrganizer(permissionsDto.getOrganiser());
-        userRepository.update(userFromRepo);
+        userRepository.save(userFromRepo);
     }
 
-    @Override
-    public Page<User> findAllPhotoJunkies(Pageable pageable, String sortBy, String orderBy) {
-        return userRepository.findAllJunkies(pageable, sortBy, orderBy);
-    }
+   //@Override
+   //public Page<User> findAllPhotoJunkies(Pageable pageable) {
+   //    return userRepository.findAllJunkies(pageable);
+   //}
 
     private void changeUserProperties(User userFromRepo) {
         userFromRepo.setDeleted(true);

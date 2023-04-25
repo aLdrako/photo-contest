@@ -2,6 +2,7 @@ package com.telerikacademy.web.photocontest.helpers;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -27,8 +28,10 @@ public class FilterAndSortingHelper {
             isFinished = true;
             phase = null;
         }
-        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
 
+        Sort sort = parameter.containsKey("order") && parameter.get("order").equals("desc") ?
+                pageable.getSort().descending() : pageable.getSort();
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
         return new Result(title, categoryName, isInvitational, isFinished, phase, now, pageRequest);
     }
 }

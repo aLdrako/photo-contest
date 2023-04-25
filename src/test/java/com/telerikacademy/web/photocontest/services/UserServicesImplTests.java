@@ -74,7 +74,7 @@ public class UserServicesImplTests {
     public void getAll_Should_CallRepository() {
         // Arrange
 
-        Mockito.when(mockRepository.getAll())
+        Mockito.when(mockRepository.findAllByIsDeletedFalse())
                 .thenReturn(List.of());
 
         // Act, Assert
@@ -104,7 +104,7 @@ public class UserServicesImplTests {
     public void search_Should_CallRepository() {
         // Arrange
 
-        Mockito.when(mockRepository.search(Optional.empty()))
+        Mockito.when(mockRepository.search(""))
                 .thenReturn(List.of());
 
         // Act, Assert
@@ -123,7 +123,7 @@ public class UserServicesImplTests {
 
         // Assert
         Mockito.verify(mockRepository, Mockito.times(1))
-                .update(user);
+                .save(user);
     }
     @Test
     public void update_Should_CallRepository_When_UserFromAuthenticationIsOrganizer() {
@@ -139,7 +139,7 @@ public class UserServicesImplTests {
 
         // Assert
         Mockito.verify(mockRepository, Mockito.times(1))
-                .update(user);
+                .save(user);
     }
     @Test
     public void update_Should_ThrowException_When_UserFromAuthenticationIsNotCreatorNorOrganizer() {
@@ -181,7 +181,7 @@ public class UserServicesImplTests {
         services.create(user);
         // Assert
         Mockito.verify(mockRepository, Mockito.times(1))
-                .create(user);
+                .save(user);
     }
     @Test
     public void create_Should_ThrowException_When_EmailIsDuplicate() {
@@ -225,7 +225,7 @@ public class UserServicesImplTests {
 
         // Assert
         Mockito.verify(mockRepository, Mockito.times(1))
-                .update(user);
+                .save(user);
     }
     @Test
     public void delete_Should_ThrowException_When_UserNotFound() {
@@ -264,6 +264,6 @@ public class UserServicesImplTests {
         services.delete(user.getId(), user1);
         // Act, Assert
         Mockito.verify(mockRepository, Mockito.times(1))
-                .update(user);
+                .save(user);
     }
 }

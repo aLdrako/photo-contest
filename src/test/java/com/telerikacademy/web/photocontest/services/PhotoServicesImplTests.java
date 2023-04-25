@@ -105,7 +105,7 @@ public class PhotoServicesImplTests {
         // Arrange
         Photo mockPhoto = createMockPhoto();
         User user = mockPhoto.getUserCreated();
-        mockPhoto.getPostedOn().setPhase1(LocalDateTime.now().plusDays(1L));
+        mockPhoto.getPostedOn().setPhase2(LocalDateTime.now().plusDays(1L));
 
         Mockito.doNothing().when(mockContestResultsRepository).deleteContestResultsByResultEmbed_Photo(mockPhoto);
         // Act
@@ -119,7 +119,7 @@ public class PhotoServicesImplTests {
         // Arrange
         Photo mockPhoto = createMockPhoto();
         User organizer = createMockOrganizer();
-        mockPhoto.getPostedOn().setPhase1(LocalDateTime.now().plusDays(1L));
+        mockPhoto.getPostedOn().setPhase2(LocalDateTime.now().plusDays(1L));
         Mockito.doNothing().when(mockContestResultsRepository).deleteContestResultsByResultEmbed_Photo(mockPhoto);
         // Act
         services.delete(mockPhoto, organizer, mockPhoto.getPostedOn());

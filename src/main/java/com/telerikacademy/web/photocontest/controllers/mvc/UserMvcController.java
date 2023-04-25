@@ -5,6 +5,7 @@ import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.helpers.AuthenticationHelper;
+import com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper;
 import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.models.dto.PermissionsDto;
 import com.telerikacademy.web.photocontest.models.dto.UserDto;
@@ -15,6 +16,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,7 +26,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 import java.util.Optional;
+
+import static com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper.getResult;
 
 @Controller
 @RequestMapping("/users")
@@ -34,16 +40,16 @@ public class UserMvcController extends BaseMvcController{
     private final ModelMapper modelMapper;
 
     @GetMapping
-    private String showAllUsers(@RequestParam(defaultValue = "0") int page,
-                                @RequestParam(defaultValue = "10") int size,
+    private String showAllUsers(@PageableDefault(size = 9, sort = "id") Pageable pageable,
+                                @RequestParam(required = false) Map<String, String> parameters,
                                 Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetOrganizer(session);
-            Pageable pageable = PageRequest.of(page, size);
-            Page<User> userPage = userServices.findAll(pageable);
+            FilterAndSortingHelper.Result result = getResult(parameters, pageable);
+            Page<User> userPage = userServices.findAll(result.pageable(), true);
             model.addAttribute("users", userPage.getContent());
-            model.addAttribute("currentPage", page);
-            model.addAttribute("sizePage", size);
+            model.addAttribute("currentPage", result.pageable().getPageNumber());
+            model.addAttribute("sizePage", result.pageable().getPageSize());
             model.addAttribute("totalPages", userPage.getTotalPages());
             return "UsersView";
         } catch (AuthorizationException e) {
@@ -54,23 +60,21 @@ public class UserMvcController extends BaseMvcController{
         }
     }
     @GetMapping("/photojunkies")
-    private String showAllPhotoJunkies(@RequestParam(defaultValue = "0") int page,
-                                       @RequestParam(defaultValue = "10") int size,
-                                       @RequestParam(required = false) Optional<String> sort,
-                                       @RequestParam(required = false) Optional<String> order,
+    private String showAllPhotoJunkies(@PageableDefault(size = 9, sort = "id") Pageable pageable,
+                                       @RequestParam(required = false) Map<String, String> parameters,
                                        Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetOrganizer(session);
-            Pageable pageable = PageRequest.of(page, size);
-            String sortBy = sort.orElse("id");
-            String orderBy = order.orElse("asc");
-            Page<User> userPage = userServices.findAllPhotoJunkies(pageable, sortBy, orderBy);
+            FilterAndSortingHelper.Result result = getResult(parameters, pageable);
+            Page<User> userPage = userServices.findAll(result.pageable(), false);
+            String sort = pageable.getSort().toString().contains("id") ? "id" : "rank";
+            String order = pageable.getSort().toString().contains("ASC") ? "asc" : "desc";
 
             model.addAttribute("users", userPage.getContent());
-            model.addAttribute("currentPage", page);
-            model.addAttribute("sort", sortBy);
-            model.addAttribute("order", orderBy);
-            model.addAttribute("sizePage", size);
+            model.addAttribute("currentPage", pageable.getPageNumber());
+            model.addAttribute("sort", sort);
+            model.addAttribute("order", order);
+            model.addAttribute("sizePage", pageable.getPageSize());
             model.addAttribute("totalPages", userPage.getTotalPages());
             return "PhotoJunkiesView";
         } catch (AuthorizationException e) {
@@ -144,7 +148,7 @@ public class UserMvcController extends BaseMvcController{
             return "AccessDeniedView";
         } catch (EntityDuplicateException e) {
             bindingResult.rejectValue("email", "email_exists", e.getMessage());
-            return "RegisterView";
+            return "UserUpdateView";
         }
     }
     @GetMapping("{id}/delete")

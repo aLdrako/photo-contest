@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface UserServices {
     List<User> getAll();
-    Page<User> findAll(Pageable pageable);
+    Page<User> findAll(Pageable pageable, boolean withOrganizers);
     void update(User user, User userFromAuthorization);
     void create(User user);
     User getById(Long id);
@@ -21,5 +21,5 @@ public interface UserServices {
     List<User> search(Optional<String> keyword);
     void updatePermissions(User userFromRepo, User userFromAuthorization, PermissionsDto permissionsDto);
 
-    Page<User> findAllPhotoJunkies(Pageable pageable, String sort, String order);
+    //Page<User> findAllPhotoJunkies(Pageable pageable);
 }
