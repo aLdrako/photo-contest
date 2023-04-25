@@ -52,6 +52,19 @@
     });
 </script>
 
+<!--Facebook Sharing Button-->
+<script th:fragment="facebook-sharing">
+    const contestUrl = window.location.href;
+    const shareBtns = document.querySelectorAll('.fb-share-button');
+    shareBtns.forEach(function(shareBtn) {
+        const winnerImg = shareBtn.closest('.card-img-overlay').previousElementSibling;
+        const imgUrl = winnerImg.getAttribute('src');
+        const urlLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(contestUrl)}&picture=${encodeURIComponent(imgUrl)}&src=sdkpreparse`;
+        shareBtn.setAttribute('data-href', urlLink);
+        shareBtn.querySelector('a').setAttribute('href', urlLink);
+    });
+</script>
+
 <!-- Script for Quill with Highlight -->
 <script th:fragment="quilljs">
     var formattedText = document.getElementById("floatingContent").value;
