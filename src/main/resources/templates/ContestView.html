@@ -14,11 +14,12 @@
            th:style="${(contest.coverPhoto != null && contest.coverPhoto.startsWith('http')) ? 'background-image: url(' + contest.coverPhoto + ')' : ''}">
     <div class="row py-5">
       <div class="col col-xl-8 mx-auto position-relative">
-        <div class="position-absolute top-0 start-50 translate-middle" th:if="${phase1 && session.user.organizer}">
-          <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-            <a href="#" class="btn btn-sm btn-warning" th:href="@{${requestURI} + '/update'}"><i class="bi bi-pencil-square"></i></a>
-            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteContest"><i class="bi bi-x-square"></i></button>
+        <div class="position-absolute top-0 start-50 translate-middle" th:if="${session.user.organizer}">
+          <div class="btn-group" role="group">
+            <a href="#" class="btn btn-sm btn-warning" th:if="${phase1}" th:href="@{${requestURI} + '/update'}"><i class="bi bi-pencil-square"></i></a>
+            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteContest" th:if="${phase1}"><i class="bi bi-x-square"></i></button>
           </div>
+          <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#participantsModal"><i class="bi bi-people"></i></button>
         </div>
         <h1 class="fw-light neon-text display-1" th:text="${contest.title}">Contest title (design)</h1>
 
@@ -72,7 +73,7 @@
   <div class="album py-5">
     <div class="container">
 
-      <div class="row row-cols-1 row-cols-sm-2 g-3">
+      <div class="row row-cols-1 row-cols-lg-2 g-3">
         <th:block th:each="photo : ${contest.photos}">
           <div class="col  rounded-4">
             <div class="card shadow-sm">
@@ -87,6 +88,7 @@
                   <div class="btn-group">
                     <a th:if="${phase2}" href="#" type="button" class="btn btn-sm btn-outline-warning" th:href="@{/contests/{contestId}/photos/{photoId}/review(contestId=${contest.id},photoId=${photo.get('id')})}">Rate</a>
                     <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#photoView">View</button>
+                    <a th:if="${phase1 && session.user.organizer}" href="#" type="button" class="btn btn-sm btn-outline-danger" th:href="@{/contests/{contestId}/photos/{photoId}/delete(contestId=${contest.id},photoId=${photo.get('id')})}">Delete</a>
                   </div>
                   <a class="link-warning" href="#" th:href="@{/users/{id}(id=${photo.get('userId')})}" th:text="${photo.get('userCreated')}">Username (design)</a>
                 </div>
@@ -95,21 +97,22 @@
                     <th:block th:each="result : ${contest.results}">
 
                       <th:block th:if="${result.photoId == photo.get('id')}" th:each="jury : ${result.juries}">
-                        <div class="card text-bg-dark mb-3">
-                          <div class="d-flex gap-2 w-100 justify-content-between py-1">
+                        <div class="card text-bg-dark mb-3 results-section">
+                          <div class="d-flex gap-2 w-100 justify-content-between">
 
-                            <div class="btn-group">
-                              <button type="button" class="btn btn-sm btn-warning">Jury</button>
-                              <button type="button" class="btn btn-sm btn-outline-warning" th:text="${jury.get('jury')}">Username (design)</button>
+                            <div class="btn-group jury-comment">
+                              <button type="button" class="btn btn-sm btn-warning">Comment</button>
                             </div>
 
-                            <div class="btn-group">
-                              <button type="button" class="btn btn-sm btn-warning">Score</button>
+                            <div class="btn-group jury-score">
+                              <button type="button" class="btn btn-sm btn-warning">Jury</button>
+                              <button type="button" class="btn btn-sm btn-outline-warning" th:text="${jury.get('jury')}">Username (design)</button>
                               <button type="button" class="btn btn-sm btn-outline-warning" th:text="${jury.get('score')}">Score (design)</button>
+                              <button type="button" class="btn btn-sm btn-warning">Score</button>
                             </div>
 
                           </div>
-                          <div class="card-body text-bg-warning rounded">
+                          <div class="card-body text-bg-warning rounded-bottom">
                               <p class="card-text" th:text="${jury.get('comment')}">Comment (design)</p>
                           </div>
                         </div>
@@ -135,12 +138,52 @@
 
 </main>
 
+<!-- Modal Window for showing Participants -->
+<div class="modal fade" id="participantsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark">
+      <div class="modal-header bg-dark">
+        <h1 class="modal-title fs-5 text-warning">Enlisted Users</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer bg-dark">
+        <div class="btn-group mb-2" style="display: block">
+          <button type="button" class="btn btn-sm btn-warning mb-1">Juries</button>
+          <button type="button" class="btn btn-sm btn-outline-warning disable mb-1" th:each="jury : ${contest.juries}" th:text="${jury}">Juries (design)</button>
+        </div>
+        <div class="btn-group" style="display: block">
+          <button type="button" class="btn btn-sm btn-warning mb-1">Participants</button>
+          <button type="button" class="btn btn-sm btn-outline-warning disable mb-1" th:each="participant : ${contest.participants}" th:text="${participant}">Participants (design)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--&lt;!&ndash; Modal Window for Delete Photo Confirmation &ndash;&gt;-->
+<!--<div class="modal fade" id="photoDeleteModal" tabindex="-1" aria-hidden="true">-->
+<!--  <div class="modal-dialog modal-dialog-centered modal-sm">-->
+<!--    <div class="modal-content bg-dark">-->
+<!--      <div class="modal-header bg-dark">-->
+<!--        <h1 class="modal-title fs-5 text-warning">Delete Confirmation</h1>-->
+<!--        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--      </div>-->
+<!--      <div class="modal-footer bg-dark">-->
+<!--        <div class="btn-group">-->
+<!--          <button type="button" class="btn btn-sm btn-warning">Are you sure you want to delete this photo?</button>-->
+<!--          <a href="#" class="btn btn-sm btn-danger">Delete</a>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
 <!-- Modal Window for Delete Confirmation -->
-<div class="modal fade" id="deleteContest" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteContest" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content bg-dark">
       <div class="modal-header bg-dark">
-        <h1 class="modal-title fs-5 text-warning" id="exampleModalLabel">Delete Confirmation</h1>
+        <h1 class="modal-title fs-5 text-warning">Delete Confirmation</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-footer bg-dark">
@@ -154,7 +197,7 @@
 </div>
 
 <!-- Modal Window for Winners View -->
-<div class="modal fade" id="photoWinners" tabindex="-1" aria-labelledby="photoWinnersLabel" aria-hidden="true">
+<div class="modal fade" id="photoWinners" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content bg-dark rounded-4">
       <div class="modal-body">
@@ -178,7 +221,7 @@
 </div>
 
 <!-- Modal Window for Photo View -->
-<div class="modal fade" id="photoView" tabindex="-1" aria-labelledby="photoViewLabel" aria-hidden="true">
+<div class="modal fade" id="photoView" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
     <div class="modal-content bg-dark rounded-4">
       <div class="modal-body">
@@ -207,6 +250,7 @@
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+<!--<script th:replace="~{fragments/scripts :: photo-delete}"></script>-->
 <script th:replace="~{fragments/scripts :: photo-view}"></script>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>
 </body>

@@ -15,10 +15,10 @@
             <div class="col px-0">
                 <h1 class="display-4 fst-italic text-warning">Welcome to Photo Contest website</h1>
                 <p class="lead mt-3 text-warning">
-                    Welcome to our photo contest website! To participate in our contest, you can submit your best photos.
+                    To participate in our contest, you can submit your best photos.
                     Make sure to upload high-quality photos and include a brief description of each photo.
                     Winners will be selected based on creativity, originality, and adherence to the contest theme. Good luck!
-                    <br> Check out our latest winners down below <i class="bi bi-arrow-down"></i>
+                    Check out our latest winners down below <i class="bi bi-arrow-down"></i>
                 </p>
             </div>
         </div>
@@ -26,7 +26,7 @@
             <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div th:each="contest, contestIndex : ${contests}" th:if="${contest.winners != null and !contest.winners.isEmpty()}">
-                        <div th:classappend="${contestIndex.index == 0} ? 'carousel-item active' : 'carousel-item'" data-bs-interval="3000">
+                        <div th:classappend="${contestIndex.index == 0} ? 'carousel-item active' : 'carousel-item'" data-bs-interval="2000">
                             <img src="#" th:src="${contest.winners[0].get('photo')}" class="d-block mx-auto w-75" alt="Winner of the contest" />
                             <div class="carousel-caption d-none d-md-block">
                                 <h5 class="text-warning" th:text="${contest.winners[0].get('userCreated')}">User (design)</h5>
