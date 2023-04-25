@@ -93,11 +93,29 @@
                   <div class="btn-group">
                     <a th:if="${phase2}" href="#" type="button" class="btn btn-sm btn-outline-warning" th:href="@{/contests/{contestId}/photos/{photoId}/review(contestId=${contest.id},photoId=${photo.get('id')})}">Rate</a>
                     <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#photoView">View</button>
-                    <a th:if="${phase1 && session.user.organizer}" href="#" type="button" class="btn btn-sm btn-outline-danger" th:href="@{/contests/{contestId}/photos/{photoId}/delete(contestId=${contest.id},photoId=${photo.get('id')})}">Delete</a>
+                    <button th:if="${phase1 && session.user.organizer}" type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deletePhotoModal" th:data-bs-target="'#deletePhotoModal-' + ${photo.get('id')}">Delete</button>
                   </div>
                   <a class="link-warning" href="#" th:href="@{/users/{id}(id=${photo.get('userId')})}" th:text="${photo.get('userCreated')}">Username (design)</a>
-
                 </div>
+
+                <!-- Modal Window for Delete Photo Confirmation -->
+                <div class="modal fade" id="deletePhotoModal" tabindex="-1" aria-labelledby="deletePhotoModal" aria-hidden="true" th:id="'deletePhotoModal-' + ${photo.get('id')}">
+                  <div class="modal-dialog modal-dialog-centered modal-sm deletePhotoModal">
+                    <div class="modal-content bg-dark">
+                      <div class="modal-header bg-dark">
+                        <h1 class="modal-title fs-5 text-warning">Delete Photo</h1>
+<!--                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+                      </div>
+                      <div class="modal-footer bg-dark">
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-sm btn-warning">Are you sure?</button>
+                          <a type="button" class="btn btn-sm btn-danger" th:href="@{/contests/{contestId}/photos/{photoId}/delete(contestId=${contest.id},photoId=${photo.get('id')})}">Delete</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div th:class="'collapse'" th:id="'collapseResults-' + ${photo.get('id')}">
                   <div class="mt-2 bg-dark text-warning">
                     <th:block th:each="result : ${contest.results}">
@@ -150,7 +168,7 @@
     <div class="modal-content bg-dark">
       <div class="modal-header bg-dark">
         <h1 class="modal-title fs-5 text-warning">Enlisted Users</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!--        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
       </div>
       <div class="modal-footer bg-dark">
         <div class="btn-group mb-2" style="display: block">
@@ -171,12 +189,12 @@
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content bg-dark">
       <div class="modal-header bg-dark">
-        <h1 class="modal-title fs-5 text-warning">Delete Confirmation</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h1 class="modal-title fs-5 text-warning">Delete Contest</h1>
+<!--        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
       </div>
       <div class="modal-footer bg-dark">
         <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-warning">Are you sure you want to delete contest?</button>
+          <button type="button" class="btn btn-sm btn-warning">Are you sure?</button>
           <a type="button" class="btn btn-sm btn-danger" th:href="@{${requestURI} + '/delete'}">Delete</a>
         </div>
       </div>

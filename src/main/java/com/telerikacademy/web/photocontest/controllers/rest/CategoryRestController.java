@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -28,8 +30,9 @@ public class CategoryRestController {
     private final ModelMapper modelMapper;
 
     @GetMapping
-    public Iterable<Category> findAll() {
-        return categoryServices.findAll();
+    public List<Category> findAll() {
+        Iterable<Category> iterable = categoryServices.findAll();
+        return StreamSupport.stream(iterable.spliterator(), false).toList();
     }
 
     @GetMapping("/{id}")
