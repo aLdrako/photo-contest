@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+import static com.telerikacademy.web.photocontest.helpers.DateTimeFormatHelper.formatToString;
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.deletePhoto;
 
 @Component
@@ -144,6 +145,11 @@ public class ModelMapper {
     public PhotoResponseDto objectToDto(Photo photo) {
         return new PhotoResponseDto(photo.getTitle(), photo.getStory(), photo.getPhoto(),
                 photo.getUserCreated().getUsername(), photo.getPostedOn().getId());
+    }
+    public UserResponseDto objectToResponseDto(User user) {
+        return new UserResponseDto(user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(),
+                formatToString(user.getJoinDate()), user.getRank().getName(),
+                user.isOrganizer(), user.getPoints());
     }
 
     private static List<ContestResultDto> getContestResultDto(Contest contest) {
