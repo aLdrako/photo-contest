@@ -17,10 +17,13 @@
         <h2 class="display-4">Categories</h2>
       </div>
         <div class="w-75 p-3 mx-auto">
-          <div class="btn-group m-2" th:each="category : ${categories}">
-            <button type="button" class="btn btn-lg btn-warning" th:text="${category.name}">Category (design)</button>
-            <a href="#" class="btn btn-lg btn-outline-warning" th:href="@{/categories/{id}/update(id=${category.id})}"><i class="bi bi-pencil-square"></i></a>
-            <a href="#" class="btn btn-lg btn-outline-danger" th:href="@{/categories/{id}/delete(id=${category.id})}"><i class="bi bi-x-square"></i></a>
+          <a href="#" class="btn btn-lg btn-warning w-25" th:href="@{/categories/create}">Create Category</a>
+          <div class="w-100 mt-3">
+            <div class="btn-group m-2" th:each="category : ${categories}">
+              <button type="button" class="btn btn-lg btn-warning" th:text="${category.name}">Category (design)</button>
+              <a href="#" class="btn btn-lg btn-outline-warning" th:if="${category.getId() != 1}" th:href="@{/categories/{id}/update(id=${category.id})}"><i class="bi bi-pencil-square"></i></a>
+              <a href="#" class="btn btn-lg btn-outline-danger" th:if="${category.getId() != 1}" th:href="@{/categories/{id}/delete(id=${category.id})}"><i class="bi bi-x-square"></i></a>
+            </div>
           </div>
         </div>
     </div>

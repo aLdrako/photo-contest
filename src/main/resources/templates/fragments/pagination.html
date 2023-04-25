@@ -2,9 +2,8 @@
     <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled' : ''">
         <a class="page-link" th:href="@{${pageQuery + (currentPage - 1) + linkQuery}}">Previous</a>
     </li>
-    <li th:each="page : ${#numbers.sequence(0, totalPages - 1)}" class="page-item">
-        <a class="page-link" th:href="@{${pageQuery + page + linkQuery}}" th:text="${page + 1}"
-           th:classappend="${currentPage == page} ? 'active'"></a>
+    <li th:each="page : ${#numbers.sequence(0, totalPages - 1)}" class="page-item" th:classappend="${currentPage == page} ? 'active' : ''">
+        <a class="page-link" th:href="@{${pageQuery + page + linkQuery}}" th:text="${page + 1}"></a>
     </li>
     <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''">
         <a class="page-link" th:href="@{${pageQuery + (currentPage + 1) + linkQuery}}">Next</a>

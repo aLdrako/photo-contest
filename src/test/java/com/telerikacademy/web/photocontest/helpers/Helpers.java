@@ -64,7 +64,7 @@ public class Helpers {
 
     public static Category createMockCategory() {
         Category category = new Category();
-        category.setId(1L);
+        category.setId(2L);
         category.setName("mockCategory");
         return category;
     }

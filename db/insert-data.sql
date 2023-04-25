@@ -12,10 +12,10 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
--- Dumping data for table photo_contest.categories: ~12 rows (approximately)
+-- Dumping data for table photo_contest.categories: ~11 rows (approximately)
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
 INSERT INTO `categories` (`id`, `name`) VALUES
-                                            (1, 'Nature'),
+                                            (1, 'No Category'),
                                             (2, 'Cars'),
                                             (3, 'Space'),
                                             (4, 'Photography'),
@@ -25,27 +25,26 @@ INSERT INTO `categories` (`id`, `name`) VALUES
                                             (8, 'Movies'),
                                             (9, 'Sports'),
                                             (10, 'Abstract'),
-                                            (12, 'Ocean'),
-                                            (17, 'Super Nova');
+                                            (12, 'Nature');
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 
--- Dumping data for table photo_contest.contests: ~12 rows (approximately)
+-- Dumping data for table photo_contest.contests: ~11 rows (approximately)
 /*!40000 ALTER TABLE `contests` DISABLE KEYS */;
 INSERT INTO `contests` (`id`, `title`, `category_id`, `is_invitational`, `phase1`, `phase2`, `date_created`, `is_finished`) VALUES
-(1, 'Cutest things :) ', 1, 0, '2023-04-12 21:00:00', '2023-04-12 23:00:00', '2023-04-10 00:00:00', 1),
+(1, 'Cutest things :) ', 5, 0, '2023-04-12 21:00:00', '2023-04-12 23:00:00', '2023-04-10 00:00:00', 1),
 (2, 'Animation of the Year', 7, 1, '2023-04-12 23:30:00', '2023-04-13 16:00:00', '2023-04-10 00:00:00', 1),
 (3, 'Universe in Focus', 3, 1, '2023-04-16 18:30:00', '2023-04-17 08:30:00', '2023-04-10 00:00:00', 1),
 (4, 'Indie Games', 6, 0, '2023-04-19 00:00:00', '2023-04-19 12:00:00', '2023-04-10 00:00:00', 1),
 (5, 'Blockbuster Bonanza', 8, 0, '2023-04-20 12:00:00', '2023-04-20 23:00:00', '2023-04-10 00:00:00', 1),
 (6, 'Toon Time Animation', 7, 1, '2023-04-21 20:00:00', '2023-04-22 06:00:00', '2023-04-10 00:00:00', 1),
-(7, 'Majestic Landscapes', 1, 1, '2023-04-23 00:00:00', '2023-04-23 12:00:00', '2023-04-10 00:00:00', 0),
+(7, 'Majestic Landscapes', 12, 1, '2023-04-23 00:00:00', '2023-04-23 12:00:00', '2023-04-10 00:00:00', 1),
 (10, 'Speed Demons', 2, 0, '2023-05-01 00:00:00', '2023-05-01 22:00:00', '2023-04-10 00:00:00', 0),
-(11, 'Wild and Free', 5, 0, '2023-05-02 06:00:00', '2023-05-02 18:00:00', '2023-04-10 00:00:00', 0),
-(12, 'Artistic Impressions', 10, 0, '2023-05-04 13:00:00', '2023-05-05 08:00:00', '2023-04-10 00:00:00', 0),
-(13, 'Impressive Space', 3, 1, '2023-05-05 09:00:00', '2023-05-06 06:00:00', '2023-04-10 00:00:00', 0);
+(11, 'Wild and Free', 5, 0, '2023-05-04 22:00:00', '2023-05-05 18:00:00', '2023-04-10 00:00:00', 0),
+(12, 'Artistic Impressions', 10, 0, '2023-05-05 08:00:00', '2023-05-06 03:00:00', '2023-04-10 00:00:00', 0),
+(13, 'Impressive Space', 3, 1, '2023-05-05 20:00:00', '2023-05-06 12:00:00', '2023-04-10 00:00:00', 0);
 /*!40000 ALTER TABLE `contests` ENABLE KEYS */;
 
--- Dumping data for table photo_contest.contests_results: ~8 rows (approximately)
+-- Dumping data for table photo_contest.contests_results: ~12 rows (approximately)
 /*!40000 ALTER TABLE `contests_results` DISABLE KEYS */;
 INSERT INTO `contests_results` (`contest_id`, `photo_id`, `results`) VALUES
                                                                          (1, 1, 20),
@@ -56,7 +55,10 @@ INSERT INTO `contests_results` (`contest_id`, `photo_id`, `results`) VALUES
                                                                          (3, 10, 6),
                                                                          (4, 13, 9),
                                                                          (4, 14, 9),
-                                                                         (5, 15, 15);
+                                                                         (5, 15, 15),
+                                                                         (7, 5, 6),
+                                                                         (7, 6, 6),
+                                                                         (7, 7, 6);
 /*!40000 ALTER TABLE `contests_results` ENABLE KEYS */;
 
 -- Dumping data for table photo_contest.cover_photos: ~9 rows (approximately)
@@ -73,7 +75,7 @@ INSERT INTO `cover_photos` (`contest_id`, `cover_photo`) VALUES
                                                              (13, 'https://alexgo.online/Projects/PhotoContest/photos/LyJrVSBRh4FvtMK.jpg');
 /*!40000 ALTER TABLE `cover_photos` ENABLE KEYS */;
 
--- Dumping data for table photo_contest.juries: ~30 rows (approximately)
+-- Dumping data for table photo_contest.juries: ~31 rows (approximately)
 /*!40000 ALTER TABLE `juries` DISABLE KEYS */;
 INSERT INTO `juries` (`contest_id`, `user_id`) VALUES
                                                    (1, 1),
@@ -109,7 +111,7 @@ INSERT INTO `juries` (`contest_id`, `user_id`) VALUES
                                                    (13, 13);
 /*!40000 ALTER TABLE `juries` ENABLE KEYS */;
 
--- Dumping data for table photo_contest.participants: ~45 rows (approximately)
+-- Dumping data for table photo_contest.participants: ~44 rows (approximately)
 /*!40000 ALTER TABLE `participants` DISABLE KEYS */;
 INSERT INTO `participants` (`contest_id`, `user_id`) VALUES
                                                          (1, 6),
@@ -286,15 +288,15 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `email`, `pass
 (3, 'Reserved1', 'Reserved1', 'reserved1', 'reserved1@mail.com', 'reserved1', '2023-04-10 00:00:00', 1, 3),
 (4, 'Reserved2', 'Reserved2', 'reserved2', 'reserved2@mail.com', 'reserved2', '2023-04-10 00:00:00', 1, 0),
 (5, 'Reserved3', 'Reserved3', 'reserved3', 'reserved3@mail.com', 'reserved3', '2023-04-10 00:00:00', 1, 0),
-(6, 'Alexandra', 'Silcock', 'silcock', 'silcock@dailynews.com', 'silcock', '2023-04-12 12:01:03', 2, 90),
+(6, 'Alexandra', 'Silcock', 'silcock', 'silcock@dailynews.com', 'silcock', '2023-04-12 12:01:03', 2, 130),
 (7, 'Margot', 'Rashleig', 'rashleig', 'rashleig@yahoo.com', 'rashleig', '2023-04-12 12:01:30', 4, 1502),
 (8, 'Brian', 'Mussalli', 'mussalli', 'mussalli@skynet.com', 'mussalli', '2023-04-12 12:01:46', 4, 1206),
 (9, 'Orion', 'Wahner', 'owahnert', 'owahnert@tinyurl.com', 'owahnert', '2023-04-12 12:02:01', 2, 56),
-(10, 'Reed', 'Flynn', 'rflynn12', 'rflynn12@php.net', 'rflynn12', '2023-04-12 12:02:19', 2, 125),
+(10, 'Reed', 'Flynn', 'rflynn12', 'rflynn12@php.net', 'rflynn12', '2023-04-12 12:02:19', 3, 165),
 (11, 'Deleted', 'Deleted', 'deleted', 'deleted@mail.com', 'deleted', '2023-04-12 12:03:00', 1, 0),
 (12, 'Tester', 'Tester', 'tester', 'tester@mail.com', 'tester', '2023-04-12 12:03:45', 3, 306),
 (13, 'Alex', 'Dimov', 'alexdimov', 'alexdimov@mail.com', 'alexdimov', '2023-04-12 12:29:55', 1, 0),
-(14, 'Orion', 'Spacer', 'orispace', 'orispace@gmail.com', 'orispace', '2023-04-12 12:32:53', 3, 303),
+(14, 'Orion', 'Spacer', 'orispace', 'orispace@gmail.com', 'orispace', '2023-04-12 12:32:53', 3, 343),
 (15, 'John', 'Smith', 'smith555', 'smith555@yahoo.com', 'smith555', '2023-04-12 12:34:13', 2, 34);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
