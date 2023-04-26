@@ -49,7 +49,4 @@ public interface UserRepository extends JpaRepository<User, Long>{
            """)
     Page<User> searchPhotoJunkie(@Param("keyword") String keyword, Pageable pageable);
 
-    Page<User> findAllByIsDeletedFalse(Pageable pageable);
-
-    Page<User> findAllByIsOrganizerFalseAndIsDeletedFalse(Pageable pageable);
 }

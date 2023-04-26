@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface UserServices {
     List<User> getAll();
-    Page<User> findAll(Pageable pageable, boolean withOrganizers);
     void update(User user, User userFromAuthorization);
     void create(User user);
     User getById(Long id);

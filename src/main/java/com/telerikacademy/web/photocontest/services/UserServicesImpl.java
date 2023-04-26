@@ -30,12 +30,6 @@ public class UserServicesImpl implements UserServices {
     public List<User> getAll() {
         return userRepository.findAllByIsDeletedFalse();
     }
-    @Override
-    public Page<User> findAll(Pageable pageable, boolean withOrganizers) {
-        return withOrganizers ? userRepository.findAllByIsDeletedFalse(pageable) :
-                userRepository.findAllByIsOrganizerFalseAndIsDeletedFalse(pageable);
-    }
-
 
     @Override
     public void update(User user, User userFromAuthorization) {
