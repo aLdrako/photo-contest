@@ -10,31 +10,18 @@ import com.telerikacademy.web.photocontest.models.dto.PermissionsDto;
 import com.telerikacademy.web.photocontest.models.dto.UserDto;
 import com.telerikacademy.web.photocontest.models.dto.UserResponseDto;
 import com.telerikacademy.web.photocontest.models.validations.CreateValidationGroup;
-import com.telerikacademy.web.photocontest.models.validations.EnlistUserValidationGroup;
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
-import com.telerikacademy.web.photocontest.services.contracts.EmailServices;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -53,8 +40,9 @@ public class UserRestController {
                 .collect(Collectors.toList());
     }
     @GetMapping("/search")
-    public List<UserResponseDto> search(Pageable page, @RequestParam(required = false) Optional<String> q) {
-        return userServices.search(q, page).stream().map(modelMapper::objectToResponseDto)
+    public List<UserResponseDto> search(Pageable page, @RequestParam(required = false) String q) {
+        q = q != null && q.isEmpty() ? null : q;
+        return userServices.searchAll(q, page).stream().map(modelMapper::objectToResponseDto)
                 .collect(Collectors.toList());
     }
     @GetMapping("/{id}")

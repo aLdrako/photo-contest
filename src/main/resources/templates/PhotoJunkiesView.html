@@ -41,7 +41,8 @@
                     sizeQuery=${'&size='},
                     sortQuery=${'&sort='},
                     orderQuery=${'&order='},
-                    linkQuery=${sizeQuery + sizePage + sortQuery + sort + orderQuery + order}">
+                    keywordQuery=${'&q='},
+                    linkQuery=${sizeQuery + sizePage + sortQuery + sort + orderQuery + order + keywordQuery} + ${q == null ? '' : q}">
 
     <ul th:replace="~{fragments/pagination :: pagination}"></ul>
   </nav>

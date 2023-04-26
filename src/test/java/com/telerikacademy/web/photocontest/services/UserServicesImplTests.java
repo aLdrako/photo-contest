@@ -18,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.telerikacademy.web.photocontest.helpers.Helpers.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -106,11 +105,11 @@ public class UserServicesImplTests {
     public void search_Should_CallRepository() {
         // Arrange
 
-        Mockito.when(mockRepository.search("",  Pageable.unpaged()))
+        Mockito.when(mockRepository.searchAll("",  Pageable.unpaged()))
                 .thenReturn(Page.empty());
 
         // Act, Assert
-        Assertions.assertEquals(Page.empty(), services.search(Optional.empty(), Pageable.unpaged()));
+        Assertions.assertEquals(Page.empty(), services.searchAll("", Pageable.unpaged()));
     }
     @Test
     public void update_Should_CallRepository_When_UserFromAuthenticationHasSameUsername() {

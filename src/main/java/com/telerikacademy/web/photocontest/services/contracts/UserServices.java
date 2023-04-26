@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserServices {
     List<User> getAll();
@@ -18,7 +17,8 @@ public interface UserServices {
     List<User> getAllOrganizers();
     List<User> getUsersWithJuryPermission();
     void delete(Long id, User userFromAuthorization);
-    Page<User> search(Optional<String> keyword, Pageable pageable);
+    Page<User> searchAll(String keyword, Pageable pageable);
+    Page<User> searchPhotoJunkies(String keyword, Pageable pageable);
     void updatePermissions(User userFromRepo, User userFromAuthorization, PermissionsDto permissionsDto);
 
     //Page<User> findAllPhotoJunkies(Pageable pageable);

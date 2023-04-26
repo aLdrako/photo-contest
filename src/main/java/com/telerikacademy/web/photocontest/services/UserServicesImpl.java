@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.telerikacademy.web.photocontest.helpers.RandomStringGenerator.generateString;
 
@@ -117,9 +116,12 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
-    public Page<User> search(Optional<String> keyword, Pageable pageable) {
-        String query = keyword.orElse("");
-        return userRepository.search(query, pageable);
+    public Page<User> searchAll(String keyword, Pageable pageable) {
+        return userRepository.searchAll(keyword, pageable);
+    }
+    @Override
+    public Page<User> searchPhotoJunkies(String keyword, Pageable pageable) {
+        return userRepository.searchPhotoJunkie(keyword, pageable);
     }
 
     @Override

@@ -40,7 +40,7 @@
          th:with="pageQuery=${'?page='},
                       sizeQuery=${'&size='},
                       keywordQuery=${'&q='},
-                      linkQuery=${sizeQuery + sizePage + keywordQuery + q}">
+                      linkQuery=${sizeQuery + sizePage + keywordQuery} + ${q == null ? '' : q}">
 
         <ul th:replace="~{fragments/pagination :: pagination}"></ul>
     </nav>

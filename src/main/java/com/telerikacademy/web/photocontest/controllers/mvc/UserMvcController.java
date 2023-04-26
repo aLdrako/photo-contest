@@ -14,9 +14,7 @@ import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper.getResult;
 
@@ -46,11 +43,9 @@ public class UserMvcController extends BaseMvcController{
         try {
             authenticationHelper.tryGetOrganizer(session);
             FilterAndSortingHelper.Result result = getResult(parameters, pageable);
-            Optional<String> keyword = parameters.get("q") == null || parameters.get("q").equals("null")
-                    ? Optional.empty() : Optional.of(parameters.get("q"));
-            Page<User> userPage = userServices.search(keyword, result.pageable());
+            Page<User> userPage = userServices.searchAll(result.keyword(), result.pageable());
             model.addAttribute("users", userPage.getContent());
-            keyword.ifPresent(s -> model.addAttribute("q", s));
+            model.addAttribute("q", result.keyword());
             model.addAttribute("currentPage", result.pageable().getPageNumber());
             model.addAttribute("sizePage", result.pageable().getPageSize());
             model.addAttribute("totalPages", userPage.getTotalPages());
@@ -69,15 +64,16 @@ public class UserMvcController extends BaseMvcController{
         try {
             authenticationHelper.tryGetOrganizer(session);
             FilterAndSortingHelper.Result result = getResult(parameters, pageable);
-            Page<User> userPage = userServices.findAll(result.pageable(), false);
-            String sort = pageable.getSort().toString().contains("id") ? "id" : "rank";
-            String order = pageable.getSort().toString().contains("ASC") ? "asc" : "desc";
+            Page<User> userPage = userServices.searchPhotoJunkies(result.keyword(), result.pageable());
+            String sort = result.pageable().getSort().toString().contains("id") ? "id" : "rank";
+            String order = result.pageable().getSort().toString().contains("ASC") ? "asc" : "desc";
 
             model.addAttribute("users", userPage.getContent());
-            model.addAttribute("currentPage", pageable.getPageNumber());
+            model.addAttribute("currentPage", result.pageable().getPageNumber());
+            model.addAttribute("q", result.keyword());
             model.addAttribute("sort", sort);
             model.addAttribute("order", order);
-            model.addAttribute("sizePage", pageable.getPageSize());
+            model.addAttribute("sizePage", result.pageable().getPageSize());
             model.addAttribute("totalPages", userPage.getTotalPages());
             return "PhotoJunkiesView";
         } catch (AuthorizationException e) {

@@ -95,15 +95,17 @@
 <form method="get" action="#"
       th:fragment="user-form-sort" th:action="${requestURI}">
   <div class="input-group input-group">
+    <input type="text" style="width: 40%;"
+           class="form-control" placeholder="Search by First Name, Last Name or Username" name="q">
     <select class="form-select" id="inputGroupSort" name="sort">
       <option selected value="">Sort by</option>
       <option value="rank">Rank</option>
     </select>
     <select class="form-select" id="inputGroupOrder" name="order">
-      <option selected value="acs">Ascending</option>
+      <option selected value="asc">Ascending</option>
       <option value="desc">Descending</option>
     </select>
-    <button class="btn btn-warning" type="submit">Sort</button>
+    <button class="btn btn-warning" type="submit">Search & Sort</button>
   </div>
 </form>
 

@@ -39,10 +39,15 @@ public interface UserRepository extends JpaRepository<User, Long>{
            """)
     List<User> getUsersWithJuryPermission();
     @Query("""
-           SELECT u from User u where :keyword = '' or (u.firstName = :keyword or u.lastName = :keyword
+           SELECT u from User u where :keyword is null or (u.firstName = :keyword or u.lastName = :keyword
            or u.username = :keyword) and u.isDeleted = false
            """)
-    Page<User> search(@Param("keyword") String keyword, Pageable pageable);
+    Page<User> searchAll(@Param("keyword") String keyword, Pageable pageable);
+    @Query("""
+           SELECT u from User u where :keyword is null or (u.firstName = :keyword or u.lastName = :keyword
+           or u.username = :keyword) and u.isDeleted = false and u.isOrganizer = false
+           """)
+    Page<User> searchPhotoJunkie(@Param("keyword") String keyword, Pageable pageable);
 
     Page<User> findAllByIsDeletedFalse(Pageable pageable);
 
