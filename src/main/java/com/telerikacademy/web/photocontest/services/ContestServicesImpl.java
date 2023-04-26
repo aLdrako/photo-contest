@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -57,7 +56,6 @@ public class ContestServicesImpl implements ContestServices {
         return contestRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Contest", id));
     }
 
-    @Transactional
     @Override
     public Contest create(Contest contest, User authenticatedUser, MultipartFile coverPhotoUpload) throws FileUploadException {
         checkOrganizerPermissions(authenticatedUser);
@@ -106,7 +104,6 @@ public class ContestServicesImpl implements ContestServices {
         return contestRepository.save(contest);
     }
 
-    @Transactional
     @Override
     public void deleteById(Long id, User authenticatedUser) {
         checkOrganizerPermissions(authenticatedUser);

@@ -79,7 +79,6 @@ body {
 }
 
 /*CONTEST PAGE*/
-
 .results-section .jury-comment button,
 .results-section .jury-score button {
     border-bottom-left-radius: 0;
@@ -123,6 +122,10 @@ body {
 .create-photo-view .invalid-feedback,
 .rate-view .invalid-feedback {
     color: #ffc107 !important;
+}
+
+.contest-create-view .form-floating > #floatingJurySelect {
+    height: 6rem !important;
 }
 
 /*PAGINATION*/

@@ -17,7 +17,7 @@
   </div>
   <div class="form-floating mb-3 row">
     <div class="col-md-5 mb-3 mb-md-0" th:class="${ctxCreate ? 'col-md-6 mb-3 mb-md-0' : 'col-md-5 mb-3 mb-md-0'}">
-        <input type="text" class="form-control" id="inputPhotoURL" placeholder="Photo URL" th:field="*{coverPhoto}">
+        <input type="text" class="form-control" id="inputPhotoURL" placeholder="Cover Photo URL" th:field="*{coverPhoto}">
     </div>
     <div class="col-md-5" th:class="${ctxCreate ? 'col-md-6' : 'col-md-5'}">
       <input type="file" class="form-control" id="inputPhotoUpload" name="file" th:field="*{coverPhotoUpload}" accept=".jpeg, .jpg, .png">

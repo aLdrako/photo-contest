@@ -67,7 +67,9 @@ public class PhotoServicesImpl implements PhotoServices {
     @Transactional
     public void delete(Photo photo, User user) {
         checkDeletePermissions(photo, user);
-        deletePhoto(photo.getPhoto());
+        if (!photo.getPostedOn().getCoverPhoto().equals(photo.getPhoto())) {
+            deletePhoto(photo.getPhoto());
+        }
         photo.getPostedOn().setPhotos(null);
         contestResultsRepository.deleteContestResultsByResultEmbed_Photo(photo);
         photoRepository.delete(photo);
