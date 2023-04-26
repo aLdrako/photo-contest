@@ -14,6 +14,12 @@ import com.telerikacademy.web.photocontest.models.validations.CreatePhotoGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.HttpStatus;
@@ -29,7 +35,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.uploadPhoto;
-
+@Tag(name = "Photo Rest Controller", description = "Photo management API")
 @RestController
 @RequestMapping("/api/photos")
 @AllArgsConstructor
@@ -38,17 +44,37 @@ public class PhotoRestController {
     private final ContestServices contestServices;
     private final AuthenticationHelper authenticationHelper;
     private final ModelMapper modelMapper;
-
+    @Operation(
+            summary = "Get All Photo",
+            description = "Get a list of all PhotoResponseDto objects.",
+            tags = {"photos", "get all"}
+    )
+    @ApiResponse(responseCode = "200", description = "All photos",
+            content = {@Content(schema = @Schema(implementation = User.class, type = "array"),
+                    mediaType = "application/json")})
     @GetMapping
     public List<PhotoResponseDto> getAll() {
         return photoServices.getAll().stream()
                 .map(modelMapper::objectToDto).collect(Collectors.toList());
     }
+
     @GetMapping("/search")
     public List<PhotoResponseDto> search(@RequestParam(required = false) Optional<String> q) {
         return photoServices.search(q, Optional.empty()).stream()
                 .map(modelMapper::objectToDto).collect(Collectors.toList());
     }
+    @Operation(
+            summary = "Retrieve a Photo by Id",
+            description = "Get a Photo object by specifying its id. The response is PhotoResponseDto object",
+            tags = {"photo", "get"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Photo found",
+                    content = {@Content(schema = @Schema(implementation = User.class),
+                            mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "Photo not found",
+                    content = {@Content(schema = @Schema())})
+    })
     @GetMapping("/{id}")
     public PhotoResponseDto getById(@PathVariable Long id) {
         try {
@@ -57,6 +83,24 @@ public class PhotoRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+    @Operation(
+            summary = "Create a new photo",
+            description = "Create a Photo object",
+            tags = {"photos", "create"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Photo created",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = User.class))}),
+            @ApiResponse(responseCode = "409", description = "User has already uploaded a photo in this contest.",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "404", description = "Contest not found",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed",
+                    content = {@Content(schema = @Schema())})
+    })
     @PostMapping
     public PhotoResponseDto create(@RequestHeader(required = false) Optional<String> authorization,
                                    @Validated(CreatePhotoGroup.class) @ModelAttribute PhotoDto photoDto) {
@@ -77,8 +121,25 @@ public class PhotoRestController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
-
-    @PostMapping("/{id}/review")
+    @Operation(
+            summary = "Create a new photo review",
+            description = "Create a PhotoReviewResponseDto object",
+            tags = {"photos", "reviews", "photo review", "create"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Photo review created",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = User.class))}),
+            @ApiResponse(responseCode = "404", description = "Photo not found",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "409", description = "Jury has already uploaded a photo review for this photo.",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed",
+                    content = {@Content(schema = @Schema())})
+    })
+    @PostMapping("/{id}/reviews")
     public PhotoReviewResponseDto postReview(@PathVariable Long id,
                                              @RequestHeader(required = false) Optional<String> authorization,
                                              @Valid @RequestBody PhotoReviewDto photoReviewDto) {
@@ -98,6 +159,16 @@ public class PhotoRestController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
+    @Operation(
+            summary = "Delete a Photo by Id",
+            description = "Delete a Photo object by specifying its id.",
+            tags = {"photos", "delete"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Photo successfully deleted"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation"),
+            @ApiResponse(responseCode = "404", description = "Photo not found")
+    })
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id,
                        @RequestHeader(required = false) Optional<String> authorization) {
@@ -111,6 +182,18 @@ public class PhotoRestController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
+    @Operation(
+            summary = "Get All Photo reviews of a photo",
+            description = "Get a list of all PhotoResponseDto objects of a photo.",
+            tags = {"photos", "reviews", "photo reviews", "get all"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Get all photo reviews",
+                    content = {@Content(schema = @Schema(implementation = User.class),
+                            mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "Photo not found",
+                    content = {@Content(schema = @Schema())})
+    })
     @GetMapping("/{id}/reviews")
     public List<PhotoReviewResponseDto> getReviewsOfPhoto(@PathVariable Long id) {
         try {

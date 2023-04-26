@@ -73,7 +73,7 @@ public class UserRestController {
     @Operation(
             summary = "Retrieve a User by Id",
             description = "Get a User object by specifying its id. The response is User object",
-            tags = {"users", "get"}
+            tags = {"user", "get"}
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User found",
