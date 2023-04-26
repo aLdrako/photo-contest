@@ -30,9 +30,9 @@ public class PhotoMvcController extends BaseMvcController{
     public String showAllPhotos(@RequestParam(required = false) Optional<String> title, HttpSession session,
                                 Model model) {
         try {
-             List<Photo> photos = title.isPresent() ? photoServices.search(title, Optional.empty()) :
-                    photoServices.getAll();
             authenticationHelper.tryGetUser(session);
+            List<Photo> photos = title.isPresent() ? photoServices.search(title, Optional.empty()) :
+                    photoServices.getAll();
             model.addAttribute("photos", photos);
             return "PhotosView";
         } catch (AuthorizationException e) {
