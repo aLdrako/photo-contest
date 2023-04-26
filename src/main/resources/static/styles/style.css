@@ -159,7 +159,37 @@ body {
     border-color: #212529 !important;
 }
 
-/*ERROR PAGE*/
+/*USER PAGE*/
+.user-info-details {
+    border: 1px #ffc107 solid;
+}
+
+.user-view .img-thumbnail {
+    padding: 0;
+    border: 2px #ffc107 solid;
+}
+
+.user-view .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.user-view .nav-pills .nav-link, .nav-pills .show > .nav-link {
+    background-color: #212529;
+    color: #ffc107;
+}
+
+.user-view .nav-pills .nav-link:hover, .nav-pills .show > .nav-link {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.list-group-item:hover {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+    /*ERROR PAGE*/
 .error-page {
     background-color: rgb(51, 51, 51);
     width: 100vw;
