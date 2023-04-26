@@ -46,8 +46,11 @@ public class UserMvcController extends BaseMvcController{
         try {
             authenticationHelper.tryGetOrganizer(session);
             FilterAndSortingHelper.Result result = getResult(parameters, pageable);
-            Page<User> userPage = userServices.findAll(result.pageable(), true);
+            Optional<String> keyword = parameters.get("q") == null || parameters.get("q").equals("null")
+                    ? Optional.empty() : Optional.of(parameters.get("q"));
+            Page<User> userPage = userServices.search(keyword, result.pageable());
             model.addAttribute("users", userPage.getContent());
+            keyword.ifPresent(s -> model.addAttribute("q", s));
             model.addAttribute("currentPage", result.pageable().getPageNumber());
             model.addAttribute("sizePage", result.pageable().getPageSize());
             model.addAttribute("totalPages", userPage.getTotalPages());

@@ -18,7 +18,7 @@ public interface UserServices {
     List<User> getAllOrganizers();
     List<User> getUsersWithJuryPermission();
     void delete(Long id, User userFromAuthorization);
-    List<User> search(Optional<String> keyword);
+    Page<User> search(Optional<String> keyword, Pageable pageable);
     void updatePermissions(User userFromRepo, User userFromAuthorization, PermissionsDto permissionsDto);
 
     //Page<User> findAllPhotoJunkies(Pageable pageable);

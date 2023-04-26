@@ -106,3 +106,11 @@
     <button class="btn btn-warning" type="submit">Sort</button>
   </div>
 </form>
+
+<form action="#" method="get"
+      th:fragment="user-form-search" th:action="${requestURI}">
+  <div class="input-group">
+      <input type="text" class="form-control" placeholder="Search by First Name, Last Name or Username" name="q">
+      <button class="btn btn-warning" type="submit">Search</button>
+  </div>
+</form>

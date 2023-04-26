@@ -117,9 +117,9 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
-    public List<User> search(Optional<String> keyword) {
+    public Page<User> search(Optional<String> keyword, Pageable pageable) {
         String query = keyword.orElse("");
-        return userRepository.search(query);
+        return userRepository.search(query, pageable);
     }
 
     @Override

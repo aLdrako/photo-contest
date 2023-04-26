@@ -14,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -104,11 +106,11 @@ public class UserServicesImplTests {
     public void search_Should_CallRepository() {
         // Arrange
 
-        Mockito.when(mockRepository.search(""))
-                .thenReturn(List.of());
+        Mockito.when(mockRepository.search("",  Pageable.unpaged()))
+                .thenReturn(Page.empty());
 
         // Act, Assert
-        Assertions.assertEquals(List.of(), services.search(Optional.empty()));
+        Assertions.assertEquals(Page.empty(), services.search(Optional.empty(), Pageable.unpaged()));
     }
     @Test
     public void update_Should_CallRepository_When_UserFromAuthenticationHasSameUsername() {

@@ -10,6 +10,9 @@
 <div class="container px-4 py-5" id="custom-cards">
     <header th:replace="~{fragments/navbar :: header(context='users')}"></header>
     <h3 class="pb-2 text-center display-2" th:text="${!users.isEmpty() ? 'Users' : 'No Users'}">Users (design)</h3>
+    <div class="container px-5 py-3">
+    <form th:replace="~{fragments/user-form :: user-form-search}"></form>
+    </div>
     <table class="table table-hover table-striped container mx-auto my-3">
         <thead>
         <tr>
@@ -36,7 +39,8 @@
          th:if="${totalPages > 0}"
          th:with="pageQuery=${'?page='},
                       sizeQuery=${'&size='},
-                      linkQuery=${sizeQuery + sizePage}">
+                      keywordQuery=${'&q='},
+                      linkQuery=${sizeQuery + sizePage + keywordQuery + q}">
 
         <ul th:replace="~{fragments/pagination :: pagination}"></ul>
     </nav>
