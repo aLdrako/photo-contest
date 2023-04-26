@@ -14,6 +14,8 @@ import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGr
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -64,6 +66,9 @@ public class UserRestController {
     @ApiResponse(responseCode = "200", description = "Search Result",
             content = {@Content(schema = @Schema(implementation = User.class, type = "array"),
                     mediaType = "application/json")})
+    @Parameters({
+            @Parameter(name = "q", example = "Admin", description = "Search by first name, username, last name", schema = @Schema(type = "string")),
+    })
     @GetMapping("/search")
     public List<UserResponseDto> search(Pageable page, @RequestParam(required = false) String q) {
         return userServices.searchAll(q != null && q.isEmpty() ? null : q, page)

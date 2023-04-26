@@ -50,7 +50,7 @@ public class PhotoRestController {
             tags = {"photos", "get all"}
     )
     @ApiResponse(responseCode = "200", description = "All photos",
-            content = {@Content(schema = @Schema(implementation = User.class, type = "array"),
+            content = {@Content(schema = @Schema(implementation = PhotoResponseDto.class, type = "array"),
                     mediaType = "application/json")})
     @GetMapping
     public List<PhotoResponseDto> getAll() {
@@ -70,7 +70,7 @@ public class PhotoRestController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Photo found",
-                    content = {@Content(schema = @Schema(implementation = User.class),
+                    content = {@Content(schema = @Schema(implementation = PhotoResponseDto.class),
                             mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Photo not found",
                     content = {@Content(schema = @Schema())})
@@ -91,7 +91,7 @@ public class PhotoRestController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Photo created",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = User.class))}),
+                            schema = @Schema(implementation = PhotoResponseDto.class))}),
             @ApiResponse(responseCode = "409", description = "User has already uploaded a photo in this contest.",
                     content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "404", description = "Contest not found",
@@ -129,7 +129,7 @@ public class PhotoRestController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Photo review created",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = User.class))}),
+                            schema = @Schema(implementation = PhotoReviewResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "Photo not found",
                     content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "401", description = "Unauthorized operation",
@@ -189,7 +189,7 @@ public class PhotoRestController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Get all photo reviews",
-                    content = {@Content(schema = @Schema(implementation = User.class),
+                    content = {@Content(schema = @Schema(implementation = PhotoReviewResponseDto.class),
                             mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Photo not found",
                     content = {@Content(schema = @Schema())})

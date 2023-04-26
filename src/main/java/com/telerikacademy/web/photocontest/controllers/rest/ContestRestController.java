@@ -14,6 +14,14 @@ import com.telerikacademy.web.photocontest.models.validations.*;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -37,7 +45,7 @@ import java.util.stream.StreamSupport;
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.deletePhoto;
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.uploadPhoto;
 import static com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper.getResult;
-
+@Tag(name = "Contest Rest Controller", description = "Contest management API")
 @RestController
 @RequestMapping("/api/contests")
 @AllArgsConstructor
@@ -49,13 +57,32 @@ public class ContestRestController {
     private final PhotoServices photoServices;
     private final ModelMapper modelMapper;
 
+    @Operation(
+            summary = "Get All Contests",
+            description = "Get a list of all ContestResponseDto objects.",
+            tags = {"contests", "get all"}
+    )
+    @ApiResponse(responseCode = "200", description = "All Contests",
+            content = {@Content(schema = @Schema(implementation = ContestResponseDto.class, type = "array"),
+                    mediaType = "application/json")})
     @GetMapping
     public List<ContestResponseDto> findAll() {
         Iterable<Contest> contests = contestServices.findAll();
         return StreamSupport.stream(contests.spliterator(), false)
                 .map(modelMapper::objectToDto).toList();
     }
-
+    @Operation(
+            summary = "Retrieve a Contest by Id",
+            description = "Get a Contest object by specifying its id. The response is ContestResponseDto object",
+            tags = {"contest", "get"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Contest found",
+                    content = {@Content(schema = @Schema(implementation = ContestResponseDto.class),
+                            mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "Contest not found",
+                    content = {@Content(schema = @Schema())})
+    })
     @GetMapping("/{id}")
     public ContestResponseDto findById(@PathVariable Long id) {
         try {
@@ -65,7 +92,20 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
-
+    @Operation(
+            summary = "Get Contests Search Result",
+            description = "Get a list of all ContestResponseDto objects.",
+            tags = {"contests", "filter"}
+    )
+    @ApiResponse(responseCode = "200", description = "All Contests",
+            content = {@Content(schema = @Schema(implementation = ContestResponseDto.class, type = "array"),
+                    mediaType = "application/json")})
+    @Parameters({
+            @Parameter(name = "title", example = "Random Title", description = "Filter by title", schema = @Schema(type = "string")),
+            @Parameter(name = "category", example = "nature", description = "Filter by category", schema = @Schema(type = "string")),
+            @Parameter(name = "type", example = "open", description = "Type is either open or invitational", schema = @Schema(type = "string")),
+            @Parameter(name = "phase", example = "finished", description = "Contest phase can be: phase1, phase2, finished", schema = @Schema(type = "string"))
+    })
     @GetMapping("/filter")
     public List<ContestResponseDto> filter(@RequestParam(required = false) Map<String, String> parameters, Pageable page) {
         if (parameters.isEmpty()) return new ArrayList<>();
@@ -74,6 +114,24 @@ public class ContestRestController {
         return contests.stream().map(modelMapper::objectToDto).toList();
     }
 
+    @Operation(
+            summary = "Create a new contest",
+            description = "Create a ContestResponseDto object",
+            tags = {"contests", "create"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Contest created",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ContestResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "Contest not found",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "409", description = "A contest with the same title already exists",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed",
+                    content = {@Content(schema = @Schema())})
+    })
     @PostMapping
     public ContestResponseDto create(@RequestHeader(required = false) Optional<String> authorization,
                                      @Validated(CreateValidationGroup.class) @RequestBody ContestDto contestDto) {
@@ -92,7 +150,22 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
-
+    @Operation(
+            summary = "Join a contest",
+            description = "Join a contest and return a ContestResponseDto object with new participant",
+            tags = {"contest", "join participant"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Contest joined",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ContestResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "Contest not found",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "409", description = "User is already participant",
+                    content = {@Content(schema = @Schema())})
+    })
     @PostMapping("/{id}/join")
     public ContestResponseDto joinContest(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization) {
         try {
@@ -108,7 +181,24 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
-
+    @Operation(
+            summary = "Add jury to contest",
+            description = "Add jury and return a ContestResponseDto object with new jury",
+            tags = {"contest", "join jury"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Jury joined to contest",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ContestResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "Contest not found",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "409", description = "User is already jury",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed",
+                    content = {@Content(schema = @Schema())})
+    })
     @PostMapping("/{id}/add-jury")
     public ContestResponseDto addJury(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization,
                                          @Validated(EnlistUserValidationGroup.class) @RequestBody UserDto userDto) {
@@ -125,7 +215,24 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
-
+    @Operation(
+            summary = "Add Participant",
+            description = "Add a participant to the contest.",
+            tags = {"contest", "add participant"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "User added to participants",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ContestResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "Contest/User not found",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "409", description = "User is already participant",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed",
+                    content = {@Content(schema = @Schema())})
+    })
     @PostMapping("/{id}/add-participant")
     public ContestResponseDto addParticipant(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization,
                                          @Validated(EnlistUserValidationGroup.class) @RequestBody UserDto userDto) {
@@ -180,7 +287,16 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
-
+    @Operation(
+            summary = "Delete a Contest by Id",
+            description = "Delete a Contest object by specifying its id.",
+            tags = {"contest", "delete"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Contest successfully deleted"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation"),
+            @ApiResponse(responseCode = "404", description = "Contest not found")
+    })
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization) {
         try {
@@ -192,6 +308,19 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+    @Operation(
+            summary = "Get All Photo of Contest",
+            description = "Get a list of all PhotoResponseDto objects to a contest.",
+            tags = {"photos", "get all", "contest"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "All contest photos",
+                    content = {@Content(schema = @Schema(implementation = PhotoResponseDto.class, type = "array"),
+                            mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "Contest not found",
+                    content = {@Content(schema = @Schema())})
+    })
+
     @GetMapping("/{id}/photos")
     public List<PhotoResponseDto> getAllPhotosOfContest(@PathVariable Long id) {
         try {
@@ -208,6 +337,25 @@ public class ContestRestController {
         return photoServices.search(q, id.describeConstable()).stream()
                 .map(modelMapper::objectToDto).collect(Collectors.toList());
     }
+
+    @Operation(
+            summary = "Create a new photo",
+            description = "Create a Photo object",
+            tags = {"photos", "create"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Photo created",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PhotoResponseDto.class))}),
+            @ApiResponse(responseCode = "409", description = "User has already uploaded a photo in this contest.",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "404", description = "Contest not found",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed",
+                    content = {@Content(schema = @Schema())})
+    })
     @PostMapping("/{id}/photos")
     public PhotoResponseDto createPhoto(@PathVariable Long id,
                                         @RequestHeader(required = false) Optional<String> authorization,
