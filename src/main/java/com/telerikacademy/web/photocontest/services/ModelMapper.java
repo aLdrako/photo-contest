@@ -43,7 +43,8 @@ public class ModelMapper {
         if (contestDto.getCategoryId() != null) contest.setCategory(categoryServices.findById(contestDto.getCategoryId()));
         if (contestDto.getTitle() != null) contest.setTitle(contestDto.getTitle());
         if (!contestDto.getCoverPhoto().isEmpty()) {
-            deletePhoto(contest.getCoverPhoto());
+            List<Photo> photos = contest.getPhotos().stream().filter(photo -> photo.getPhoto().equals(contest.getCoverPhoto())).toList();
+            if (photos.isEmpty() && contest.getCoverPhoto() != null) deletePhoto(contest.getCoverPhoto());
             contest.setCoverPhoto(contestDto.getCoverPhoto());
         }
         return contest;
@@ -54,6 +55,9 @@ public class ModelMapper {
         ContestDto contestDto = new ContestDto();
         contestDto.setTitle(contest.getTitle());
         contestDto.setCategoryId(contest.getCategory().getId());
+        if (contest.getPhotos() != null && !contest.getPhotos().isEmpty())  {
+            contestDto.setContestPhotos(contest.getPhotos().stream().map(Photo::getPhoto).toList());
+        }
         return contestDto;
     }
 

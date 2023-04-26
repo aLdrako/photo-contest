@@ -31,17 +31,17 @@ INSERT INTO `categories` (`id`, `name`) VALUES
 -- Dumping data for table photo_contest.contests: ~11 rows (approximately)
 /*!40000 ALTER TABLE `contests` DISABLE KEYS */;
 INSERT INTO `contests` (`id`, `title`, `category_id`, `is_invitational`, `phase1`, `phase2`, `date_created`, `is_finished`) VALUES
-(1, 'Cutest things :) ', 5, 0, '2023-04-12 21:00:00', '2023-04-12 23:00:00', '2023-04-10 00:00:00', 1),
-(2, 'Animation of the Year', 7, 1, '2023-04-12 23:30:00', '2023-04-13 16:00:00', '2023-04-10 00:00:00', 1),
-(3, 'Universe in Focus', 3, 1, '2023-04-16 18:30:00', '2023-04-17 08:30:00', '2023-04-10 00:00:00', 1),
-(4, 'Indie Games', 6, 0, '2023-04-19 00:00:00', '2023-04-19 12:00:00', '2023-04-10 00:00:00', 1),
-(5, 'Blockbuster Bonanza', 8, 0, '2023-04-20 12:00:00', '2023-04-20 23:00:00', '2023-04-10 00:00:00', 1),
-(6, 'Toon Time Animation', 7, 1, '2023-04-21 20:00:00', '2023-04-22 06:00:00', '2023-04-10 00:00:00', 1),
-(7, 'Majestic Landscapes', 12, 1, '2023-04-23 00:00:00', '2023-04-23 12:00:00', '2023-04-10 00:00:00', 1),
-(10, 'Speed Demons', 2, 0, '2023-05-01 00:00:00', '2023-05-01 22:00:00', '2023-04-10 00:00:00', 0),
-(11, 'Wild and Free', 5, 0, '2023-05-04 22:00:00', '2023-05-05 18:00:00', '2023-04-10 00:00:00', 0),
-(12, 'Artistic Impressions', 10, 0, '2023-05-05 08:00:00', '2023-05-06 03:00:00', '2023-04-10 00:00:00', 0),
-(13, 'Impressive Space', 3, 1, '2023-05-05 20:00:00', '2023-05-06 12:00:00', '2023-04-10 00:00:00', 0);
+                                                                                                                                (1, 'Cutest things :) ', 5, 0, '2023-04-12 21:00:00', '2023-04-12 23:00:00', '2023-04-10 00:00:00', 1),
+                                                                                                                                (2, 'Animation of the Year', 7, 1, '2023-04-12 23:30:00', '2023-04-13 16:00:00', '2023-04-10 00:00:00', 1),
+                                                                                                                                (3, 'Universe in Focus', 3, 1, '2023-04-16 18:30:00', '2023-04-17 08:30:00', '2023-04-10 00:00:00', 1),
+                                                                                                                                (4, 'Indie Games', 6, 0, '2023-04-19 00:00:00', '2023-04-19 12:00:00', '2023-04-10 00:00:00', 1),
+                                                                                                                                (5, 'Blockbuster Bonanza', 8, 0, '2023-04-20 12:00:00', '2023-04-20 23:00:00', '2023-04-10 00:00:00', 1),
+                                                                                                                                (6, 'Toon Time Animation', 7, 1, '2023-04-21 20:00:00', '2023-04-22 06:00:00', '2023-04-10 00:00:00', 1),
+                                                                                                                                (7, 'Majestic Landscapes', 12, 1, '2023-04-23 00:00:00', '2023-04-23 12:00:00', '2023-04-10 00:00:00', 1),
+                                                                                                                                (10, 'Speed Demons', 2, 0, '2023-05-01 00:00:00', '2023-05-01 22:00:00', '2023-04-10 00:00:00', 0),
+                                                                                                                                (11, 'Wild and Free', 5, 0, '2023-05-04 22:00:00', '2023-05-05 18:00:00', '2023-04-10 00:00:00', 0),
+                                                                                                                                (12, 'Artistic Impressions', 10, 0, '2023-05-05 08:00:00', '2023-05-06 03:00:00', '2023-04-10 00:00:00', 0),
+                                                                                                                                (13, 'Impressive Space', 3, 1, '2023-05-05 20:00:00', '2023-05-06 12:00:00', '2023-04-10 00:00:00', 0);
 /*!40000 ALTER TABLE `contests` ENABLE KEYS */;
 
 -- Dumping data for table photo_contest.contests_results: ~12 rows (approximately)
@@ -56,21 +56,21 @@ INSERT INTO `contests_results` (`contest_id`, `photo_id`, `results`) VALUES
                                                                          (4, 13, 9),
                                                                          (4, 14, 9),
                                                                          (5, 15, 15),
-                                                                         (7, 5, 6),
+                                                                         (7, 5, 13),
                                                                          (7, 6, 6),
-                                                                         (7, 7, 6);
+                                                                         (7, 7, 12);
 /*!40000 ALTER TABLE `contests_results` ENABLE KEYS */;
 
 -- Dumping data for table photo_contest.cover_photos: ~9 rows (approximately)
 /*!40000 ALTER TABLE `cover_photos` DISABLE KEYS */;
 INSERT INTO `cover_photos` (`contest_id`, `cover_photo`) VALUES
-                                                             (1, 'https://alexgo.online/Projects/PhotoContest/photos/YADjTDU8OB61v11.png'),
+                                                             (1, 'https://alexgo.online/Projects/PhotoContest/photos/trhUPo9SSFemJzZ.jpg'),
                                                              (3, 'https://alexgo.online/Projects/PhotoContest/photos/zBhoTt2Y9Y578Z5.jpeg'),
                                                              (4, 'https://alexgo.online/Projects/PhotoContest/photos/HpNJANsiiphW1Fc.jpg'),
                                                              (6, 'https://alexgo.online/Projects/PhotoContest/photos/hffUhKS4gsbfj5d.jpg'),
                                                              (7, 'https://alexgo.online/Projects/PhotoContest/photos/laPzi3OEbu5PZPU.jpg'),
-                                                             (10, 'https://alexgo.online/Projects/PhotoContest/photos/FjDdjW0pJNXYTVM.jpeg'),
-                                                             (11, 'https://alexgo.online/Projects/PhotoContest/photos/HQedRZBpiSpOtu3.jpg'),
+                                                             (10, 'https://alexgo.online/Projects/PhotoContest/photos/jhgwRqYM0qfc1gg.jpg'),
+                                                             (11, 'https://alexgo.online/Projects/PhotoContest/photos/vhiBxq1BIAvTdyn.jpg'),
                                                              (12, 'https://alexgo.online/Projects/PhotoContest/photos/Ylb3XbSrjtIt0yT.jpg'),
                                                              (13, 'https://alexgo.online/Projects/PhotoContest/photos/LyJrVSBRh4FvtMK.jpg');
 /*!40000 ALTER TABLE `cover_photos` ENABLE KEYS */;
@@ -183,33 +183,35 @@ INSERT INTO `permissions` (`user_id`, `is_organizer`, `is_deleted`) VALUES
 -- Dumping data for table photo_contest.photos: ~19 rows (approximately)
 /*!40000 ALTER TABLE `photos` DISABLE KEYS */;
 INSERT INTO `photos` (`id`, `title`, `story`, `photo`, `user_id`, `contest_id`) VALUES
-(1, 'Nice and cure dog :)', 'This dog can swim very well', 'https://alexgo.online/Projects/PhotoContest/photos/fRmH4SUl2zgi56o.jpg', 6, 1),
-(2, 'Green green snake', 'This snake looks dangerous', 'https://alexgo.online/Projects/PhotoContest/photos/ajmscdsfUXq1azr.jpg', 8, 1),
-(3, 'Look I\'m Panda ', 'Panda eating bamboo', 'https://alexgo.online/Projects/PhotoContest/photos/23оZl7js6XwEAUK.jpg', 8, 11),
-(4, 'Very cute bird :) ', 'Bird and the nature in macro', 'https://alexgo.online/Projects/PhotoContest/photos/jkf2F7txSh22EJV.jpg', 12, 11),
-(5, 'Blue blue sea and sky', 'Sea in its cold colors', 'https://alexgo.online/Projects/PhotoContest/photos/tkPNCvlf3mXETUp.jpg', 6, 7),
-(6, 'Trees trees trees', 'Trees in warm colors of sunset', 'https://alexgo.online/Projects/PhotoContest/photos/iahPbpHTt3QjA99.jpg', 14, 7),
-(7, 'A long logn path', 'Long path in the mountains', 'https://alexgo.online/Projects/PhotoContest/photos/CdL2hkxfNfiJCSt.jpg', 10, 7),
-(8, 'Samurai and a girl', 'Peaceful samurai with cursed sword', 'https://alexgo.online/Projects/PhotoContest/photos/k8qgINly13NOxgD.jpg', 12, 2),
-(9, 'Revy\'s headshot :)', 'Revy with her big gun', 'https://alexgo.online/Projects/PhotoContest/photos/ynPgl7KTw6XKgTJ.jpg', 15, 2),
-(10, 'Dark hole in space', 'Dark hole consuming the sun', 'https://alexgo.online/Projects/PhotoContest/photos/pnViYwmX94v3LJI.jpeg', 6, 3),
-(11, 'Earth from space', 'View of Earth from space', 'https://alexgo.online/Projects/PhotoContest/photos/NVvwZqCKE79DTq4.jpg', 6, 13),
-(12, 'Moon in full eclipse', 'A photo of a moon eclipse', 'https://alexgo.online/Projects/PhotoContest/photos/23FF0EYIOMkhDKB.jpg', 8, 13),
-(13, 'The Death Stranding', 'Death squade stranding', 'https://alexgo.online/Projects/PhotoContest/photos/5YyYofht4btSSpX.jpg', 9, 4),
-(14, 'The BioShok Game', 'A photo of a BioShok', 'https://alexgo.online/Projects/PhotoContest/photos/bSLCHTqTX2sBIG2.jpg', 14, 4),
-(15, 'Pinguins from Madagascar', 'White and fluffy guys', 'https://alexgo.online/Projects/PhotoContest/photos/l8wVUDAO3UMo1uu.jpg', 14, 5),
-(18, 'Lamborghini Essenza', 'Super cars in green colors', 'https://alexgo.online/Projects/PhotoContest/photos/epXZFKoYQx6d4pp.jpg', 7, 10),
-(19, 'Lamborghini competition', 'Cars competition in sunset', 'https://alexgo.online/Projects/PhotoContest/photos/OyHXYtM8HFuKm6e.jpg', 15, 10),
-(20, 'Abstraction in 3D', 'Abstraction in black and red colors', 'https://alexgo.online/Projects/PhotoContest/photos/dUhdAlL19OVn2Wj.jpg', 9, 12),
-(21, 'Painted camel and a main', 'Painted camel and a main in warm colors', 'https://alexgo.online/Projects/PhotoContest/photos/ghlXipgyrGsoZnu.jpg', 10, 1);
+                                                                                    (1, 'Nice and cute dog :)', 'This dog can swim very well', 'https://alexgo.online/Projects/PhotoContest/photos/hxrbkbEYzEmHigF.jpg', 6, 1),
+                                                                                    (2, 'Green green snake', 'This snake looks dangerous', 'https://alexgo.online/Projects/PhotoContest/photos/trhUPo9SSFemJzZ.jpg', 8, 1),
+                                                                                    (3, 'Look I\'m Panda ', 'Panda eating bamboo', 'https://alexgo.online/Projects/PhotoContest/photos/GLHthjvgofeHpW0.jpg', 8, 11),
+                                                                                    (4, 'Very cute bird :) ', 'Bird and the nature in macro', 'https://alexgo.online/Projects/PhotoContest/photos/u1qtpM9sfMx6JYd.jpg', 12, 11),
+                                                                                    (5, 'Blue blue sea and sky', 'Sea in its cold colors', 'https://alexgo.online/Projects/PhotoContest/photos/tkPNCvlf3mXETUp.jpg', 6, 7),
+                                                                                    (6, 'Trees trees trees', 'Trees in warm colors of sunset', 'https://alexgo.online/Projects/PhotoContest/photos/iahPbpHTt3QjA99.jpg', 14, 7),
+                                                                                    (7, 'A long logn path', 'Long path in the mountains', 'https://alexgo.online/Projects/PhotoContest/photos/CdL2hkxfNfiJCSt.jpg', 10, 7),
+                                                                                    (8, 'Samurai and a girl', 'Peaceful samurai with cursed sword', 'https://alexgo.online/Projects/PhotoContest/photos/k8qgINly13NOxgD.jpg', 12, 2),
+                                                                                    (9, 'Revy\'s headshot :)', 'Revy with her big gun', 'https://alexgo.online/Projects/PhotoContest/photos/ynPgl7KTw6XKgTJ.jpg', 15, 2),
+                                                                                    (10, 'Dark hole in space', 'Dark hole consuming the sun', 'https://alexgo.online/Projects/PhotoContest/photos/pnViYwmX94v3LJI.jpeg', 6, 3),
+                                                                                    (11, 'Earth from space', 'View of Earth from space', 'https://alexgo.online/Projects/PhotoContest/photos/CE5QuK6oPUggOCm.jpg', 6, 13),
+                                                                                    (12, 'Moon in full eclipse', 'A photo of a moon eclipse', 'https://alexgo.online/Projects/PhotoContest/photos/8YBn8pkZLTkRNNQ.jpg', 8, 13),
+                                                                                    (13, 'The Death Stranding', 'Death squade stranding', 'https://alexgo.online/Projects/PhotoContest/photos/5YyYofht4btSSpX.jpg', 9, 4),
+                                                                                    (14, 'The BioShok Game', 'A photo of a BioShok', 'https://alexgo.online/Projects/PhotoContest/photos/bSLCHTqTX2sBIG2.jpg', 14, 4),
+                                                                                    (15, 'Pinguins from Madagascar', 'White and fluffy guys', 'https://alexgo.online/Projects/PhotoContest/photos/l8wVUDAO3UMo1uu.jpg', 14, 5),
+                                                                                    (18, 'Lamborghini Essenza', 'Super cars in green colors', 'https://alexgo.online/Projects/PhotoContest/photos/epXZFKoYQx6d4pp.jpg', 7, 10),
+                                                                                    (19, 'Lamborghini competition', 'Cars competition in sunset', 'https://alexgo.online/Projects/PhotoContest/photos/OWvEjYte1jhOQZ9.jpg', 15, 10),
+                                                                                    (20, 'Abstraction in 3D', 'Abstraction in black and red colors', 'https://alexgo.online/Projects/PhotoContest/photos/dUhdAlL19OVn2Wj.jpg', 9, 12),
+                                                                                    (21, 'Painted camel and a main', 'Painted camel and a main in warm colors', 'https://alexgo.online/Projects/PhotoContest/photos/ghlXipgyrGsoZnu.jpg', 10, 1);
 /*!40000 ALTER TABLE `photos` ENABLE KEYS */;
 
--- Dumping data for table photo_contest.photos_reviews_details: ~5 rows (approximately)
+-- Dumping data for table photo_contest.photos_reviews_details: ~7 rows (approximately)
 /*!40000 ALTER TABLE `photos_reviews_details` DISABLE KEYS */;
 INSERT INTO `photos_reviews_details` (`photo_id`, `jury_id`, `comment`, `fits_category`) VALUES
                                                                                              (1, 1, 'It seems like dog is having fun', 1),
                                                                                              (1, 12, 'This dog looks very cure in water', 1),
                                                                                              (2, 13, 'Very nice picture of a snake', 1),
+                                                                                             (5, 1, 'Cool and refreshing colors, this picture deserves a good scoring', 1),
+                                                                                             (7, 1, 'The colors and views are astonishing', 1),
                                                                                              (21, 1, 'It\'s still an animal on the photo', 1),
                                                                                              (21, 12, 'Does not belong to this category', 0);
 /*!40000 ALTER TABLE `photos_reviews_details` ENABLE KEYS */;
@@ -227,11 +229,11 @@ INSERT INTO `photos_scores` (`photo_id`, `jury_id`, `score`) VALUES
                                                                  (3, 13, 3),
                                                                  (4, 1, 3),
                                                                  (4, 13, 3),
-                                                                 (5, 1, 3),
+                                                                 (5, 1, 10),
                                                                  (5, 13, 3),
                                                                  (6, 1, 3),
                                                                  (6, 13, 3),
-                                                                 (7, 1, 3),
+                                                                 (7, 1, 9),
                                                                  (7, 13, 3),
                                                                  (8, 1, 3),
                                                                  (8, 7, 3),
@@ -283,21 +285,21 @@ INSERT INTO `rankings` (`id`, `name`) VALUES
 -- Dumping data for table photo_contest.users: ~15 rows (approximately)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `email`, `password`, `join_date`, `ranking_id`, `points`) VALUES
-(1, 'Admin', 'Admin', 'admin', 'admin@mail.com', 'admin', '2023-04-10 00:00:00', 1, 0),
-(2, 'Anonymous', 'Anonymous', 'anonymous', 'anonymous@mail.com', 'anonymous', '2023-04-10 00:00:00', 1, 0),
-(3, 'Reserved1', 'Reserved1', 'reserved1', 'reserved1@mail.com', 'reserved1', '2023-04-10 00:00:00', 1, 3),
-(4, 'Reserved2', 'Reserved2', 'reserved2', 'reserved2@mail.com', 'reserved2', '2023-04-10 00:00:00', 1, 0),
-(5, 'Reserved3', 'Reserved3', 'reserved3', 'reserved3@mail.com', 'reserved3', '2023-04-10 00:00:00', 1, 0),
-(6, 'Alexandra', 'Silcock', 'silcock', 'silcock@dailynews.com', 'silcock', '2023-04-12 12:01:03', 2, 130),
-(7, 'Margot', 'Rashleig', 'rashleig', 'rashleig@yahoo.com', 'rashleig', '2023-04-12 12:01:30', 4, 1502),
-(8, 'Brian', 'Mussalli', 'mussalli', 'mussalli@skynet.com', 'mussalli', '2023-04-12 12:01:46', 4, 1206),
-(9, 'Orion', 'Wahner', 'owahnert', 'owahnert@tinyurl.com', 'owahnert', '2023-04-12 12:02:01', 2, 56),
-(10, 'Reed', 'Flynn', 'rflynn12', 'rflynn12@php.net', 'rflynn12', '2023-04-12 12:02:19', 3, 165),
-(11, 'Deleted', 'Deleted', 'deleted', 'deleted@mail.com', 'deleted', '2023-04-12 12:03:00', 1, 0),
-(12, 'Tester', 'Tester', 'tester', 'tester@mail.com', 'tester', '2023-04-12 12:03:45', 3, 306),
-(13, 'Alex', 'Dimov', 'alexdimov', 'alexdimov@mail.com', 'alexdimov', '2023-04-12 12:29:55', 1, 0),
-(14, 'Orion', 'Spacer', 'orispace', 'orispace@gmail.com', 'orispace', '2023-04-12 12:32:53', 3, 343),
-(15, 'John', 'Smith', 'smith555', 'smith555@yahoo.com', 'smith555', '2023-04-12 12:34:13', 2, 34);
+                                                                                                                                (1, 'Admin', 'Admin', 'admin', 'admin@mail.com', 'admin', '2023-04-10 00:00:00', 1, 0),
+                                                                                                                                (2, 'Anonymous', 'Anonymous', 'anonymous', 'anonymous@mail.com', 'anonymous', '2023-04-10 00:00:00', 1, 0),
+                                                                                                                                (3, 'Reserved1', 'Reserved1', 'reserved1', 'reserved1@mail.com', 'reserved1', '2023-04-10 00:00:00', 1, 3),
+                                                                                                                                (4, 'Reserved2', 'Reserved2', 'reserved2', 'reserved2@mail.com', 'reserved2', '2023-04-10 00:00:00', 1, 0),
+                                                                                                                                (5, 'Reserved3', 'Reserved3', 'reserved3', 'reserved3@mail.com', 'reserved3', '2023-04-10 00:00:00', 1, 0),
+                                                                                                                                (6, 'Alexandra', 'Silcock', 'silcock', 'silcock@dailynews.com', 'silcock', '2023-04-12 12:01:03', 3, 180),
+                                                                                                                                (7, 'Margot', 'Rashleig', 'rashleig', 'rashleig@yahoo.com', 'rashleig', '2023-04-12 12:01:30', 4, 1502),
+                                                                                                                                (8, 'Brian', 'Mussalli', 'mussalli', 'mussalli@skynet.com', 'mussalli', '2023-04-12 12:01:46', 4, 1206),
+                                                                                                                                (9, 'Orion', 'Wahner', 'owahnert', 'owahnert@tinyurl.com', 'owahnert', '2023-04-12 12:02:01', 2, 56),
+                                                                                                                                (10, 'Reed', 'Flynn', 'rflynn12', 'rflynn12@php.net', 'rflynn12', '2023-04-12 12:02:19', 3, 200),
+                                                                                                                                (11, 'Deleted', 'Deleted', 'deleted', 'deleted@mail.com', 'deleted', '2023-04-12 12:03:00', 1, 0),
+                                                                                                                                (12, 'Tester', 'Tester', 'tester', 'tester@mail.com', 'tester', '2023-04-12 12:03:45', 3, 309),
+                                                                                                                                (13, 'Alex', 'Dimov', 'alexdimov', 'alexdimov@mail.com', 'alexdimov', '2023-04-12 12:29:55', 1, 0),
+                                                                                                                                (14, 'Orion', 'Spacer', 'orispace', 'orispace@gmail.com', 'orispace', '2023-04-12 12:32:53', 3, 363),
+                                                                                                                                (15, 'John', 'Smith', 'smith555', 'smith555@yahoo.com', 'smith555', '2023-04-12 12:34:13', 2, 34);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

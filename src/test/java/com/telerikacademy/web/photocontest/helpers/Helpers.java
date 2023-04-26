@@ -44,6 +44,7 @@ public class Helpers {
         contest.setParticipants(Set.of());
         Photo photo = new Photo();
         photo.setId(1L);
+        photo.setPhoto("mockPathName");
         contest.setPhotos(Set.of(photo));
         return contest;
     }

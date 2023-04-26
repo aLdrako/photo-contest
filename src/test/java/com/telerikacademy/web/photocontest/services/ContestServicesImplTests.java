@@ -79,7 +79,7 @@ public class ContestServicesImplTests {
     @Test
     public void update_Should_CallRepository_When_UserIsOrganizer() throws FileUploadException {
         // Arrange
-        Contest mockContest = createMockContest();
+        Contest mockContest = createMockContestDynamic();
         User mockOrganizer = createMockOrganizer();
 
         // Act

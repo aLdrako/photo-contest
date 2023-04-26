@@ -105,7 +105,9 @@ body {
 #deleteContest .modal-header,
 #participantsModal .modal-header,
 .deletePhotoModal .modal-header,
-.deletePhotoModal .modal-footer {
+.deletePhotoModal .modal-footer,
+#selectPhotoModal .modal-header,
+#selectPhotoModal .modal-footer {
     justify-content: center !important;
 }
 

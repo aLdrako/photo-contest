@@ -21,6 +21,7 @@ import javax.transaction.Transactional;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.deletePhoto;
@@ -36,7 +37,7 @@ public class ContestServicesImpl implements ContestServices {
     private static final String PHASE_1_VALIDATION_MESSAGE = "Phase 1 should be in the future in bounds of one day to one month";
     private static final String PHASE_2_VALIDATION_MESSAGE = "Phase 2 should be after Phase 1 in bounds of one hour to one day";
     private static final String INVITATIONAL_CONTEST_MESSAGE = "This contest is Invitational, only Organizers can invite participants";
-    private static final String ENROLL_INVITATION_TIME_LIMITS_MESSAGE = "Users can enroll / be invited only during Phase 1";
+    private static final String ENROLL_INVITATION_TIME_LIMITS_MESSAGE = "Users enrolment / contest update is available only during Phase 1";
 
     private final ContestRepository contestRepository;
 
@@ -80,9 +81,21 @@ public class ContestServicesImpl implements ContestServices {
     @Override
     public Contest update(Contest contest, User authenticatedUser, MultipartFile coverPhotoUpload) throws FileUploadException {
         checkOrganizerPermissions(authenticatedUser);
+        isInEnrollTimeLimits(contest);
         if (!coverPhotoUpload.isEmpty()) {
-            if (contest.getCoverPhoto() != null) deletePhoto(contest.getCoverPhoto());
+            String oldPhotoUrl;
+            if (contest.getCoverPhoto() != null && !contest.getCoverPhoto().isEmpty()) {
+                oldPhotoUrl = contest.getCoverPhoto();
+            } else {
+                oldPhotoUrl = "";
+            }
+
             contest.setCoverPhoto(uploadPhoto(coverPhotoUpload));
+
+            if (!oldPhotoUrl.isEmpty() && contest.getPhotos() != null) {
+                List<Photo> photos = contest.getPhotos().stream().filter(photo -> photo.getPhoto().equals(oldPhotoUrl)).toList();
+                if (photos.isEmpty()) deletePhoto(oldPhotoUrl);
+            }
         }
         return contestRepository.save(contest);
     }
@@ -100,6 +113,9 @@ public class ContestServicesImpl implements ContestServices {
         Contest contest = findById(id);
         if (contest.getCoverPhoto() != null && !contest.getCoverPhoto().isEmpty()) {
             deletePhoto(contest.getCoverPhoto());
+        }
+        if (contest.getPhotos() != null) {
+            contest.getPhotos().forEach(photo -> deletePhoto(photo.getPhoto()));
         }
         contestResultsRepository.deleteContestResultsByResultEmbed_Contest(contest);
         contestRepository.deleteById(contest.getId());

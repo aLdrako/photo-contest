@@ -213,6 +213,9 @@ public class ContestMvcController extends BaseMvcController {
         } catch (FileUploadException e) {
             bindingResult.rejectValue("file", "file_invalid", e.getMessage());
             return "ContestUpdateView";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
         }
     }
 
@@ -252,11 +255,34 @@ public class ContestMvcController extends BaseMvcController {
         }
     }
 
-    @PostMapping({
-            "/{id}/add-jury",
-            "/{id}/add-participant"
-    })
-    public String enlistUser(@PathVariable Long id, @Validated(EnlistUserValidationGroup.class) @ModelAttribute("user") UserDto userDto,
+    @PostMapping("/{id}/add-jury")
+    public String addJury(@PathVariable Long id, @Validated(EnlistUserValidationGroup.class) @ModelAttribute("user") UserDto userDto,
+                             BindingResult bindingResult, Model model, HttpSession session) {
+
+        if (bindingResult.hasErrors()) return "ContestEnlistView";
+
+        try {
+            User organizer = authenticationHelper.tryGetOrganizer(session);
+            Contest contest = contestServices.findById(id);
+            Contest updatedContest = contestServices.addJury(contest, organizer, userDto.getUsername());
+            model.addAttribute("contest", updatedContest);
+            return "redirect:/contests/" + id;
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (EntityNotFoundException e) {
+            bindingResult.rejectValue("username",  "user_not_found", e.getMessage());
+            return "ContestEnlistView";
+        } catch (EntityDuplicateException e) {
+            bindingResult.rejectValue("username", "duplicate_user", e.getMessage());
+            return "ContestEnlistView";
+        } catch (UnauthorizedOperationException e) {
+            bindingResult.rejectValue("username", "user_cannot_participate", e.getMessage());
+            return "ContestEnlistView";
+        }
+    }
+
+    @PostMapping("/{id}/add-participant")
+    public String addParticipant(@PathVariable Long id, @Validated(EnlistUserValidationGroup.class) @ModelAttribute("user") UserDto userDto,
                              BindingResult bindingResult, Model model, HttpSession session, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) return "ContestEnlistView";
@@ -264,15 +290,7 @@ public class ContestMvcController extends BaseMvcController {
         try {
             User organizer = authenticationHelper.tryGetOrganizer(session);
             Contest contest = contestServices.findById(id);
-            Contest updatedContest;
-            if (request.getRequestURI().endsWith("/add-jury")) {
-                updatedContest = contestServices.addJury(contest, organizer, userDto.getUsername());
-            } else if (request.getRequestURI().endsWith("/add-participant")) {
-                updatedContest = contestServices.addParticipant(contest, organizer, userDto.getUsername());
-            } else {
-                model.addAttribute("error", "Invalid Endpoint!");
-                return "NotFoundView";
-            }
+            Contest updatedContest = contestServices.addParticipant(contest, organizer, userDto.getUsername());
             model.addAttribute("contest", updatedContest);
             return "redirect:/contests/" + id;
         } catch (AuthorizationException e) {

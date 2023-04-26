@@ -26,7 +26,7 @@ public class ContestScheduler {
     private final ContestServices contestServices;
     private final PhotoServices photoServices;
 
-    @Scheduled(fixedDelay = 300000) // 5 min update
+    @Scheduled(fixedDelay = 60000) // 1 min update
     public void checkContestPhases() {
         List<Contest> contests = contestRepository.findByPhase2IsBeforeAndIsFinishedFalse(LocalDateTime.now());
         for (Contest contest : contests) {
@@ -47,7 +47,7 @@ public class ContestScheduler {
         }
     }
 
-    public void calculateScore(Set<ContestResults> results) {
+    private void calculateScore(Set<ContestResults> results) {
         List<ContestResults> sortedResults = results.stream()
                 .sorted(Comparator.comparing(ContestResults::getResults).reversed()).toList();
 

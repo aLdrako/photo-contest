@@ -30,4 +30,5 @@ public class ContestDto {
     private List<@Size(min = 4, max = 16, message = "Username should be between 4 and 16 symbols", groups = {CreateValidationGroup.class})
             String> juries;
     private MultipartFile coverPhotoUpload;
+    private List<String> contestPhotos;
 }

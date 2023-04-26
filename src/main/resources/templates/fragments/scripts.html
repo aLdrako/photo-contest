@@ -43,6 +43,14 @@
     });
 </script>
 
+<!--Script for Select Photo Cover-->
+<script th:fragment="select-cover-photo">
+    function selectPhoto(img) {
+        const photoUrlInput = document.getElementById("inputPhotoURL");
+        photoUrlInput.value = img.src;
+    }
+</script>
+
 <!-- Script for Spinner Animation Show -->
 <script th:fragment="loading-spinner">
     const submitButton = document.getElementById("submit-button");

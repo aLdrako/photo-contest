@@ -116,22 +116,30 @@ public class ContestRestController {
         }
     }
 
-    @PostMapping({
-            "/{id}/add-jury",
-            "/{id}/add-participant"
-    })
-    public ContestResponseDto enlistUser(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization,
-                                         @Validated(EnlistUserValidationGroup.class) @RequestBody UserDto userDto, HttpServletRequest request) {
+    @PostMapping("/{id}/add-jury")
+    public ContestResponseDto addJury(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization,
+                                         @Validated(EnlistUserValidationGroup.class) @RequestBody UserDto userDto) {
         try {
             User authenticatedUser = authenticationHelper.tryGetUser(authorization);
             Contest contest = contestServices.findById(id);
-            String endpoint = request.getRequestURI();
-            Contest updatedContest;
-            if (endpoint.endsWith("/add-jury")) {
-                updatedContest = contestServices.addJury(contest, authenticatedUser, userDto.getUsername());
-            } else if (endpoint.endsWith("/add-participant")) {
-                updatedContest = contestServices.addParticipant(contest, authenticatedUser, userDto.getUsername());
-            } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid endpoint");
+            Contest updatedContest = contestServices.addJury(contest, authenticatedUser, userDto.getUsername());
+            return modelMapper.objectToDto(updatedContest);
+        } catch (AuthorizationException | UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (EntityDuplicateException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/add-participant")
+    public ContestResponseDto addParticipant(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization,
+                                         @Validated(EnlistUserValidationGroup.class) @RequestBody UserDto userDto) {
+        try {
+            User authenticatedUser = authenticationHelper.tryGetUser(authorization);
+            Contest contest = contestServices.findById(id);
+            Contest updatedContest = contestServices.addParticipant(contest, authenticatedUser, userDto.getUsername());
             return modelMapper.objectToDto(updatedContest);
         } catch (AuthorizationException | UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
