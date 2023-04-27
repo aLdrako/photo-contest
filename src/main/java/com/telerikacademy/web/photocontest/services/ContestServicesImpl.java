@@ -36,7 +36,7 @@ public class ContestServicesImpl implements ContestServices {
     private static final String PHASE_1_VALIDATION_MESSAGE = "Phase 1 should be in the future in bounds of one day to one month";
     private static final String PHASE_2_VALIDATION_MESSAGE = "Phase 2 should be after Phase 1 in bounds of one hour to one day";
     private static final String INVITATIONAL_CONTEST_MESSAGE = "This contest is Invitational, only Organizers can invite participants";
-    private static final String ENROLL_INVITATION_TIME_LIMITS_MESSAGE = "Users enrolment / contest update is available only during Phase 1";
+    private static final String CONTEST_MODIFICATION_TIME_LIMITS_MESSAGE = "Users enrolment / contest update/delete is available only during Phase 1";
 
     private final ContestRepository contestRepository;
 
@@ -79,7 +79,7 @@ public class ContestServicesImpl implements ContestServices {
     @Override
     public Contest update(Contest contest, User authenticatedUser, MultipartFile coverPhotoUpload) throws FileUploadException {
         checkOrganizerPermissions(authenticatedUser);
-        isInEnrollTimeLimits(contest);
+        isInContestModificationTimeLimits(contest);
         if (!coverPhotoUpload.isEmpty()) {
             String oldPhotoUrl;
             if (contest.getCoverPhoto() != null && !contest.getCoverPhoto().isEmpty()) {
@@ -108,6 +108,7 @@ public class ContestServicesImpl implements ContestServices {
     public void deleteById(Long id, User authenticatedUser) {
         checkOrganizerPermissions(authenticatedUser);
         Contest contest = findById(id);
+        isInContestModificationTimeLimits(contest);
         if (contest.getCoverPhoto() != null && !contest.getCoverPhoto().isEmpty()) {
             deletePhoto(contest.getCoverPhoto());
         }
@@ -126,7 +127,7 @@ public class ContestServicesImpl implements ContestServices {
     @Override
     public Contest join(Contest contest, User authenticatedUser) {
         isInvitational(contest);
-        isInEnrollTimeLimits(contest);
+        isInContestModificationTimeLimits(contest);
         Set<User> participants = contest.getParticipants();
         checkIfEnlisted(participants, authenticatedUser.getUsername());
         checkIfIsJury(contest, authenticatedUser);
@@ -140,7 +141,7 @@ public class ContestServicesImpl implements ContestServices {
     @Override
     public Contest addParticipant(Contest contest, User authenticatedUser, String username) {
         checkOrganizerPermissions(authenticatedUser);
-        isInEnrollTimeLimits(contest);
+        isInContestModificationTimeLimits(contest);
         User participantToAdd = userServices.getByUsername(username);
         Set<User> participants = contest.getParticipants();
         checkIfEnlisted(participants, participantToAdd.getUsername());
@@ -155,7 +156,7 @@ public class ContestServicesImpl implements ContestServices {
     @Override
     public Contest addJury(Contest contest, User authenticatedUser, String username) {
         checkOrganizerPermissions(authenticatedUser);
-        isInEnrollTimeLimits(contest);
+        isInContestModificationTimeLimits(contest);
         User juryToAdd = userServices.getByUsername(username);
         Set<User> juries = contest.getJuries();
         Set<User> participants = contest.getParticipants();
@@ -207,9 +208,9 @@ public class ContestServicesImpl implements ContestServices {
         }
     }
 
-    private static void isInEnrollTimeLimits(Contest contest) {
+    private static void isInContestModificationTimeLimits(Contest contest) {
         if (LocalDateTime.now().isAfter(contest.getPhase1())) {
-            throw new UnauthorizedOperationException(ENROLL_INVITATION_TIME_LIMITS_MESSAGE);
+            throw new UnauthorizedOperationException(CONTEST_MODIFICATION_TIME_LIMITS_MESSAGE);
         }
     }
 

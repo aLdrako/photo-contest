@@ -127,7 +127,7 @@ public class ContestServicesImplTests {
     @Test
     public void deleteById_Should_CallRepository_When_ContestExists() {
         // Arrange
-        Contest mockContest = createMockContest();
+        Contest mockContest = createMockContestDynamic();
         User mockOrganizer = createMockOrganizer();
 
         when(mockContestRepository.findById(mockContest.getId())).thenReturn(Optional.of(mockContest));

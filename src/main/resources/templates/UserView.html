@@ -194,7 +194,8 @@
                   <div class="d-flex gap-2 w-100 justify-content-between">
                     <div>
                       <h6 class="mb-0" th:text="${contest.title}">Title (design!)</h6>
-                      <span class="mb-0 opacity-75" th:text="${contest.category.name}">Body (design!)</span>
+                      <i class="bi bi-tag-fill pe-1"></i><span class="mb-0 opacity-75" th:text="${contest.category.name}">Category (design!)</span><br>
+                      <i class="bi pe-1" th:classappend="${contest.invitational ? 'bi-lock-fill' : 'bi-unlock-fill'}"></i><span class="mb-0 opacity-75" th:text="${contest.invitational ? 'Invitational' : 'Open'}">Type (design!)</span>
                     </div>
                   </div>
                   <div>
@@ -231,7 +232,8 @@
                   <div class="d-flex gap-2 w-100 justify-content-between">
                     <div>
                       <h6 class="mb-0" th:text="${contest.title}">Title (design!)</h6>
-                      <span class="mb-0 opacity-75" th:text="${contest.category.name}">Body (design!)</span>
+                      <i class="bi bi-tag-fill pe-1"></i><span class="mb-0 opacity-75" th:text="${contest.category.name}">Category (design!)</span><br>
+                      <i class="bi pe-1" th:classappend="${contest.invitational ? 'bi-lock-fill' : 'bi-unlock-fill'}"></i><span class="mb-0 opacity-75" th:text="${contest.invitational ? 'Invitational' : 'Open'}">Type (design!)</span>
                     </div>
                   </div>
                   <div>

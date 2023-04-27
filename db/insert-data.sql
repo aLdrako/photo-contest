@@ -61,13 +61,14 @@ INSERT INTO `contests_results` (`contest_id`, `photo_id`, `results`) VALUES
                                                                          (7, 7, 12);
 /*!40000 ALTER TABLE `contests_results` ENABLE KEYS */;
 
--- Dumping data for table photo_contest.cover_photos: ~8 rows (approximately)
+-- Dumping data for table photo_contest.cover_photos: ~9 rows (approximately)
 /*!40000 ALTER TABLE `cover_photos` DISABLE KEYS */;
 INSERT INTO `cover_photos` (`contest_id`, `cover_photo`) VALUES
                                                              (1, 'https://alexgo.online/Projects/PhotoContest/photos/trhUPo9SSFemJzZ.jpg'),
                                                              (3, 'https://alexgo.online/Projects/PhotoContest/photos/zBhoTt2Y9Y578Z5.jpeg'),
                                                              (4, 'https://alexgo.online/Projects/PhotoContest/photos/HpNJANsiiphW1Fc.jpg'),
                                                              (6, 'https://alexgo.online/Projects/PhotoContest/photos/hffUhKS4gsbfj5d.jpg'),
+                                                             (7, 'https://alexgo.online/Projects/PhotoContest/photos/U0f4Ibrs75a975z.jpg'),
                                                              (10, 'https://alexgo.online/Projects/PhotoContest/photos/OWvEjYte1jhOQZ9.jpg'),
                                                              (11, 'https://alexgo.online/Projects/PhotoContest/photos/vhiBxq1BIAvTdyn.jpg'),
                                                              (12, 'https://alexgo.online/Projects/PhotoContest/photos/frC5cEMJfrjbwF1.jpg'),
@@ -186,9 +187,9 @@ INSERT INTO `photos` (`id`, `title`, `story`, `photo`, `user_id`, `contest_id`) 
                                                                                     (2, 'Green green snake', 'This snake looks dangerous', 'https://alexgo.online/Projects/PhotoContest/photos/trhUPo9SSFemJzZ.jpg', 8, 1),
                                                                                     (3, 'Look I\'m Panda ', 'Panda eating bamboo', 'https://alexgo.online/Projects/PhotoContest/photos/GLHthjvgofeHpW0.jpg', 8, 11),
                                                                                     (4, 'Very cute bird :) ', 'Bird and the nature in macro', 'https://alexgo.online/Projects/PhotoContest/photos/u1qtpM9sfMx6JYd.jpg', 12, 11),
-                                                                                    (5, 'Blue blue sea and sky', 'Sea in its cold colors', 'https://alexgo.online/Projects/PhotoContest/photos/tkPNCvlf3mXETUp.jpg', 6, 7),
-                                                                                    (6, 'Trees trees trees', 'Trees in warm colors of sunset', 'https://alexgo.online/Projects/PhotoContest/photos/iahPbpHTt3QjA99.jpg', 14, 7),
-                                                                                    (7, 'A long logn path', 'Long path in the mountains', 'https://alexgo.online/Projects/PhotoContest/photos/CdL2hkxfNfiJCSt.jpg', 10, 7),
+                                                                                    (5, 'Blue sea in the storm', 'Sea in its cold colors', 'https://alexgo.online/Projects/PhotoContest/photos/ZUgK2rhUnzaYJWS.jpg', 6, 7),
+                                                                                    (6, 'Trees in sunset...', 'Trees in warm colors of sunset', 'https://alexgo.online/Projects/PhotoContest/photos/5q2shzaIcQi0DI0.jpg', 14, 7),
+                                                                                    (7, 'A long logn path', 'Long path in the mountains', 'https://alexgo.online/Projects/PhotoContest/photos/U0f4Ibrs75a975z.jpg', 10, 7),
                                                                                     (8, 'Samurai and a girl', 'Peaceful samurai with cursed sword', 'https://alexgo.online/Projects/PhotoContest/photos/k8qgINly13NOxgD.jpg', 12, 2),
                                                                                     (9, 'Revy\'s headshot :)', 'Revy with her big gun', 'https://alexgo.online/Projects/PhotoContest/photos/ynPgl7KTw6XKgTJ.jpg', 15, 2),
                                                                                     (10, 'Dark hole in space', 'Dark hole consuming the sun', 'https://alexgo.online/Projects/PhotoContest/photos/pnViYwmX94v3LJI.jpeg', 6, 3),
@@ -297,7 +298,7 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `email`, `pass
                                                                                                                                 (11, 'Deleted', 'Deleted', 'deleted', 'deleted@mail.com', 'deleted', '2023-04-12 12:03:00', 1, 0),
                                                                                                                                 (12, 'Tester', 'Tester', 'tester', 'tester@mail.com', 'tester', '2023-04-12 12:03:45', 3, 310),
                                                                                                                                 (13, 'Alex', 'Dimov', 'alexdimov', 'alexdimov@mail.com', 'alexdimov', '2023-04-12 12:29:55', 1, 0),
-                                                                                                                                (14, 'Orion', 'Spacer', 'orispace', 'orispace@gmail.com', 'orispace', '2023-04-12 12:32:53', 3, 363),
+                                                                                                                                (14, 'Orion', 'Spacer', 'orispace', 'orispace@gmail.com', 'orispace', '2023-04-12 12:32:53', 3, 364),
                                                                                                                                 (15, 'John', 'Smith', 'smith555', 'smith555@yahoo.com', 'smith555', '2023-04-12 12:34:13', 2, 34);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
