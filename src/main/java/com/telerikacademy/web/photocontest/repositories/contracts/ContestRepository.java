@@ -36,5 +36,5 @@ Page<Contest> filter(
 
     boolean existsByTitleEqualsIgnoreCase(String title);
     List<Contest> findByPhase2IsBeforeAndIsFinishedFalse(LocalDateTime now);
-    List<Contest> findTop5ByIsFinishedTrue();
+    List<Contest> findTop5ByIsFinishedTrueOrderByPhase2Desc();
 }

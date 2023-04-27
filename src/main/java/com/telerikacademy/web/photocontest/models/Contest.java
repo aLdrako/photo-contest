@@ -47,7 +47,6 @@ public class Contest {
     @Column(name = "date_created")
     private LocalDateTime dateCreated;
 
-    @Lob
     @Column(name = "cover_photo", table = "cover_photos")
     private String coverPhoto;
 
