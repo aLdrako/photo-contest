@@ -5,6 +5,7 @@ import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.helpers.AuthenticationHelper;
+import com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper;
 import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.models.dto.PermissionsDto;
 import com.telerikacademy.web.photocontest.models.dto.UserDto;
@@ -32,8 +33,12 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper.getResult;
+
 @Api(tags = "User Rest Controller")
 @RestController
 @RequestMapping("/api/users")
@@ -70,7 +75,8 @@ public class UserRestController {
     })
     @GetMapping("/search")
     public List<UserResponseDto> search(Pageable page, @RequestParam(required = false) String q) {
-        return userServices.searchAll(q != null && q.isEmpty() ? null : q, page)
+        FilterAndSortingHelper.Result result = getResult(Map.of("q", q), page);
+        return userServices.searchAll(result.keyword(), page)
                 .stream().map(modelMapper::objectToResponseDto)
                 .collect(Collectors.toList());
     }
