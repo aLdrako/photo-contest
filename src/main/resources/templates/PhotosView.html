@@ -36,8 +36,15 @@
         </div>
       </th:block>
     </div>
-
   </div>
+  <nav aria-label="Page navigation"
+       th:if="${totalPages > 0}"
+       th:with="pageQuery=${'?page='},
+                      sizeQuery=${'&size='},
+                      titleQuery=${'&title='},
+                      linkQuery=${sizeQuery + sizePage + titleQuery} + ${title == null ? '' : title}">
+    <ul th:replace="~{fragments/pagination :: pagination}"></ul>
+  </nav>
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>

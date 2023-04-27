@@ -3,6 +3,8 @@ package com.telerikacademy.web.photocontest.services.contracts;
 import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.models.dto.PhotoResponseDto;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
@@ -20,5 +22,5 @@ public interface PhotoServices {
 
     List<Photo> getPhotosOfContest(Contest contest);
 
-    List<Photo> search(Optional<String> keyword, Optional<Long> contestId);
+    Page<Photo> search(String title, Long contestId, Pageable pageable);
 }

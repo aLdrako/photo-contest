@@ -358,9 +358,13 @@ public class ContestRestController {
     }
     @GetMapping("/{id}/photos/search")
     public List<PhotoResponseDto> search(@PathVariable Long id,
-                                         @RequestParam(required = false) Optional<String> q) {
-        return photoServices.search(q, id.describeConstable()).stream()
-                .map(modelMapper::objectToDto).collect(Collectors.toList());
+                                         @RequestParam Map<String, String> parameters,
+                                         Pageable pageable) {
+        FilterAndSortingHelper.Result result = getResult(parameters, pageable);
+        return photoServices.search(result.title(), id, result.pageable())
+                .stream()
+                .map(modelMapper::objectToDto)
+                .collect(Collectors.toList());
     }
 
     @Operation(

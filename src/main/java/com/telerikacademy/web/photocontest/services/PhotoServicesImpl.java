@@ -11,6 +11,8 @@ import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -124,9 +126,8 @@ public class PhotoServicesImpl implements PhotoServices {
     }
 
     @Override
-    public List<Photo> search(Optional<String> keyword, Optional<Long> contestId) {
-        return contestId.isPresent() ? photoRepository.search(keyword, contestId) :
-                photoRepository.search(keyword);
+    public Page<Photo> search(String title, Long contestId, Pageable pageable) {
+        return photoRepository.search(title, contestId, pageable);
     }
 
     private void checkReviewPostPermissions(PhotoReviewDetails photoReviewDetails, Photo photo, User user) {

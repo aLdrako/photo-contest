@@ -5,6 +5,7 @@ import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.helpers.AuthenticationHelper;
+import com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper;
 import com.telerikacademy.web.photocontest.models.*;
 import com.telerikacademy.web.photocontest.models.dto.PhotoDto;
 import com.telerikacademy.web.photocontest.models.dto.PhotoResponseDto;
@@ -23,6 +24,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -36,6 +39,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.uploadPhoto;
+import static com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper.getResult;
+
 @Api(tags = "Photo Rest Controller")
 @RestController
 @RequestMapping("/api/photos")
@@ -59,9 +64,13 @@ public class PhotoRestController {
     }
 
     @GetMapping("/search")
-    public List<PhotoResponseDto> search(@RequestParam(required = false) Optional<String> q) {
-        return photoServices.search(q, Optional.empty()).stream()
-                .map(modelMapper::objectToDto).collect(Collectors.toList());
+    public List<PhotoResponseDto> search(@RequestParam Map<String, String> parameters,
+                                         Pageable pageable) {
+        FilterAndSortingHelper.Result result = getResult(parameters, pageable);
+        return photoServices.search(result.title(), null, result.pageable())
+                .stream()
+                .map(modelMapper::objectToDto)
+                .collect(Collectors.toList());
     }
     @Operation(
             summary = "Retrieve a Photo by Id",
