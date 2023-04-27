@@ -14,6 +14,8 @@ import com.telerikacademy.web.photocontest.models.validations.*;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -45,10 +47,10 @@ import java.util.stream.StreamSupport;
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.deletePhoto;
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.uploadPhoto;
 import static com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper.getResult;
-@Tag(name = "Contest Rest Controller", description = "Contest management API")
 @RestController
 @RequestMapping("/api/contests")
 @AllArgsConstructor
+@Api(tags = "Contest Rest Controller")
 @Slf4j
 public class ContestRestController {
 
@@ -59,8 +61,7 @@ public class ContestRestController {
 
     @Operation(
             summary = "Get All Contests",
-            description = "Get a list of all ContestResponseDto objects.",
-            tags = {"contests", "get all"}
+            description = "Get a list of all ContestResponseDto objects."
     )
     @ApiResponse(responseCode = "200", description = "All Contests",
             content = {@Content(schema = @Schema(implementation = ContestResponseDto.class, type = "array"),
@@ -73,8 +74,7 @@ public class ContestRestController {
     }
     @Operation(
             summary = "Retrieve a Contest by Id",
-            description = "Get a Contest object by specifying its id. The response is ContestResponseDto object",
-            tags = {"contest", "get"}
+            description = "Get a Contest object by specifying its id. The response is ContestResponseDto object"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Contest found",
@@ -94,8 +94,7 @@ public class ContestRestController {
     }
     @Operation(
             summary = "Get Contests Search Result",
-            description = "Get a list of all ContestResponseDto objects.",
-            tags = {"contests", "filter"}
+            description = "Get a list of all ContestResponseDto objects."
     )
     @ApiResponse(responseCode = "200", description = "All Contests",
             content = {@Content(schema = @Schema(implementation = ContestResponseDto.class, type = "array"),
@@ -116,8 +115,7 @@ public class ContestRestController {
 
     @Operation(
             summary = "Create a new contest",
-            description = "Create a ContestResponseDto object",
-            tags = {"contests", "create"}
+            description = "Create a ContestResponseDto object"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Contest created",
@@ -152,8 +150,7 @@ public class ContestRestController {
     }
     @Operation(
             summary = "Join a contest",
-            description = "Join a contest and return a ContestResponseDto object with new participant",
-            tags = {"contest", "join participant"}
+            description = "Join a contest and return a ContestResponseDto object with new participant"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Contest joined",
@@ -183,8 +180,7 @@ public class ContestRestController {
     }
     @Operation(
             summary = "Add jury to contest",
-            description = "Add jury and return a ContestResponseDto object with new jury",
-            tags = {"contest", "join jury"}
+            description = "Add jury and return a ContestResponseDto object with new jury"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Jury joined to contest",
@@ -217,8 +213,7 @@ public class ContestRestController {
     }
     @Operation(
             summary = "Add Participant",
-            description = "Add a participant to the contest.",
-            tags = {"contest", "add participant"}
+            description = "Add a participant to the contest."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User added to participants",
@@ -251,8 +246,7 @@ public class ContestRestController {
     }
     @Operation(
             summary = "Upload of cover photo",
-            description = "Upload of cover photo to a Contest",
-            tags = {"contests", "upload", "cover photo"}
+            description = "Upload of cover photo to a Contest"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Cover photo uploaded",
@@ -288,8 +282,7 @@ public class ContestRestController {
     }
     @Operation(
             summary = "Update a Contest by Id",
-            description = "Update a Contest object by specifying its id. The response is the updated Contest object",
-            tags = {"contest", "update"}
+            description = "Update a Contest object by specifying its id. The response is the updated Contest object"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Contest updated",
@@ -324,8 +317,7 @@ public class ContestRestController {
     }
     @Operation(
             summary = "Delete a Contest by Id",
-            description = "Delete a Contest object by specifying its id.",
-            tags = {"contest", "delete"}
+            description = "Delete a Contest object by specifying its id."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Contest successfully deleted"),
@@ -345,8 +337,7 @@ public class ContestRestController {
     }
     @Operation(
             summary = "Get All Photo of Contest",
-            description = "Get a list of all PhotoResponseDto objects to a contest.",
-            tags = {"photos", "get all", "contest"}
+            description = "Get a list of all PhotoResponseDto objects to a contest."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "All contest photos",
@@ -374,8 +365,7 @@ public class ContestRestController {
 
     @Operation(
             summary = "Create a new photo",
-            description = "Create a Photo object",
-            tags = {"photos", "create"}
+            description = "Create a Photo object"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Photo created",

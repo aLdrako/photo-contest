@@ -13,6 +13,7 @@ import com.telerikacademy.web.photocontest.models.validations.CreateValidationGr
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
+import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -33,7 +34,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-@Tag(name = "User Rest Controller", description = "User management API")
+@Api(tags = "User Rest Controller")
 @RestController
 @RequestMapping("/api/users")
 @AllArgsConstructor
@@ -45,11 +46,10 @@ public class UserRestController {
 
     @Operation(
             summary = "Get All Users",
-            description = "Get a list of all UserResponseDto objects.",
-            tags = {"users", "get all"}
+            description = "Get a list of all UserResponseDto objects."
     )
     @ApiResponse(responseCode = "200", description = "All users",
-            content = {@Content(schema = @Schema(implementation = User.class, type = "array"),
+            content = {@Content(schema = @Schema(implementation = UserResponseDto.class, type = "array"),
                     mediaType = "application/json")})
     @GetMapping
     public List<UserResponseDto> getAll() {
@@ -60,11 +60,10 @@ public class UserRestController {
             summary = "Get Users Search Result",
             description = "If there is a 'q' parameter the api will search all users by first name, " +
                     "last name or username and return a list of UserResponseDto objects." +
-                    "If there is no 'q' parameter the api will return all users.",
-            tags = {"users", "search"}
+                    "If there is no 'q' parameter the api will return all users."
     )
     @ApiResponse(responseCode = "200", description = "Search Result",
-            content = {@Content(schema = @Schema(implementation = User.class, type = "array"),
+            content = {@Content(schema = @Schema(implementation = UserResponseDto.class, type = "array"),
                     mediaType = "application/json")})
     @Parameters({
             @Parameter(name = "q", example = "Admin", description = "Search by first name, username, last name", schema = @Schema(type = "string")),
@@ -77,12 +76,11 @@ public class UserRestController {
     }
     @Operation(
             summary = "Retrieve a User by Id",
-            description = "Get a User object by specifying its id. The response is User object",
-            tags = {"user", "get"}
+            description = "Get a User object by specifying its id. The response is User object"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User found",
-                    content = {@Content(schema = @Schema(implementation = User.class),
+                    content = {@Content(schema = @Schema(implementation = UserResponseDto.class),
                             mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "User not found",
                     content = {@Content(schema = @Schema())})
@@ -97,13 +95,12 @@ public class UserRestController {
     }
     @Operation(
             summary = "Create a new user",
-            description = "Create a User object",
-            tags = {"users", "create"}
+            description = "Create a User object"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User created",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = User.class))}),
+                            schema = @Schema(implementation = UserResponseDto.class))}),
             @ApiResponse(responseCode = "409", description = "User with same email/username already exists",
                     content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "400", description = "The validation of the body has failed",
@@ -121,11 +118,10 @@ public class UserRestController {
     }
     @Operation(
             summary = "Update a User by Id",
-            description = "Update a User object by specifying its id. The response is the updated User object",
-            tags = {"users", "update"}
+            description = "Update a User object by specifying its id. The response is the updated User object"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "User updated", content = {@Content(schema = @Schema(implementation = User.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "200", description = "User updated", content = {@Content(schema = @Schema(implementation = UserResponseDto.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "User not found", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "409", description = "User with same email/username already exists", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "401", description = "Unauthorized operation", content = {@Content(schema = @Schema())}),
@@ -150,8 +146,7 @@ public class UserRestController {
     }
     @Operation(
             summary = "Delete a User by Id",
-            description = "Delete a User object by specifying its id.",
-            tags = {"users", "delete"}
+            description = "Delete a User object by specifying its id."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User successfully deleted"),
@@ -173,11 +168,10 @@ public class UserRestController {
 
     @Operation(
             summary = "Update permissions for a User by Id",
-            description = "Update permissions for a User object by specifying its id. The response is the updated User object",
-            tags = {"users", "update"}
+            description = "Update permissions for a User object by specifying its id. The response is the updated User object"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "User permissions updated", content = {@Content(schema = @Schema(implementation = User.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "200", description = "User permissions updated", content = {@Content(schema = @Schema(implementation = UserResponseDto.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "User not found", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "401", description = "Unauthorized operation", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "400", description = "The validation of the body has failed", content = {@Content(schema = @Schema())})

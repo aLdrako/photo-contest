@@ -7,19 +7,24 @@ import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
-@EnableSwagger2
 public class Swagger2Config {
 
     @Bean
     public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2).select()
+        return new Docket(DocumentationType.SWAGGER_2)
+                .tags(new Tag("Contest Rest Controller", "Contest management API"),
+                        new Tag("User Rest Controller", "User management API"),
+                        new Tag("Photo Rest Controller", "Photo management API"),
+                        new Tag("Category Rest Controller", "Photo management API"))
+                .select()
                 .apis(RequestHandlerSelectors
-                        .basePackage("com.telerikacademy.web.photocontest"))
+                        .basePackage("com.telerikacademy.web.photocontest.controllers.rest"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiEndPointsInfo());

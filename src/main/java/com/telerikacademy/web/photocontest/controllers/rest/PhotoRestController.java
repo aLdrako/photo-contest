@@ -14,6 +14,7 @@ import com.telerikacademy.web.photocontest.models.validations.CreatePhotoGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
+import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,7 +36,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.uploadPhoto;
-@Tag(name = "Photo Rest Controller", description = "Photo management API")
+@Api(tags = "Photo Rest Controller")
 @RestController
 @RequestMapping("/api/photos")
 @AllArgsConstructor
@@ -46,8 +47,7 @@ public class PhotoRestController {
     private final ModelMapper modelMapper;
     @Operation(
             summary = "Get All Photo",
-            description = "Get a list of all PhotoResponseDto objects.",
-            tags = {"photos", "get all"}
+            description = "Get a list of all PhotoResponseDto objects."
     )
     @ApiResponse(responseCode = "200", description = "All photos",
             content = {@Content(schema = @Schema(implementation = PhotoResponseDto.class, type = "array"),
@@ -65,8 +65,7 @@ public class PhotoRestController {
     }
     @Operation(
             summary = "Retrieve a Photo by Id",
-            description = "Get a Photo object by specifying its id. The response is PhotoResponseDto object",
-            tags = {"photo", "get"}
+            description = "Get a Photo object by specifying its id. The response is PhotoResponseDto object"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Photo found",
@@ -85,8 +84,7 @@ public class PhotoRestController {
     }
     @Operation(
             summary = "Create a new photo",
-            description = "Create a Photo object",
-            tags = {"photos", "create"}
+            description = "Create a Photo object"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Photo created",
@@ -123,8 +121,7 @@ public class PhotoRestController {
     }
     @Operation(
             summary = "Create a new photo review",
-            description = "Create a PhotoReviewResponseDto object",
-            tags = {"photos", "reviews", "photo review", "create"}
+            description = "Create a PhotoReviewResponseDto object"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Photo review created",
@@ -161,8 +158,7 @@ public class PhotoRestController {
     }
     @Operation(
             summary = "Delete a Photo by Id",
-            description = "Delete a Photo object by specifying its id.",
-            tags = {"photos", "delete"}
+            description = "Delete a Photo object by specifying its id."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Photo successfully deleted"),
@@ -184,8 +180,7 @@ public class PhotoRestController {
     }
     @Operation(
             summary = "Get All Photo reviews of a photo",
-            description = "Get a list of all PhotoResponseDto objects of a photo.",
-            tags = {"photos", "reviews", "photo reviews", "get all"}
+            description = "Get a list of all PhotoResponseDto objects of a photo."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Get all photo reviews",
