@@ -249,7 +249,25 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
-
+    @Operation(
+            summary = "Upload of cover photo",
+            description = "Upload of cover photo to a Contest",
+            tags = {"contests", "upload", "cover photo"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Cover photo uploaded",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ContestResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "Contest not found",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed",
+                    content = {@Content(schema = @Schema())})
+    })
+    @Parameters({
+            @Parameter(name = "file", example = "photo.jpg", description = "Cover photo file", schema = @Schema(type = "string")),
+    })
     @PostMapping("/{id}/upload-cover")
     public ContestResponseDto uploadCoverPhoto(@PathVariable Long id, @RequestParam("file") MultipartFile file,
                                                @RequestHeader(required = false) Optional<String> authorization) {
@@ -268,7 +286,24 @@ public class ContestRestController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
-
+    @Operation(
+            summary = "Update a Contest by Id",
+            description = "Update a Contest object by specifying its id. The response is the updated Contest object",
+            tags = {"contest", "update"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Contest updated",
+                    content = {@Content(schema = @Schema(implementation = ContestResponseDto.class),
+                            mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "Contest not found",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "409", description = "Contest with same title already exists",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation",
+                    content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed",
+                    content = {@Content(schema = @Schema())})
+    })
     @PutMapping("/{id}")
     public ContestResponseDto update(@PathVariable Long id, @RequestHeader(required = false) Optional<String> authorization,
                                      @Validated(UpdateValidationGroup.class) @RequestBody ContestDto contestDto) {
@@ -320,7 +355,6 @@ public class ContestRestController {
             @ApiResponse(responseCode = "404", description = "Contest not found",
                     content = {@Content(schema = @Schema())})
     })
-
     @GetMapping("/{id}/photos")
     public List<PhotoResponseDto> getAllPhotosOfContest(@PathVariable Long id) {
         try {
