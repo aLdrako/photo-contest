@@ -16,21 +16,18 @@
     <div id="validationCategory" class="invalid-feedback" th:errors="*{title}">Error placeholder</div>
   </div>
   <div class="form-floating mb-3 row">
-    <div class="col-md-5 mb-3 mb-md-0" th:class="${ctxCreate ? 'col-md-6 mb-3 mb-md-0' : 'col-md-5 mb-3 mb-md-0'}">
+    <div class="col-md-6 mb-3 mb-md-0">
+      <div class="input-group">
         <input type="text" class="form-control" id="inputPhotoURL" placeholder="Cover Photo URL" th:field="*{coverPhoto}">
-    </div>
-    <div class="col-md-5" th:class="${ctxCreate ? 'col-md-6' : 'col-md-5'}">
-      <input type="file" class="form-control" id="inputPhotoUpload" name="file" th:field="*{coverPhotoUpload}" accept=".jpeg, .jpg, .png">
-    </div>
-    <div class="col-md-2 mt-3 mt-md-0" th:if="${ctxUpdate}">
-      <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#selectPhotoModal">Photos</button>
+        <button th:if="${ctxUpdate}" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#selectPhotoModal">Select Photos</button>
+      </div>
 
       <!-- Modal -->
-      <div class="modal fade" id="selectPhotoModal" tabindex="-1" aria-labelledby="selectPhotoModalLabel" aria-hidden="true">
+      <div th:if="${ctxUpdate}" class="modal fade" id="selectPhotoModal" tabindex="-1" aria-labelledby="selectPhotoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
+          <div class="modal-content text-bg-dark">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="selectPhotoModalLabel">Select Cover Photo</h1>
+              <h1 class="modal-title fs-5 text-warning" id="selectPhotoModalLabel">Select Cover Photo</h1>
             </div>
             <div class="modal-footer">
               <span th:if="${#lists.isEmpty(contest.contestPhotos)}">No photos in this contest yet...</span>
@@ -40,6 +37,9 @@
         </div>
       </div>
 
+    </div>
+    <div class="col-md-6">
+      <input type="file" class="form-control" id="inputPhotoUpload" name="file" th:field="*{coverPhotoUpload}" accept=".jpeg, .jpg, .png">
     </div>
   </div>
 

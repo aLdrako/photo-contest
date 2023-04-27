@@ -9,20 +9,18 @@
 <body class="main-view d-flex flex-column min-vh-100">
     <header th:replace="~{fragments/navbar :: header(context='home')}"></header>
     <main class="container mx-auto my-5">
-        <div class="p-4 p-md-5 mb-4 rounded text-bg-dark">
-
-
-            <div class="col px-0">
-                <h1 class="display-4 fst-italic text-warning">Welcome to Photo Contest website</h1>
-                <p class="lead mt-3 text-warning">
+        <div class="px-2 mb-5 rounded">
+            <div class="col px-3">
+                <h1 class="display-4 fst-italic text-dark">Welcome to Photo Contest website</h1>
+                <p class="lead mt-3 text-dark">
                     To participate in our contest, you can submit your best photos.
                     Make sure to upload high-quality photos and include a brief description of each photo.
-                    Winners will be selected based on creativity, originality, and adherence to the contest theme. Good luck!
+                    Winners will be selected based on creativity, originality, and adherence to the contest theme.
                     Check out our latest winners down below <i class="bi bi-arrow-down"></i>
                 </p>
             </div>
         </div>
-        <div class="p-4 p-md-5 mb-4 rounded text-bg-dark">
+        <div class="px-2 m-3 rounded">
             <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div th:each="contest, contestIndex : ${contests}" th:if="${contest.winners != null and !contest.winners.isEmpty()}">
@@ -39,11 +37,11 @@
                     </div>
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                    <span class="text-warning" aria-hidden="true"><i class="bi bi-caret-left-fill" style="font-size: 2rem;"></i></span>
+                    <span class="text-dark" aria-hidden="true"><i class="bi bi-caret-left-fill" style="font-size: 2rem;"></i></span>
                     <span class="visually-hidden">Previous</span>
                 </button>
                 <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                    <span class="text-warning" aria-hidden="true"><i class="bi bi-caret-right-fill" style="font-size: 2rem;"></i></span>
+                    <span class="text-dark" aria-hidden="true"><i class="bi bi-caret-right-fill" style="font-size: 2rem;"></i></span>
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
