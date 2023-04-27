@@ -9,8 +9,7 @@
 <body class="user-view d-flex flex-column min-vh-100"
       th:with="permissionPath=${requestURI + '/permissions'},
                updatePath=${requestURI + '/update'},
-               deletePath=${requestURI + '/delete'},
-               userMatch=${session.currentUser == user.username}">
+               deletePath=${requestURI + '/delete'}">
 
 <header th:replace="~{fragments/navbar :: header(context='user-profile')}"></header>
 
@@ -18,7 +17,7 @@
   <h2 class="pb-2 text-dark rounded ps-1">User Dashboard</h2>
 
   <div class="row row-cols-1 row-cols-lg-2 align-items-md-center g-2 py-2">
-    <div class="d-flex flex-column align-self-start gap-2 text-bg-dark rounded py-3 ">
+    <div class="d-flex flex-column align-self-stretch gap-2 text-bg-dark rounded py-3 ">
 
         <div class="col-lg-6 w-100">
           <div class="card bg-dark text-warning">
@@ -84,9 +83,9 @@
 
     </div>
 
-    <div class="d-flex flex-column align-self-start" th:if="${user.isOrganizer}">
+    <div class="d-flex flex-column align-self-start" th:if="${user.organizer && session.user.organizer}">
       <div class="row row-cols-1 row-cols-sm-2 g-2">
-        <div class="d-flex flex-column gap-2 align-self-start">
+        <div class="d-flex flex-column gap-2 align-self-stretch">
           <div class="bg-dark text-warning rounded p-2">
             <div class="d-flex justify-content-between p-2">
               <div class="p-2">
@@ -156,7 +155,7 @@
       </div>
     </div>
 
-    <div th:if="${userMatch && !session.user.organizer}" class="align-self-start justify-content-center mt-2">
+    <div th:if="${!user.organizer}" class="align-self-start justify-content-center mt-2">
       <div class="col-12">
         <ul class="nav nav-tabs nav-pills nav-fill justify-content-center" id="myTab" role="tablist">
           <li class="nav-item me-1" role="presentation">
@@ -173,17 +172,15 @@
         <div class="tab-content" id="myTabContent">
           <div class="tab-pane fade show active" id="active-contests-tab-pane" role="tabpanel" aria-labelledby="active-contests-tab"
                tabindex="0">
-            <div class="list-group w-auto mt-1">
+            <div class="list-group w-auto mt-1 bg-dark" style="height: 285px; min-height: 285px; overflow: auto;">
               <th:block th:if="${user.activeContests.isEmpty()}">
-                <div class="d-flex gap-2 w-100 justify-content-center text-bg-dark text-warning">
-                  <div>
-                    <h6 class="mb-0 display-6">No Active Contests</h6>
-                  </div>
+                <div class="d-flex gap-2 w-100 justify-content-center text-bg-dark text-warning rounded">
+                  <h6 class="mb-0 display-6 pt-3">No Active Contests</h6>
                 </div>
               </th:block>
               <th:block th:each="contest : ${user.activeContests}">
                 <a href="#" th:href="@{/contests/{id}(id=${contest.id})}"
-                   class="list-group-item list-group-item-action d-flex gap-3 py-3 text-bg-dark text-warning" aria-current="true">
+                   class="list-group-item list-group-item-action d-flex gap-3 text-bg-dark text-warning" aria-current="true">
                   <img class="img-thumbnail rounded" th:if="${contest.coverPhoto != null}"
                        style="width: 15%" th:src="${contest.coverPhoto}" th:alt="${'Cover Photo'}"
                        alt="Cover Photo" src="#">
@@ -197,12 +194,13 @@
                       <i class="bi bi-tag-fill pe-1"></i><span class="mb-0 opacity-75" th:text="${contest.category.name}">Category (design!)</span><br>
                       <i class="bi pe-1" th:classappend="${contest.invitational ? 'bi-lock-fill' : 'bi-unlock-fill'}"></i><span class="mb-0 opacity-75" th:text="${contest.invitational ? 'Invitational' : 'Open'}">Type (design!)</span>
                     </div>
-                  </div>
-                  <div>
-                  <span>
-                    <i class="bi bi-people"></i>
-                    <span th:text="${contest.participants.size()}"></span>
-                  </span>
+                    <div>
+                      <i class="bi bi-people"></i>
+                      <span th:text="${contest.participants.size()}"></span><br>
+                      <th:block th:each="photo : ${contest.photos}">
+                        <i th:if="${photo.userCreated == user}" class="bi bi-camera-fill" style="font-size: 2rem"></i>
+                      </th:block>
+                    </div>
                   </div>
                 </a>
               </th:block>
@@ -211,17 +209,15 @@
 
           <div class="tab-pane fade" id="finished-contests-tab-pane" role="tabpanel" aria-labelledby="finished-contests-tab"
                tabindex="0">
-            <div class="list-group w-auto mt-1">
+            <div class="list-group w-auto mt-1 bg-dark" style="height: 285px; min-height: 285px; overflow: auto;">
               <th:block th:if="${user.finishedContests.isEmpty()}">
-                <div class="d-flex gap-2 w-100 justify-content-center text-bg-dark text-warning">
-                  <div>
-                    <h6 class="mb-0 display-6">No Finished Contests</h6>
-                  </div>
+                <div class="d-flex gap-2 w-100 justify-content-center text-bg-dark text-warning rounded">
+                  <h6 class="mb-0 display-6 pt-3">No Finished Contests</h6>
                 </div>
               </th:block>
               <th:block th:each="contest : ${user.finishedContests}">
                 <a href="#" th:href="@{/contests/{id}(id=${contest.id})}"
-                   class="list-group-item list-group-item-action d-flex gap-3 py-3 text-bg-dark text-warning" aria-current="true">
+                   class="list-group-item list-group-item-action d-flex gap-3 text-bg-dark text-warning" aria-current="true">
                   <img class="img-thumbnail rounded" th:if="${contest.coverPhoto != null}"
                        style="max-width: 15%" th:src="${contest.coverPhoto}" th:alt="${'Cover Photo'}"
                        alt="Cover Photo" src="#">
@@ -235,12 +231,10 @@
                       <i class="bi bi-tag-fill pe-1"></i><span class="mb-0 opacity-75" th:text="${contest.category.name}">Category (design!)</span><br>
                       <i class="bi pe-1" th:classappend="${contest.invitational ? 'bi-lock-fill' : 'bi-unlock-fill'}"></i><span class="mb-0 opacity-75" th:text="${contest.invitational ? 'Invitational' : 'Open'}">Type (design!)</span>
                     </div>
-                  </div>
-                  <div>
-                    <span>
+                    <div>
                       <i class="bi bi-people"></i>
-                      <span th:text="${contest.participants.size()}"></span>
-                    </span>
+                      <span th:text="${contest.participants.size()}"></span><br>
+                    </div>
                   </div>
                 </a>
               </th:block>

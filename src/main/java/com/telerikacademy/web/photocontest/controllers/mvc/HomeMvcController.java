@@ -22,7 +22,7 @@ public class HomeMvcController extends BaseMvcController {
 
     @ModelAttribute("contests")
     public List<ContestResponseDto> contestTop() {
-        List<Contest> top5ByIsFinishedTrue = contestRepository.findTop5ByIsFinishedTrue();
+        List<Contest> top5ByIsFinishedTrue = contestRepository.findTop5ByIsFinishedTrueOrderByPhase2Desc();
         return top5ByIsFinishedTrue.stream().map(modelMapper::objectToDto).toList();
     }
 

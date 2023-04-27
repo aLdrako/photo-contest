@@ -55,7 +55,7 @@ public class ModelMapper {
         ContestDto contestDto = new ContestDto();
         contestDto.setTitle(contest.getTitle());
         contestDto.setCategoryId(contest.getCategory().getId());
-        if (contest.getPhotos() != null && !contest.getPhotos().isEmpty())  {
+        if (contest.getPhotos() != null && !contest.getPhotos().isEmpty()) {
             contestDto.setContestPhotos(contest.getPhotos().stream().map(Photo::getPhoto).toList());
         }
         return contestDto;

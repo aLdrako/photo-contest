@@ -183,25 +183,25 @@ INSERT INTO `permissions` (`user_id`, `is_organizer`, `is_deleted`) VALUES
 -- Dumping data for table photo_contest.photos: ~19 rows (approximately)
 /*!40000 ALTER TABLE `photos` DISABLE KEYS */;
 INSERT INTO `photos` (`id`, `title`, `story`, `photo`, `user_id`, `contest_id`) VALUES
-                                                                                    (1, 'Nice and cute dog :)', 'This dog can swim very well', 'https://alexgo.online/Projects/PhotoContest/photos/hxrbkbEYzEmHigF.jpg', 6, 1),
-                                                                                    (2, 'Green green snake', 'This snake looks dangerous', 'https://alexgo.online/Projects/PhotoContest/photos/trhUPo9SSFemJzZ.jpg', 8, 1),
-                                                                                    (3, 'Look I\'m Panda ', 'Panda eating bamboo', 'https://alexgo.online/Projects/PhotoContest/photos/GLHthjvgofeHpW0.jpg', 8, 11),
-                                                                                    (4, 'Very cute bird :) ', 'Bird and the nature in macro', 'https://alexgo.online/Projects/PhotoContest/photos/u1qtpM9sfMx6JYd.jpg', 12, 11),
-                                                                                    (5, 'Blue sea in the storm', 'Sea in its cold colors', 'https://alexgo.online/Projects/PhotoContest/photos/ZUgK2rhUnzaYJWS.jpg', 6, 7),
-                                                                                    (6, 'Trees in sunset...', 'Trees in warm colors of sunset', 'https://alexgo.online/Projects/PhotoContest/photos/5q2shzaIcQi0DI0.jpg', 14, 7),
-                                                                                    (7, 'A long logn path', 'Long path in the mountains', 'https://alexgo.online/Projects/PhotoContest/photos/U0f4Ibrs75a975z.jpg', 10, 7),
-                                                                                    (8, 'Samurai and a girl', 'Peaceful samurai with cursed sword', 'https://alexgo.online/Projects/PhotoContest/photos/k8qgINly13NOxgD.jpg', 12, 2),
-                                                                                    (9, 'Revy\'s headshot :)', 'Revy with her big gun', 'https://alexgo.online/Projects/PhotoContest/photos/ynPgl7KTw6XKgTJ.jpg', 15, 2),
-                                                                                    (10, 'Dark hole in space', 'Dark hole consuming the sun', 'https://alexgo.online/Projects/PhotoContest/photos/pnViYwmX94v3LJI.jpeg', 6, 3),
-                                                                                    (11, 'Earth from space', 'View of Earth from space', 'https://alexgo.online/Projects/PhotoContest/photos/CE5QuK6oPUggOCm.jpg', 6, 13),
-                                                                                    (12, 'Moon in full eclipse', 'A photo of a moon eclipse', 'https://alexgo.online/Projects/PhotoContest/photos/8YBn8pkZLTkRNNQ.jpg', 8, 13),
-                                                                                    (13, 'The Death Stranding', 'Death squade stranding', 'https://alexgo.online/Projects/PhotoContest/photos/5YyYofht4btSSpX.jpg', 9, 4),
-                                                                                    (14, 'The BioShok Game', 'A photo of a BioShok', 'https://alexgo.online/Projects/PhotoContest/photos/bSLCHTqTX2sBIG2.jpg', 14, 4),
-                                                                                    (15, 'Pinguins from Madagascar', 'White and fluffy guys', 'https://alexgo.online/Projects/PhotoContest/photos/l8wVUDAO3UMo1uu.jpg', 14, 5),
-                                                                                    (18, 'Lamborghini Essenza', 'Super cars in green colors', 'https://alexgo.online/Projects/PhotoContest/photos/epXZFKoYQx6d4pp.jpg', 7, 10),
-                                                                                    (19, 'Lamborghini competition', 'Cars competition in sunset', 'https://alexgo.online/Projects/PhotoContest/photos/OWvEjYte1jhOQZ9.jpg', 15, 10),
-                                                                                    (20, 'Abstraction in 3D', 'Abstraction in black and red colors', 'https://alexgo.online/Projects/PhotoContest/photos/dUhdAlL19OVn2Wj.jpg', 9, 12),
-                                                                                    (21, 'Painted camel and a main', 'Painted camel and a main in warm colors', 'https://alexgo.online/Projects/PhotoContest/photos/ghlXipgyrGsoZnu.jpg', 10, 1);
+(1, 'Nice and cute dog :)', 'This dog can swim very well', 'https://alexgo.online/Projects/PhotoContest/photos/hxrbkbEYzEmHigF.jpg', 6, 1),
+(2, 'Green green snake', 'This snake looks dangerous', 'https://alexgo.online/Projects/PhotoContest/photos/trhUPo9SSFemJzZ.jpg', 8, 1),
+(3, 'Look I\'m Panda ', 'Panda eating bamboo', 'https://alexgo.online/Projects/PhotoContest/photos/GLHthjvgofeHpW0.jpg', 8, 11),
+(4, 'Very cute bird :) ', 'Bird and the nature in macro', 'https://alexgo.online/Projects/PhotoContest/photos/u1qtpM9sfMx6JYd.jpg', 12, 11),
+(5, 'Blue sea in the storm', 'Sea in its cold colors', 'https://alexgo.online/Projects/PhotoContest/photos/ZUgK2rhUnzaYJWS.jpg', 6, 7),
+(6, 'Trees in sunset...', 'Trees in warm colors of sunset', 'https://alexgo.online/Projects/PhotoContest/photos/5q2shzaIcQi0DI0.jpg', 14, 7),
+(7, 'A long logn path', 'Long path in the mountains', 'https://alexgo.online/Projects/PhotoContest/photos/U0f4Ibrs75a975z.jpg', 10, 7),
+(8, 'Samurai and a girl', 'Peaceful samurai with cursed sword', 'https://alexgo.online/Projects/PhotoContest/photos/k8qgINly13NOxgD.jpg', 12, 2),
+(9, 'Revy\'s headshot :)', 'Revy with her big gun', 'https://alexgo.online/Projects/PhotoContest/photos/ynPgl7KTw6XKgTJ.jpg', 15, 2),
+(10, 'Dark hole in space', 'Dark hole consuming the sun', 'https://alexgo.online/Projects/PhotoContest/photos/pnViYwmX94v3LJI.jpeg', 6, 3),
+(11, 'Earth from space', 'View of Earth from space', 'https://alexgo.online/Projects/PhotoContest/photos/CE5QuK6oPUggOCm.jpg', 6, 13),
+(12, 'Moon in full eclipse', 'A photo of a moon eclipse', 'https://alexgo.online/Projects/PhotoContest/photos/8YBn8pkZLTkRNNQ.jpg', 8, 13),
+(13, 'The Death Stranding', 'Death squade stranding', 'https://alexgo.online/Projects/PhotoContest/photos/5YyYofht4btSSpX.jpg', 9, 4),
+(14, 'The BioShok Game', 'A photo of a BioShok', 'https://alexgo.online/Projects/PhotoContest/photos/bSLCHTqTX2sBIG2.jpg', 14, 4),
+(15, 'Pinguins from Madagascar', 'White and fluffy guys', 'https://alexgo.online/Projects/PhotoContest/photos/l8wVUDAO3UMo1uu.jpg', 14, 5),
+(18, 'Lamborghini Essenza', 'Super cars in green colors', 'https://alexgo.online/Projects/PhotoContest/photos/4BvQbivwgfdfLpg.jpg', 7, 10),
+(19, 'Lamborghini competition', 'Cars competition in sunset', 'https://alexgo.online/Projects/PhotoContest/photos/OWvEjYte1jhOQZ9.jpg', 15, 10),
+(20, 'Abstraction in 3D', 'Abstraction in black and red colors', 'https://alexgo.online/Projects/PhotoContest/photos/dUhdAlL19OVn2Wj.jpg', 9, 12),
+(21, 'Painted camel and a main', 'Painted camel and a main in warm colors', 'https://alexgo.online/Projects/PhotoContest/photos/ghlXipgyrGsoZnu.jpg', 10, 1);
 /*!40000 ALTER TABLE `photos` ENABLE KEYS */;
 
 -- Dumping data for table photo_contest.photos_reviews_details: ~7 rows (approximately)
