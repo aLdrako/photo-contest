@@ -61,17 +61,16 @@ INSERT INTO `contests_results` (`contest_id`, `photo_id`, `results`) VALUES
                                                                          (7, 7, 12);
 /*!40000 ALTER TABLE `contests_results` ENABLE KEYS */;
 
--- Dumping data for table photo_contest.cover_photos: ~9 rows (approximately)
+-- Dumping data for table photo_contest.cover_photos: ~8 rows (approximately)
 /*!40000 ALTER TABLE `cover_photos` DISABLE KEYS */;
 INSERT INTO `cover_photos` (`contest_id`, `cover_photo`) VALUES
                                                              (1, 'https://alexgo.online/Projects/PhotoContest/photos/trhUPo9SSFemJzZ.jpg'),
                                                              (3, 'https://alexgo.online/Projects/PhotoContest/photos/zBhoTt2Y9Y578Z5.jpeg'),
                                                              (4, 'https://alexgo.online/Projects/PhotoContest/photos/HpNJANsiiphW1Fc.jpg'),
                                                              (6, 'https://alexgo.online/Projects/PhotoContest/photos/hffUhKS4gsbfj5d.jpg'),
-                                                             (7, 'https://alexgo.online/Projects/PhotoContest/photos/laPzi3OEbu5PZPU.jpg'),
-                                                             (10, 'https://alexgo.online/Projects/PhotoContest/photos/jhgwRqYM0qfc1gg.jpg'),
+                                                             (10, 'https://alexgo.online/Projects/PhotoContest/photos/OWvEjYte1jhOQZ9.jpg'),
                                                              (11, 'https://alexgo.online/Projects/PhotoContest/photos/vhiBxq1BIAvTdyn.jpg'),
-                                                             (12, 'https://alexgo.online/Projects/PhotoContest/photos/Ylb3XbSrjtIt0yT.jpg'),
+                                                             (12, 'https://alexgo.online/Projects/PhotoContest/photos/frC5cEMJfrjbwF1.jpg'),
                                                              (13, 'https://alexgo.online/Projects/PhotoContest/photos/LyJrVSBRh4FvtMK.jpg');
 /*!40000 ALTER TABLE `cover_photos` ENABLE KEYS */;
 
@@ -296,7 +295,7 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `email`, `pass
                                                                                                                                 (9, 'Orion', 'Wahner', 'owahnert', 'owahnert@tinyurl.com', 'owahnert', '2023-04-12 12:02:01', 2, 56),
                                                                                                                                 (10, 'Reed', 'Flynn', 'rflynn12', 'rflynn12@php.net', 'rflynn12', '2023-04-12 12:02:19', 3, 200),
                                                                                                                                 (11, 'Deleted', 'Deleted', 'deleted', 'deleted@mail.com', 'deleted', '2023-04-12 12:03:00', 1, 0),
-                                                                                                                                (12, 'Tester', 'Tester', 'tester', 'tester@mail.com', 'tester', '2023-04-12 12:03:45', 3, 309),
+                                                                                                                                (12, 'Tester', 'Tester', 'tester', 'tester@mail.com', 'tester', '2023-04-12 12:03:45', 3, 310),
                                                                                                                                 (13, 'Alex', 'Dimov', 'alexdimov', 'alexdimov@mail.com', 'alexdimov', '2023-04-12 12:29:55', 1, 0),
                                                                                                                                 (14, 'Orion', 'Spacer', 'orispace', 'orispace@gmail.com', 'orispace', '2023-04-12 12:32:53', 3, 363),
                                                                                                                                 (15, 'John', 'Smith', 'smith555', 'smith555@yahoo.com', 'smith555', '2023-04-12 12:34:13', 2, 34);
