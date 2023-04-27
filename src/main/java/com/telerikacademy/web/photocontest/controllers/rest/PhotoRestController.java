@@ -67,7 +67,7 @@ public class PhotoRestController {
     public List<PhotoResponseDto> search(@RequestParam Map<String, String> parameters,
                                          Pageable pageable) {
         FilterAndSortingHelper.Result result = getResult(parameters, pageable);
-        return photoServices.search(result.title(), null, result.pageable())
+        return photoServices.search(result.title(), null, null, result.pageable())
                 .stream()
                 .map(modelMapper::objectToDto)
                 .collect(Collectors.toList());

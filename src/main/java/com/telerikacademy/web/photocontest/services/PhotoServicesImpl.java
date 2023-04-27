@@ -126,8 +126,8 @@ public class PhotoServicesImpl implements PhotoServices {
     }
 
     @Override
-    public Page<Photo> search(String title, Long contestId, Pageable pageable) {
-        return photoRepository.search(title, contestId, pageable);
+    public Page<Photo> search(String title, Long contestId, Long userId, Pageable pageable) {
+        return photoRepository.search(title, contestId, userId, pageable);
     }
 
     private void checkReviewPostPermissions(PhotoReviewDetails photoReviewDetails, Photo photo, User user) {

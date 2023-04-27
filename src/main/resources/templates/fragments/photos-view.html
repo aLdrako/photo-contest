@@ -1,0 +1,37 @@
+<div th:fragment="photos-view" class="album">
+  <div class="container px-5 py-3">
+    <form th:replace="~{fragments/photos-search :: photos-search}"></form>
+  </div>
+  <div class="container py-5">
+    <div class="row row-cols-1 row-cols-sm-2 g-3">
+      <th:block th:each="photo : ${photos}">
+        <div class="col  rounded-4">
+          <div class="card shadow-sm">
+            <div class="card-header bg-warning text-dark" th:text="${#strings.length(photo.title) > 30 ? #strings.substring(photo.title, 0, 30) + '...' : photo.title}">Title (design)</div>
+            <img src="#" alt="#" class="img-fluid" th:src="${photo.photo}" th:alt="${photo.title}" />
+            <div class="card-body bg-dark rounded-bottom">
+              <p class="card-text text-warning" th:text="${photo.story}"></p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <a th:if="${phase2}" href="#" type="button" class="btn btn-sm btn-outline-warning" th:href="@{/contests/{contestId}/photos/{photoId}/review(contestId=${contest.id},photoId=${photo.id})}">Rate</a>
+                  <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#photoView">View</button>
+                </div>
+                <a class="link-warning" href="#" th:href="@{/users/{id}(id=${photo.userCreated.id})}" th:text="${photo.userCreated.username}">Username (design)</a>
+              </div>
+              <div th:class="'collapse'" th:id="'collapseResults-' + ${photo.id}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </th:block>
+    </div>
+  </div>
+  <nav aria-label="Page navigation"
+       th:if="${totalPages > 0}"
+       th:with="pageQuery=${'?page='},
+                      sizeQuery=${'&size='},
+                      titleQuery=${'&title='},
+                      linkQuery=${sizeQuery + sizePage + titleQuery} + ${title == null ? '' : title}">
+    <ul th:replace="~{fragments/pagination :: pagination}"></ul>
+  </nav>
+</div>

@@ -7,6 +7,7 @@ import com.telerikacademy.web.photocontest.models.Photo;
 import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -39,16 +40,37 @@ public class PhotoMvcController extends BaseMvcController{
         try {
             authenticationHelper.tryGetUser(session);
             FilterAndSortingHelper.Result result = getResult(parameters, pageable);
-            Page<Photo> photoPage = photoServices.search(result.title(), null, result.pageable());
+            Page<Photo> photoPage = photoServices.search(result.title(), null, null,
+                    result.pageable());
+            populateModel(model, result, photoPage);
 
-            model.addAttribute("photos", photoPage.getContent());
-            model.addAttribute("sizePage", result.pageable().getPageSize());
-            model.addAttribute("currentPage", result.pageable().getPageNumber());
-            model.addAttribute("title", result.title());
-            model.addAttribute("totalPages", photoPage.getTotalPages());
             return "PhotosView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
         }
+    }
+    @GetMapping("/myphotos")
+    public String showMyPhotos(@PageableDefault(size = 9, sort = "id") Pageable pageable,
+                                @RequestParam Map<String, String> parameters, HttpSession session,
+                                Model model) {
+        try {
+            User user = authenticationHelper.tryGetUser(session);
+            FilterAndSortingHelper.Result result = getResult(parameters, pageable);
+            Page<Photo> photoPage = photoServices.search(result.title(), null, user.getId(),
+                    result.pageable());
+            populateModel(model, result, photoPage);
+            
+            return "MyPhotosView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+    }
+
+    private void populateModel(Model model, FilterAndSortingHelper.Result result, Page<Photo> photoPage) {
+        model.addAttribute("photos", photoPage.getContent());
+        model.addAttribute("sizePage", result.pageable().getPageSize());
+        model.addAttribute("currentPage", result.pageable().getPageNumber());
+        model.addAttribute("title", result.title());
+        model.addAttribute("totalPages", photoPage.getTotalPages());
     }
 }

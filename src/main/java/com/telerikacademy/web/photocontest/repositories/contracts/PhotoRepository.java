@@ -25,6 +25,8 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
     //List<Photo> search(@Param("title") Optional<String> keyword);
 
     @Query("select p from Photo p where (:title is null or p.title like %:title%) and " +
-            "(:contestId is null or p.postedOn.id = :contestId)")
-    Page<Photo> search(@Param("title") String title, @Param("contestId") Long contestId, Pageable pageable);
+            "(:contestId is null or p.postedOn.id = :contestId) and (:userId is null or p.userCreated.id = :userId)")
+    Page<Photo> search(@Param("title") String title, @Param("contestId") Long contestId,
+                       @Param("userId") Long userId,
+                       Pageable pageable);
 }

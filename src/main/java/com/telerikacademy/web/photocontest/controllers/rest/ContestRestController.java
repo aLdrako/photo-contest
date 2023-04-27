@@ -361,7 +361,7 @@ public class ContestRestController {
                                          @RequestParam Map<String, String> parameters,
                                          Pageable pageable) {
         FilterAndSortingHelper.Result result = getResult(parameters, pageable);
-        return photoServices.search(result.title(), id, result.pageable())
+        return photoServices.search(result.title(), id, null, result.pageable())
                 .stream()
                 .map(modelMapper::objectToDto)
                 .collect(Collectors.toList());
