@@ -72,6 +72,15 @@ public class Contest {
     @JsonIgnore
     @OneToMany(mappedBy = "resultEmbed.contest", cascade = CascadeType.ALL)
     private Set<ContestResults> results = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "winners",
+            joinColumns = @JoinColumn(name = "contest_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> winners;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

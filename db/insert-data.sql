@@ -183,25 +183,25 @@ INSERT INTO `permissions` (`user_id`, `is_organizer`, `is_deleted`) VALUES
 -- Dumping data for table photo_contest.photos: ~19 rows (approximately)
 /*!40000 ALTER TABLE `photos` DISABLE KEYS */;
 INSERT INTO `photos` (`id`, `title`, `story`, `photo`, `user_id`, `contest_id`) VALUES
-(1, 'Nice and cute dog :)', 'This dog can swim very well', 'https://alexgo.online/Projects/PhotoContest/photos/hxrbkbEYzEmHigF.jpg', 6, 1),
-(2, 'Green green snake', 'This snake looks dangerous', 'https://alexgo.online/Projects/PhotoContest/photos/trhUPo9SSFemJzZ.jpg', 8, 1),
-(3, 'Look I\'m Panda ', 'Panda eating bamboo', 'https://alexgo.online/Projects/PhotoContest/photos/GLHthjvgofeHpW0.jpg', 8, 11),
-(4, 'Very cute bird :) ', 'Bird and the nature in macro', 'https://alexgo.online/Projects/PhotoContest/photos/u1qtpM9sfMx6JYd.jpg', 12, 11),
-(5, 'Blue sea in the storm', 'Sea in its cold colors', 'https://alexgo.online/Projects/PhotoContest/photos/ZUgK2rhUnzaYJWS.jpg', 6, 7),
-(6, 'Trees in sunset...', 'Trees in warm colors of sunset', 'https://alexgo.online/Projects/PhotoContest/photos/5q2shzaIcQi0DI0.jpg', 14, 7),
-(7, 'A long logn path', 'Long path in the mountains', 'https://alexgo.online/Projects/PhotoContest/photos/U0f4Ibrs75a975z.jpg', 10, 7),
-(8, 'Samurai and a girl', 'Peaceful samurai with cursed sword', 'https://alexgo.online/Projects/PhotoContest/photos/k8qgINly13NOxgD.jpg', 12, 2),
-(9, 'Revy\'s headshot :)', 'Revy with her big gun', 'https://alexgo.online/Projects/PhotoContest/photos/ynPgl7KTw6XKgTJ.jpg', 15, 2),
-(10, 'Dark hole in space', 'Dark hole consuming the sun', 'https://alexgo.online/Projects/PhotoContest/photos/pnViYwmX94v3LJI.jpeg', 6, 3),
-(11, 'Earth from space', 'View of Earth from space', 'https://alexgo.online/Projects/PhotoContest/photos/CE5QuK6oPUggOCm.jpg', 6, 13),
-(12, 'Moon in full eclipse', 'A photo of a moon eclipse', 'https://alexgo.online/Projects/PhotoContest/photos/8YBn8pkZLTkRNNQ.jpg', 8, 13),
-(13, 'The Death Stranding', 'Death squade stranding', 'https://alexgo.online/Projects/PhotoContest/photos/5YyYofht4btSSpX.jpg', 9, 4),
-(14, 'The BioShok Game', 'A photo of a BioShok', 'https://alexgo.online/Projects/PhotoContest/photos/bSLCHTqTX2sBIG2.jpg', 14, 4),
-(15, 'Pinguins from Madagascar', 'White and fluffy guys', 'https://alexgo.online/Projects/PhotoContest/photos/l8wVUDAO3UMo1uu.jpg', 14, 5),
-(18, 'Lamborghini Essenza', 'Super cars in green colors', 'https://alexgo.online/Projects/PhotoContest/photos/4BvQbivwgfdfLpg.jpg', 7, 10),
-(19, 'Lamborghini competition', 'Cars competition in sunset', 'https://alexgo.online/Projects/PhotoContest/photos/OWvEjYte1jhOQZ9.jpg', 15, 10),
-(20, 'Abstraction in 3D', 'Abstraction in black and red colors', 'https://alexgo.online/Projects/PhotoContest/photos/dUhdAlL19OVn2Wj.jpg', 9, 12),
-(21, 'Painted camel and a main', 'Painted camel and a main in warm colors', 'https://alexgo.online/Projects/PhotoContest/photos/ghlXipgyrGsoZnu.jpg', 10, 1);
+                                                                                    (1, 'Nice and cute dog :)', 'This dog can swim very well', 'https://alexgo.online/Projects/PhotoContest/photos/hxrbkbEYzEmHigF.jpg', 6, 1),
+                                                                                    (2, 'Green green snake', 'This snake looks dangerous', 'https://alexgo.online/Projects/PhotoContest/photos/trhUPo9SSFemJzZ.jpg', 8, 1),
+                                                                                    (3, 'Look I\'m Panda ', 'Panda eating bamboo', 'https://alexgo.online/Projects/PhotoContest/photos/GLHthjvgofeHpW0.jpg', 8, 11),
+                                                                                    (4, 'Very cute bird :) ', 'Bird and the nature in macro', 'https://alexgo.online/Projects/PhotoContest/photos/u1qtpM9sfMx6JYd.jpg', 12, 11),
+                                                                                    (5, 'Blue sea in the storm', 'Sea in its cold colors', 'https://alexgo.online/Projects/PhotoContest/photos/ZUgK2rhUnzaYJWS.jpg', 6, 7),
+                                                                                    (6, 'Trees in sunset...', 'Trees in warm colors of sunset', 'https://alexgo.online/Projects/PhotoContest/photos/5q2shzaIcQi0DI0.jpg', 14, 7),
+                                                                                    (7, 'A long logn path', 'Long path in the mountains', 'https://alexgo.online/Projects/PhotoContest/photos/U0f4Ibrs75a975z.jpg', 10, 7),
+                                                                                    (8, 'Samurai and a girl', 'Peaceful samurai with cursed sword', 'https://alexgo.online/Projects/PhotoContest/photos/k8qgINly13NOxgD.jpg', 12, 2),
+                                                                                    (9, 'Revy\'s headshot :)', 'Revy with her big gun', 'https://alexgo.online/Projects/PhotoContest/photos/ynPgl7KTw6XKgTJ.jpg', 15, 2),
+                                                                                    (10, 'Dark hole in space', 'Dark hole consuming the sun', 'https://alexgo.online/Projects/PhotoContest/photos/pnViYwmX94v3LJI.jpeg', 6, 3),
+                                                                                    (11, 'Earth from space', 'View of Earth from space', 'https://alexgo.online/Projects/PhotoContest/photos/CE5QuK6oPUggOCm.jpg', 6, 13),
+                                                                                    (12, 'Moon in full eclipse', 'A photo of a moon eclipse', 'https://alexgo.online/Projects/PhotoContest/photos/8YBn8pkZLTkRNNQ.jpg', 8, 13),
+                                                                                    (13, 'The Death Stranding', 'Death squade stranding', 'https://alexgo.online/Projects/PhotoContest/photos/5YyYofht4btSSpX.jpg', 9, 4),
+                                                                                    (14, 'The BioShok Game', 'A photo of a BioShok', 'https://alexgo.online/Projects/PhotoContest/photos/bSLCHTqTX2sBIG2.jpg', 14, 4),
+                                                                                    (15, 'Pinguins from Madagascar', 'White and fluffy guys', 'https://alexgo.online/Projects/PhotoContest/photos/l8wVUDAO3UMo1uu.jpg', 14, 5),
+                                                                                    (18, 'Lamborghini Essenza', 'Super cars in green colors', 'https://alexgo.online/Projects/PhotoContest/photos/4BvQbivwgfdfLpg.jpg', 7, 10),
+                                                                                    (19, 'Lamborghini competition', 'Cars competition in sunset', 'https://alexgo.online/Projects/PhotoContest/photos/OWvEjYte1jhOQZ9.jpg', 15, 10),
+                                                                                    (20, 'Abstraction in 3D', 'Abstraction in black and red colors', 'https://alexgo.online/Projects/PhotoContest/photos/dUhdAlL19OVn2Wj.jpg', 9, 12),
+                                                                                    (21, 'Painted camel and a main', 'Painted camel and a main in warm colors', 'https://alexgo.online/Projects/PhotoContest/photos/ghlXipgyrGsoZnu.jpg', 10, 1);
 /*!40000 ALTER TABLE `photos` ENABLE KEYS */;
 
 -- Dumping data for table photo_contest.photos_reviews_details: ~7 rows (approximately)
@@ -287,20 +287,33 @@ INSERT INTO `rankings` (`id`, `name`) VALUES
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `email`, `password`, `join_date`, `ranking_id`, `points`) VALUES
                                                                                                                                 (1, 'Admin', 'Admin', 'admin', 'admin@mail.com', 'admin', '2023-04-10 00:00:00', 1, 0),
                                                                                                                                 (2, 'Anonymous', 'Anonymous', 'anonymous', 'anonymous@mail.com', 'anonymous', '2023-04-10 00:00:00', 1, 0),
-                                                                                                                                (3, 'Reserved1', 'Reserved1', 'reserved1', 'reserved1@mail.com', 'reserved1', '2023-04-10 00:00:00', 1, 3),
+                                                                                                                                (3, 'Reserved1', 'Reserved1', 'reserved1', 'reserved1@mail.com', 'reserved1', '2023-04-10 00:00:00', 1, 0),
                                                                                                                                 (4, 'Reserved2', 'Reserved2', 'reserved2', 'reserved2@mail.com', 'reserved2', '2023-04-10 00:00:00', 1, 0),
                                                                                                                                 (5, 'Reserved3', 'Reserved3', 'reserved3', 'reserved3@mail.com', 'reserved3', '2023-04-10 00:00:00', 1, 0),
-                                                                                                                                (6, 'Alexandra', 'Silcock', 'silcock', 'silcock@dailynews.com', 'silcock', '2023-04-12 12:01:03', 3, 180),
+                                                                                                                                (6, 'Alexandra', 'Silcock', 'silcock', 'silcock@dailynews.com', 'silcock', '2023-04-12 12:01:03', 3, 560),
                                                                                                                                 (7, 'Margot', 'Rashleig', 'rashleig', 'rashleig@yahoo.com', 'rashleig', '2023-04-12 12:01:30', 4, 1502),
-                                                                                                                                (8, 'Brian', 'Mussalli', 'mussalli', 'mussalli@skynet.com', 'mussalli', '2023-04-12 12:01:46', 4, 1206),
-                                                                                                                                (9, 'Orion', 'Wahner', 'owahnert', 'owahnert@tinyurl.com', 'owahnert', '2023-04-12 12:02:01', 2, 56),
-                                                                                                                                (10, 'Reed', 'Flynn', 'rflynn12', 'rflynn12@php.net', 'rflynn12', '2023-04-12 12:02:19', 3, 200),
+                                                                                                                                (8, 'Brian', 'Mussalli', 'mussalli', 'mussalli@skynet.com', 'mussalli', '2023-04-12 12:01:46', 4, 1356),
+                                                                                                                                (9, 'Orion', 'Wahner', 'owahnert', 'owahnert@tinyurl.com', 'owahnert', '2023-04-12 12:02:01', 2, 136),
+                                                                                                                                (10, 'Reed', 'Flynn', 'rflynn12', 'rflynn12@php.net', 'rflynn12', '2023-04-12 12:02:19', 2, 75),
                                                                                                                                 (11, 'Deleted', 'Deleted', 'deleted', 'deleted@mail.com', 'deleted', '2023-04-12 12:03:00', 1, 0),
-                                                                                                                                (12, 'Tester', 'Tester', 'tester', 'tester@mail.com', 'tester', '2023-04-12 12:03:45', 3, 310),
+                                                                                                                                (12, 'Tester', 'Tester', 'tester', 'tester@mail.com', 'tester', '2023-04-12 12:03:45', 3, 390),
                                                                                                                                 (13, 'Alex', 'Dimov', 'alexdimov', 'alexdimov@mail.com', 'alexdimov', '2023-04-12 12:29:55', 1, 0),
-                                                                                                                                (14, 'Orion', 'Spacer', 'orispace', 'orispace@gmail.com', 'orispace', '2023-04-12 12:32:53', 3, 364),
-                                                                                                                                (15, 'John', 'Smith', 'smith555', 'smith555@yahoo.com', 'smith555', '2023-04-12 12:34:13', 2, 34);
+                                                                                                                                (14, 'Orion', 'Spacer', 'orispace', 'orispace@gmail.com', 'orispace', '2023-04-12 12:32:53', 3, 584),
+                                                                                                                                (15, 'John', 'Smith', 'smith555', 'smith555@yahoo.com', 'smith555', '2023-04-12 12:34:13', 2, 114);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
+
+-- Dumping data for table photo_contest.winners: ~7 rows (approximately)
+/*!40000 ALTER TABLE `winners` DISABLE KEYS */;
+INSERT INTO `winners` (`contest_id`, `user_id`) VALUES
+                                                    (1, 6),
+                                                    (2, 12),
+                                                    (2, 15),
+                                                    (3, 6),
+                                                    (4, 9),
+                                                    (4, 14),
+                                                    (5, 14),
+                                                    (7, 6);
+/*!40000 ALTER TABLE `winners` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;

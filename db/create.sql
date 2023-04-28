@@ -145,3 +145,14 @@ create or replace table photos_scores
     constraint photos_scores_users_id_fk
         foreign key (jury_id) references users (id)
 );
+
+create or replace table winners
+(
+    contest_id bigint not null,
+    user_id    bigint not null,
+    primary key (contest_id, user_id),
+    constraint winners_contests_id_fk
+        foreign key (contest_id) references contests (id),
+    constraint winners_users_id_fk
+        foreign key (user_id) references users (id)
+);

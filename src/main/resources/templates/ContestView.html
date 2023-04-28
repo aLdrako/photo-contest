@@ -95,7 +95,8 @@
                     <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#photoView">View</button>
                     <button th:if="${phase1 && session.user.organizer}" type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deletePhotoModal" th:data-bs-target="'#deletePhotoModal-' + ${photo.get('id')}">Delete</button>
                   </div>
-                  <a class="link-warning" href="#" th:href="@{/users/{id}(id=${photo.get('userId')})}" th:text="${photo.get('userCreated')}">Username (design)</a>
+                  <span class="text-muted" th:if="${#strings.startsWith(photo.get('userCreated'), 'deleted')}">anonymous</span>
+                  <a class="link-warning" href="#" th:unless="${#strings.startsWith(photo.get('userCreated'), 'deleted')}" th:href="@{/users/{id}(id=${photo.get('userId')})}" th:text="${photo.get('userCreated')}">Username (design)</a>
                 </div>
 
                 <!-- Modal Window for Delete Photo Confirmation -->

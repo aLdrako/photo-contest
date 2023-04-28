@@ -234,6 +234,7 @@
                     <div>
                       <i class="bi bi-people"></i>
                       <span th:text="${contest.participants.size()}"></span><br>
+                      <i th:if="${contest.winners.contains(user)}" class="bi bi-trophy-fill" style="font-size: 2rem"></i>
                     </div>
                   </div>
                 </a>

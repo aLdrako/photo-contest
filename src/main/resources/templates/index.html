@@ -27,7 +27,8 @@
                         <div th:classappend="${contestIndex.index == 0} ? 'carousel-item active' : 'carousel-item'" data-bs-interval="2000">
                             <img src="#" th:src="${contest.winners[0].get('photo')}" class="d-block mx-auto w-75" alt="Winner of the contest" />
                             <div class="carousel-caption d-none d-md-block">
-                                <h5 class="text-warning" th:text="${contest.winners[0].get('userCreated')}">User (design)</h5>
+                                <h5 class="text-muted" th:if="${#strings.startsWith(contest.winners[0].get('userCreated'), 'deleted')}">anonymous</h5>
+                                <h5 class="text-warning" th:unless="${#strings.startsWith(contest.winners[0].get('userCreated'), 'deleted')}" th:text="${contest.winners[0].get('userCreated')}">User (design)</h5>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-warning">Score</button>
                                     <button type="button" class="btn btn-outline-warning" th:text="${contest.winners[0].get('totalScore')}">Score (design)</button>

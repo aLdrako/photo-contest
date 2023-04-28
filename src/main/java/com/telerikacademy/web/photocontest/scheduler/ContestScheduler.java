@@ -6,13 +6,13 @@ import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.telerikacademy.web.photocontest.helpers.ScoringHelper.awardPoints;
 
@@ -39,7 +39,8 @@ public class ContestScheduler {
                 results.add(result);
             });
 
-            calculateScore(results);
+            List<User> users = calculateScore(results);
+            contest.setWinners(new HashSet<>(users));
 
             contest.setResults(results);
             contest.setIsFinished(true);
@@ -47,7 +48,7 @@ public class ContestScheduler {
         }
     }
 
-    private void calculateScore(Set<ContestResults> results) {
+    private List<User> calculateScore(Set<ContestResults> results) {
         List<ContestResults> sortedResults = results.stream()
                 .sorted(Comparator.comparing(ContestResults::getResults).reversed()).toList();
 
@@ -58,12 +59,35 @@ public class ContestScheduler {
 
         Map<Integer, Integer> pointsList = awardPoints(resultList);
 
+        List<User> users = getWinners(sortedResults, pointsList);
+
         for (int i = 0; i < resultList.size(); i++) {
             ContestResults contestResults = sortedResults.get(i);
 
             User user = contestResults.getResultEmbed().getPhoto().getUserCreated();
+
             user.setPoints(user.getPoints() + pointsList.get(i));
             contestServices.evaluateRank(user);
         }
+
+        return users;
+    }
+
+    private static List<User> getWinners(List<ContestResults> sortedResults, Map<Integer, Integer> pointsList) {
+
+        List<User> users = new ArrayList<>();
+
+        int maxValue = pointsList.values().stream().mapToInt(integer -> integer).max().orElse(0);
+
+        Map<Integer, Integer> onlyMaxPoints = pointsList.entrySet().stream()
+                .filter(entry -> entry.getValue() == maxValue).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        for (int i = 0; i < onlyMaxPoints.size(); i++) {
+            ContestResults contestResults = sortedResults.get(i);
+            User user = contestResults.getResultEmbed().getPhoto().getUserCreated();
+            users.add(user);
+        }
+
+        return users;
     }
 }
