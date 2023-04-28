@@ -59,7 +59,7 @@ public class AuthenticationMvcController extends BaseMvcController {
         }
     }
     @GetMapping("/register")
-    public String showRegisterPage(Model model, HttpSession session) {
+    public String showRegisterPage(Model model) {
         model.addAttribute("user", new UserDto());
         return "RegisterView";
     }
@@ -74,8 +74,10 @@ public class AuthenticationMvcController extends BaseMvcController {
 
         try {
             User user = modelMapper.dtoToObject(userDTO);
+            user.setDeleted(true);
             userServices.create(user);
-            return "redirect:/";
+            emailServices.sendConfirmationEmail(user);
+            return "EmailSentView";
         } catch (EntityDuplicateException e) {
             if (e.getErrorType().equals("username")) {
                 bindingResult.rejectValue("username", "username_exists", e.getMessage());
@@ -83,6 +85,22 @@ public class AuthenticationMvcController extends BaseMvcController {
                 bindingResult.rejectValue("email", "email_exists", e.getMessage());
             }
             return "RegisterView";
+        } catch (MessagingException e) {
+            bindingResult.rejectValue("email", "email_bad_request", e.getMessage());
+            return "RegisterView";
+        }
+    }
+    @GetMapping("/confirmation/{urlKey}")
+    public String handleConfirmation(@PathVariable String urlKey, Model model) {
+        if (emailServices.getUrlKeys().containsKey(urlKey)) {
+            User user = emailServices.getUrlKeys().get(urlKey);
+            user.setDeleted(false);
+            userServices.update(user, user);
+            emailServices.clearKey(urlKey);
+            return "EmailSentView";
+        } else {
+            model.addAttribute("error", "Page Not Found");
+            return "NotFoundView";
         }
     }
     @GetMapping("/logout")
@@ -106,7 +124,7 @@ public class AuthenticationMvcController extends BaseMvcController {
             User user = userServices.getByUsername(userDTO.getUsername());
             emailServices.sendForgottenPasswordEmail(user);
             return "EmailSentView";
-        } catch (EntityNotFoundException | MessagingException | IOException e) {
+        } catch (EntityNotFoundException | MessagingException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
         }

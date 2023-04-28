@@ -89,7 +89,11 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     public User getByUsername(String username) {
-        return userRepository.getByUsername(username);
+        User user = userRepository.getByUsername(username);
+        if (user.isDeleted()) {
+            throw new EntityNotFoundException("User", "username", username);
+        }
+        return user;
     }
     @Override
     public List<User> getAllOrganizers() {

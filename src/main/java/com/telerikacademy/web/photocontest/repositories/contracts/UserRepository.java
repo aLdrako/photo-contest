@@ -19,15 +19,15 @@ public interface UserRepository extends JpaRepository<User, Long>{
                 .orElseThrow(() -> new EntityNotFoundException("User", id));
     }
 
-    Optional<User> findByEmailAndIsDeletedIsFalse(String email);
+    Optional<User> findByEmail(String email);
     default User getByEmail(String email) {
-        return findByEmailAndIsDeletedIsFalse(email)
+        return findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User", "email", email));
     }
 
-    Optional<User> findByUsernameAndIsDeletedIsFalse(String username);
+    Optional<User> findByUsername(String username);
     default User getByUsername(String username) {
-        return findByUsernameAndIsDeletedIsFalse(username)
+        return findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User", "username", username));
     }
     @Query("from User where isOrganizer = true and isDeleted = false")

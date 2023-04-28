@@ -50,12 +50,38 @@ public class EmailServicesImpl implements EmailServices {
                 Photo Contest Team!
                     
                 """, recipient.getUsername(), uniqueUrlKey));
+        populateUrlKeys(recipient, uniqueUrlKey);
+        emailSender.send(message);
+    }
+
+    @Override
+    public void sendConfirmationEmail(User recipient) throws MessagingException {
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setTo(recipient.getEmail());
+        helper.setSubject("Account Confirmation");
+        String uniqueUrlKey = generateString();
+        helper.setText(String.format("""
+                Hello, '%s'
+                
+                In order to confirm account please open the link below!
+               
+                http://localhost:8080/auth/confirmation/%s
+                
+                Best Regards,
+                Photo Contest Team!
+                    
+                """, recipient.getUsername(), uniqueUrlKey));
+        populateUrlKeys(recipient, uniqueUrlKey);
+        emailSender.send(message);
+    }
+
+    private void populateUrlKeys(User recipient, String uniqueUrlKey) {
         if  (usersWithKeys.containsKey(recipient)) {
             urlKeys.remove(usersWithKeys.get(recipient));
         }
         urlKeys.put(uniqueUrlKey, recipient);
         usersWithKeys.put(recipient, uniqueUrlKey);
-        emailSender.send(message);
     }
 
     @Override

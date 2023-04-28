@@ -10,7 +10,8 @@ import java.util.Map;
 
 public interface EmailServices {
 
-    void sendForgottenPasswordEmail(User recipient) throws MessagingException, IOException;
+    void sendForgottenPasswordEmail(User recipient) throws MessagingException;
+    void sendConfirmationEmail(User recipient) throws MessagingException;
     Map<String, User> getUrlKeys();
     void clearKey(String urlKey);
 }
