@@ -12,6 +12,7 @@ import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -53,7 +54,26 @@ public class ContestServicesImpl implements ContestServices {
 
     @Override
     public Contest findById(Long id) {
-        return contestRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Contest", id));
+        Contest contest = contestRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Contest", id));
+        Set<User> loadedParticipants = new HashSet<>();
+        Set<User> loadedJuries = new HashSet<>();
+        for (User user : contest.getParticipants()) {
+            if (user instanceof HibernateProxy) {
+                loadedParticipants.add((User) Hibernate.unproxy(user));
+            } else {
+                loadedParticipants.add(user);
+            }
+        }
+        for (User user : contest.getJuries()) {
+            if (user instanceof HibernateProxy) {
+                loadedJuries.add((User) Hibernate.unproxy(user));
+            } else {
+                loadedJuries.add(user);
+            }
+        }
+        contest.setParticipants(loadedParticipants);
+        contest.setJuries(loadedJuries);
+        return contest;
     }
 
     @Override
