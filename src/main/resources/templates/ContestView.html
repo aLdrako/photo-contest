@@ -82,7 +82,7 @@
         <th:block th:each="photo : ${contest.photos}">
           <div class="col  rounded-4">
             <div class="card shadow-sm">
-              <div class="card-header bg-warning text-dark" th:text="${#strings.length(photo.get('title')) > 30 ? #strings.substring(photo.get('title'), 0, 30) + '...' : photo.get('title')}">Title (design)</div>
+              <div class="card-header bg-warning text-dark" th:text="${photo.get('title')}">Title (design)</div>
               <img src="#" alt="#" class="img-fluid" th:src="${photo.get('photo')}" th:alt="${photo.get('title')}" />
               <div class="card-body bg-dark rounded-bottom">
                 <p class="card-text text-warning" th:text="${photo.get('story')}"></p>
@@ -91,9 +91,11 @@
                     Results
                   </button>
                   <div class="btn-group">
-                    <a th:if="${phase2}" href="#" type="button" class="btn btn-sm btn-outline-warning" th:href="@{/contests/{contestId}/photos/{photoId}/review(contestId=${contest.id},photoId=${photo.get('id')})}">Rate</a>
+                    <a th:if="${phase2 && contest.juries().contains(session.currentUser)}" href="#" type="button" class="btn btn-sm btn-outline-warning" th:href="@{/contests/{contestId}/photos/{photoId}/review(contestId=${contest.id},photoId=${photo.get('id')})}">Rate</a>
                     <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#photoView">View</button>
-                    <button th:if="${phase1 && session.user.organizer}" type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deletePhotoModal" th:data-bs-target="'#deletePhotoModal-' + ${photo.get('id')}">Delete</button>
+                    <button th:if="${!contest.isFinished() && (contest.juries().contains(session.currentUser) ||
+                    photo.get('userCreated').equals(session.currentUser))}"
+                            type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deletePhotoModal" th:data-bs-target="'#deletePhotoModal-' + ${photo.get('id')}">Delete</button>
                   </div>
                   <span class="text-muted" th:if="${#strings.startsWith(photo.get('userCreated'), 'deleted')}">anonymous</span>
                   <a class="link-warning" href="#" th:unless="${#strings.startsWith(photo.get('userCreated'), 'deleted')}" th:href="@{/users/{id}(id=${photo.get('userId')})}" th:text="${photo.get('userCreated')}">Username (design)</a>

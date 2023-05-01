@@ -23,4 +23,6 @@ public interface PhotoServices {
     List<Photo> getPhotosOfContest(Contest contest);
 
     Page<Photo> search(String title, Long contestId, Long userId, Pageable pageable);
+
+    void alreadyUploadedPhoto(Contest contest, User user);
 }

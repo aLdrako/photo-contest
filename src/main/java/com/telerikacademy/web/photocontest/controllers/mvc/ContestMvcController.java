@@ -342,8 +342,9 @@ public class ContestMvcController extends BaseMvcController {
     public String showCreatePhotoPage(@PathVariable Long id, Model model,
                                       HttpSession session) {
         try {
-            authenticationHelper.tryGetUser(session);
-            contestServices.findById(id);
+            User user =authenticationHelper.tryGetUser(session);
+            Contest contest = contestServices.findById(id);
+            photoServices.alreadyUploadedPhoto(contest, user);
             model.addAttribute("photo", new PhotoDto());
             return "PhotoCreateView";
         } catch (EntityNotFoundException e) {
@@ -351,6 +352,9 @@ public class ContestMvcController extends BaseMvcController {
             return "NotFoundView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
+        } catch (EntityDuplicateException e) {
+            model.addAttribute("error", e.getMessage());
+            return "ConflictView";
         }
     }
 

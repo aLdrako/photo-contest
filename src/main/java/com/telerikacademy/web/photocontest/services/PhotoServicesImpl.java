@@ -47,11 +47,7 @@ public class PhotoServicesImpl implements PhotoServices {
     @Override
     public void create(Photo photo, MultipartFile file) throws FileUploadException {
         checkCreatePermissions(photo.getUserCreated(), photo.getPostedOn());
-        boolean duplicatePhoto = photoRepository.existsByUserCreatedAndPostedOn(photo.getUserCreated(),
-                photo.getPostedOn());
-        if (duplicatePhoto) {
-            throw new EntityDuplicateException(PHOTO_ALREADY_UPLOADED_BY_USER);
-        }
+        checkDuplicatePhoto(photo.getUserCreated(), photo.getPostedOn());
         if (photo.getPostedOn().getPhase1().isBefore(LocalDateTime.now())) {
             throw new UnauthorizedOperationException(NOT_IN_PHASE_ONE_MESSAGE);
         }
@@ -63,6 +59,14 @@ public class PhotoServicesImpl implements PhotoServices {
             photo.addScore(photoScore);
         });
         photoRepository.save(photo);
+    }
+
+    private void checkDuplicatePhoto(User userCreated, Contest postedOn) {
+        boolean duplicatePhoto = photoRepository.existsByUserCreatedAndPostedOn(userCreated,
+                postedOn);
+        if (duplicatePhoto) {
+            throw new EntityDuplicateException(PHOTO_ALREADY_UPLOADED_BY_USER);
+        }
     }
 
     @Override
@@ -128,6 +132,11 @@ public class PhotoServicesImpl implements PhotoServices {
     @Override
     public Page<Photo> search(String title, Long contestId, Long userId, Pageable pageable) {
         return photoRepository.search(title, contestId, userId, pageable);
+    }
+
+    @Override
+    public void alreadyUploadedPhoto(Contest contest, User user) {
+        checkDuplicatePhoto(user, contest);
     }
 
     private void checkReviewPostPermissions(PhotoReviewDetails photoReviewDetails, Photo photo, User user) {

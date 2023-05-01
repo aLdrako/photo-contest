@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{page.title.conflict}">Title (design)</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+
+<body class="error-page">
+<div>
+    <span class='error-num'>4</span>
+    <div class='eye'></div>
+    <span class='error-num'>9</span>
+    <p class='alert alert-warning' th:text="${error}">Forbidden Action</p>
+    <a href='#' th:href="@{/}" class="btn btn-warning text-dark">Go back</a>
+</div>
+
+<script th:replace="~{fragments/scripts :: error-page}"></script>
+</body>
+</html>
