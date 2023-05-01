@@ -322,22 +322,6 @@ public class ContestMvcController extends BaseMvcController {
         }
     }
 
-    @GetMapping("/{contestId}/photos/{photoId}")
-    public String showPhoto(@PathVariable Long contestId, @PathVariable Long photoId,
-                            HttpSession session, Model model) {
-        try {
-            authenticationHelper.tryGetUser(session);
-            Photo photo = photoServices.getPhotoByContestId(photoId, contestId);
-            model.addAttribute("photo", photo);
-            return "PhotoViewTest";
-        } catch (EntityNotFoundException e) {
-            model.addAttribute("error", e.getMessage());
-            return "NotFoundView";
-        } catch (AuthorizationException e) {
-            return "redirect:/auth/login";
-        }
-    }
-
     @GetMapping("/{id}/photos/new")
     public String showCreatePhotoPage(@PathVariable Long id, Model model,
                                       HttpSession session) {

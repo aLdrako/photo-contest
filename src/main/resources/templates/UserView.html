@@ -14,8 +14,8 @@
 <header th:replace="~{fragments/navbar :: header(context='user-profile')}"></header>
 
 <div class="container px-4 py-5">
-  <h2 class="pb-2 text-dark rounded ps-1">User Dashboard</h2>
-
+  <h4 th:if="${session.currentUser == user.username}" class="pb-2 text-dark rounded ps-1">User Dashboard
+    <a class="btn btn-warning btn-sm" th:href="@{/photos/myphotos}">MyPhotos</a></h4>
   <div class="row row-cols-1 row-cols-lg-2 align-items-md-center g-2 py-2">
     <div class="d-flex flex-column align-self-stretch gap-2 text-bg-dark rounded py-3 ">
 
@@ -172,7 +172,7 @@
         <div class="tab-content" id="myTabContent">
           <div class="tab-pane fade show active" id="active-contests-tab-pane" role="tabpanel" aria-labelledby="active-contests-tab"
                tabindex="0">
-            <div class="list-group w-auto mt-1 bg-dark" style="height: 285px; min-height: 285px; overflow: auto;">
+            <div th:if="${!user.organizer}" class="list-group w-auto mt-1 bg-dark" style="height: 285px; min-height: 285px; overflow: auto;">
               <th:block th:if="${user.activeContests.isEmpty()}">
                 <div class="d-flex gap-2 w-100 justify-content-center text-bg-dark text-warning rounded">
                   <h6 class="mb-0 display-6 pt-3">No Active Contests</h6>
