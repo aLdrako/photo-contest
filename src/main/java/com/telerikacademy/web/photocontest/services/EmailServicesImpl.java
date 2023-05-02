@@ -47,7 +47,7 @@ public class EmailServicesImpl implements EmailServices {
                 http://localhost:8080/auth/changepassword/%s
                 
                 Best Regards,
-                Photo Contest Team!
+                Junkies Yard Team!
                     
                 """, recipient.getUsername(), uniqueUrlKey));
         populateUrlKeys(recipient, uniqueUrlKey);
@@ -69,7 +69,7 @@ public class EmailServicesImpl implements EmailServices {
                 http://localhost:8080/auth/confirmation/%s
                 
                 Best Regards,
-                Photo Contest Team!
+                Junkies Yard Team!
                     
                 """, recipient.getUsername(), uniqueUrlKey));
         populateUrlKeys(recipient, uniqueUrlKey);
