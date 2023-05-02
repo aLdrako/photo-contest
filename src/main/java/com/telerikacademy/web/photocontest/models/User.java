@@ -67,6 +67,15 @@ public class User {
     )
     @Where(clause = "is_finished = false")
     private Set<Contest> activeContests;
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "juries",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "contest_id")
+    )
+    @Where(clause = "is_finished = false")
+    private Set<Contest> juryInContests;
 
     @Override
     public boolean equals(Object o) {
