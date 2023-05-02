@@ -33,7 +33,7 @@ public class Swagger2Config {
     private ApiInfo apiEndPointsInfo() {
         return new ApiInfoBuilder().title("Photo Contest API")
                 .description("API for Photo Contest project")
-                .contact(new Contact("Team 12", "http://pc.alexgo.online/", "email@mail.com"))
+                .contact(new Contact("Team 12", "https://photo-contest.herokuapp.com/", "junkiesyardteam@gmail.com"))
                 .license("Apache 2.0")
                 .license("http://www.apache.org/licenses/LICENSE-2.0.html")
                 .version("1.0.0")
