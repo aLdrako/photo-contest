@@ -6,6 +6,7 @@ import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationExcep
 import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpSession;
@@ -18,6 +19,7 @@ public class AuthenticationHelper {
     private static final String INVALID_AUTHENTICATION_ERROR = "Invalid authentication";
     private static final String INVALID_USERNAME_PASSWORD = "Invalid username/password";
     private final UserServices userServices;
+    private final BCryptPasswordEncoder passwordEncoder;
 
 
     public User tryGetUser(Optional<String> authorization) {
@@ -25,7 +27,7 @@ public class AuthenticationHelper {
             try {
                 String[] credentials = validateHeaderValues(authorization.get());
                 User user = userServices.getByUsername(credentials[0]);
-                if (!user.getPassword().equals(credentials[1])) {
+                if (!passwordEncoder.matches(credentials[1], user.getPassword())) {
                     throw new AuthorizationException(INVALID_USERNAME_PASSWORD);
                 }
                 return user;
@@ -66,7 +68,7 @@ public class AuthenticationHelper {
     public User verifyLogin(String username, String password) {
         try {
             User user = userServices.getByUsername(username);
-            if (!user.getPassword().equals(password)) {
+            if (!passwordEncoder.matches(password, user.getPassword())) {
                 throw new AuthorizationException(INVALID_USERNAME_PASSWORD);
             }
             return user;

@@ -7,6 +7,7 @@ import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.RankingServices;
 import com.telerikacademy.web.photocontest.services.contracts.UserServices;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -17,12 +18,11 @@ import static com.telerikacademy.web.photocontest.helpers.FileUploadHelper.delet
 @Component
 @AllArgsConstructor
 public class ModelMapper {
-
     private final ContestServices contestServices;
     private final CategoryServices categoryServices;
     private final RankingServices rankingServices;
     private final UserServices userServices;
-
+    private final BCryptPasswordEncoder passwordEncoder;
     public Contest dtoToObject(ContestDto contestDto) {
         Contest contest = new Contest();
         contest.setTitle(contestDto.getTitle());
@@ -103,7 +103,7 @@ public class ModelMapper {
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setEmail(userDto.getEmail());
         user.setRank(rankingServices.getJunkie());
         return user;
@@ -113,8 +113,8 @@ public class ModelMapper {
         User userFromRepo = userServices.getById(id);
         if (userDto.getFirstName() != null) userFromRepo.setFirstName(userDto.getFirstName());
         if (userDto.getLastName() != null) userFromRepo.setLastName(userDto.getLastName());
-        if (userDto.getPassword() != null && !userDto.getPassword().isEmpty())
-            userFromRepo.setPassword(userDto.getPassword());
+        if (userDto.getPassword() != null && !userDto.getPassword().isBlank())
+            userFromRepo.setPassword(passwordEncoder.encode(userDto.getPassword()));
         if (userDto.getEmail() != null) userFromRepo.setEmail(userDto.getEmail());
 
         return userFromRepo;
