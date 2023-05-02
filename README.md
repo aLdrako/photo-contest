@@ -168,6 +168,12 @@ Besides all requirements marked as should and could, here are some more optional
 - Host your application's backend in a public hosting provider of your choice (e.g., AWS, Azure, Heroku)
 - Use branches while working with Git
 
+## Hosted App
+### [App on Heroku](https://photo-contest.herokuapp.com/)
+
+## API Documentation
+### [Photo Contest API](https://app.swaggerhub.com/apis/aLdrako/photo-contest_api/1.0.0)   v1.0  OAS2
+
 ## Database relations
 <img src="db/db_diagram.png" alt="logo" width="500px" style="margin-top: 10px;"/>
 

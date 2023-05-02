@@ -15,7 +15,6 @@ import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.ContestServices;
 import com.telerikacademy.web.photocontest.services.contracts.PhotoServices;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -23,7 +22,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -35,7 +33,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +103,7 @@ public class ContestRestController {
             @Parameter(name = "phase", example = "finished", description = "Contest phase can be: phase1, phase2, finished", schema = @Schema(type = "string"))
     })
     @GetMapping("/filter")
-    public List<ContestResponseDto> filter(@RequestParam(required = false) Map<String, String> parameters, Pageable page) {
+    public List<ContestResponseDto> filter(@Parameter(name = "parameters", hidden = true) @RequestParam(required = false) Map<String, String> parameters, Pageable page) {
         if (parameters.isEmpty()) return new ArrayList<>();
         FilterAndSortingHelper.Result result = getResult(parameters, page);
         Page<Contest> contests = contestServices.filter(result.title(), result.categoryName(), result.isInvitational(), result.isFinished(), result.phase(), result.now(), result.pageable());
