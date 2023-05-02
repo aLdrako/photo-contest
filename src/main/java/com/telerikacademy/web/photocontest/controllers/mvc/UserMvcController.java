@@ -9,6 +9,7 @@ import com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper;
 import com.telerikacademy.web.photocontest.models.User;
 import com.telerikacademy.web.photocontest.models.dto.PermissionsDto;
 import com.telerikacademy.web.photocontest.models.dto.UserDto;
+import com.telerikacademy.web.photocontest.models.validations.EmailUpdateValidation;
 import com.telerikacademy.web.photocontest.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.photocontest.services.ModelMapper;
 import com.telerikacademy.web.photocontest.services.contracts.EmailServices;
@@ -23,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
@@ -36,9 +38,10 @@ public class UserMvcController extends BaseMvcController{
     private final AuthenticationHelper authenticationHelper;
     private final UserServices userServices;
     private final ModelMapper modelMapper;
+    private final EmailServices emailServices;
 
     @GetMapping
-    private String showAllUsers(@PageableDefault(size = 9, sort = "id") Pageable pageable,
+    public String showAllUsers(@PageableDefault(size = 9, sort = "id") Pageable pageable,
                                 @RequestParam(required = false) Map<String, String> parameters,
                                 Model model, HttpSession session) {
         try {
@@ -59,7 +62,7 @@ public class UserMvcController extends BaseMvcController{
         }
     }
     @GetMapping("/photojunkies")
-    private String showAllPhotoJunkies(@PageableDefault(size = 9, sort = "id") Pageable pageable,
+    public String showAllPhotoJunkies(@PageableDefault(size = 9, sort = "id") Pageable pageable,
                                        @RequestParam(required = false) Map<String, String> parameters,
                                        Model model, HttpSession session) {
         try {
@@ -85,7 +88,7 @@ public class UserMvcController extends BaseMvcController{
         }
     }
     @GetMapping("/{id}")
-    private String showUser(@PathVariable Long id, Model model, HttpSession session) {
+    public String showUser(@PathVariable Long id, Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetUser(session);
             User user = userServices.getById(id);
@@ -99,8 +102,9 @@ public class UserMvcController extends BaseMvcController{
         }
     }
     @GetMapping({"/{id}/update",
-                "/{id}/permissions"})
-    private String updateUser(@PathVariable Long id, Model model, HttpSession session) {
+                "/{id}/permissions",
+                "/{id}/email"})
+    public String updateUser(@PathVariable Long id, Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetUser(session);
             User user = userServices.getById(id);
@@ -116,9 +120,37 @@ public class UserMvcController extends BaseMvcController{
             return "redirect:/auth/login";
         }
     }
+    @PostMapping("/{id}/email")
+    public String updateEmail(@PathVariable Long id, Model model,
+                              @Validated(EmailUpdateValidation.class) @ModelAttribute("user") UserDto userDto,
+                              BindingResult bindingResult, HttpSession session) {
+        if (bindingResult.hasErrors()) return "UserUpdateView";
+
+        try {
+            User userFromSession = authenticationHelper.tryGetUser(session);
+            User user = modelMapper.dtoToObject(id, userDto);
+            user.setDeleted(true);
+            userServices.update(user, userFromSession);
+            emailServices.sendConfirmationEmail(user);
+            session.invalidate();
+            return "redirect:/";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "NotFoundView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (MessagingException e) {
+            bindingResult.rejectValue("email", "email_bad_request", e.getMessage());
+            return "UserUpdateView";
+        } catch (EntityDuplicateException e) {
+            bindingResult.rejectValue("email", "email_duplicated", e.getMessage());
+            return "UserUpdateView";
+        }
+    }
+
     @PostMapping({"/{id}/update",
             "/{id}/permissions"})
-    private String updateUser(@PathVariable Long id, Model model,
+    public String updateUser(@PathVariable Long id, Model model,
                               @Validated(UpdateValidationGroup.class) @ModelAttribute("user") UserDto userDto,
                               BindingResult bindingResult, HttpSession session,
                               HttpServletRequest request) {
@@ -156,7 +188,7 @@ public class UserMvcController extends BaseMvcController{
         try {
             User currentUser = authenticationHelper.tryGetUser(session);
             userServices.delete(id, currentUser);
-            if (!currentUser.isOrganizer()) session.invalidate();
+            session.invalidate();
             return "redirect:/";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";

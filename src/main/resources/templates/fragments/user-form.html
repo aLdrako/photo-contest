@@ -6,34 +6,38 @@
                ctxLogin=${context == 'login'},
                ctxForgottenPassword=${context == 'forgotten-password'},
                ctxChangePassword=${context == 'change-password'},
-               userMatch=${session.currentUser == session.updatedUserUsername}">
+               userMatch=${session.currentUser == session.updatedUserUsername},
+               emailPath=${requestURI.endsWith('/email')}">
 
   <h1 class="h3 mb-3 fw-normal"  th:if="${ctxRegister}" th:text="#{user-form.create}">Create User</h1>
-  <h1 class="h3 mb-3 fw-normal"  th:if="${ctxUpdate}" th:text="#{user-form.update}">Update User</h1>
+  <h1 class="h3 mb-3 fw-normal"  th:if="${ctxUpdate && !emailPath}" th:text="#{user-form.update}">Update User</h1>
   <h1 class="h3 mb-3 fw-normal"  th:if="${ctxLogin}" th:text="#{user-form.login}">Login</h1>
   <h1 class="h3 mb-3 fw-normal" th:if="${permissionsPath}" th:text="#{user-form.permissions}">Permissions</h1>
   <h1 class="h3 mb-3 fw-normal"  th:if="${ctxForgottenPassword}" th:text="#{user-form.forgotten.password}">
     Forgotten Password</h1>
+  <h1 class="h3 mb-3 fw-normal" th:if="${emailPath}" th:text="#{user-form.email}">Update Email</h1>
   <p class="fw-lighter fst-italic" th:if="${ctxForgottenPassword}">
     (Please enter the username of your account!)</p>
+  <p class="fw-lighter fst-italic" th:if="${emailPath}">
+    (Please enter your new email!)</p>
   <h1 class="h3 mb-3 fw-normal"  th:if="${ctxChangePassword}" th:text="#{user-form.change.password}">
     Change Password</h1>
   <p class="fw-lighter fst-italic" th:if="${ctxChangePassword}">
     (Please enter your new password!)</p>
 
-  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate) && !permissionsPath}">
+  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate) && !permissionsPath && !emailPath}">
     <input type="text" class="form-control" id="floatingFirstName" placeholder="First Name" name="firstName"
            th:errorclass="is-invalid" th:field="*{firstName}"/>
     <label class="form-label" for="floatingFirstName">First Name</label>
     <div id="validationFirstName" class="invalid-feedback" th:errors="*{firstName}">Error placeholder</div>
   </div>
-  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate) && !permissionsPath}">
+  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate) && !permissionsPath && !emailPath}">
     <input type="text" class="form-control" id="floatingLastName" placeholder="Last Name" name="lastName"
            th:errorclass="is-invalid" th:field="*{lastName}">
     <label for="floatingLastName">Last Name</label>
     <div id="validationLastName" class="invalid-feedback" th:errors="*{lastName}">Error placeholder</div>
   </div>
-  <div class="form-floating" th:if="${(ctxRegister || ctxUpdate) && !permissionsPath}">
+  <div class="form-floating" th:if="${(ctxRegister || emailPath) && !permissionsPath}">
     <input type="email" class="form-control" id="floatingEmail" placeholder="Email" name="email"
            th:errorclass="is-invalid" th:field="*{email}">
     <label for="floatingEmail">Email</label>
@@ -45,14 +49,14 @@
     <label for="floatingUsername">Username</label>
     <div id="validationUsername" class="invalid-feedback" th:errors="*{username}">Error placeholder</div>
   </div>
-  <div class="form-floating" th:if="${(!permissionsPath && userMatch && !ctxForgottenPassword) || ctxLogin || ctxRegister ||
+  <div class="form-floating" th:if="${(!permissionsPath && !emailPath && userMatch && !ctxForgottenPassword) || ctxLogin || ctxRegister ||
   ctxChangePassword}">
     <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password"
            th:errorclass="is-invalid" th:field="*{password}">
     <label for="floatingPassword" th:text="${ctxUpdate && userMatch ? 'Password (optional)' : 'Password'}">Password</label>
     <div id="validationPassword" class="invalid-feedback" th:errors="*{password}">Error placeholder</div>
   </div>
-  <div class="form-floating" th:if="${(!permissionsPath && userMatch && !ctxLogin && !ctxForgottenPassword) || ctxRegister ||
+  <div class="form-floating" th:if="${(!permissionsPath && !emailPath && userMatch && !ctxLogin && !ctxForgottenPassword) || ctxRegister ||
   ctxChangePassword}">
     <input type="password" class="form-control" id="floatingPasswordConfirm" placeholder="Password Confirmation"
            name="passwordConfirm" th:errorclass="is-invalid" th:field="*{passwordConfirm}">
@@ -73,17 +77,39 @@
   </div>
 
   <button class="w-100 btn btn-lg btn-warning my-2" type="submit" name="action" value="login" th:if="${ctxLogin}">
-    Login
+    Log in
   </button>
-  <button class="w-100 btn btn-lg btn-warning" type="submit" name="action" value="register" th:if="${ctxRegister}">
+  <button class="w-100 btn btn-lg btn-warning my-2" type="submit" name="action" value="register" th:if="${ctxRegister}">
     Register
   </button>
-  <button class="w-100 btn btn-lg btn-warning" type="submit" name="action" value="update" th:if="${ctxUpdate}">
+  <button class="w-100 btn btn-lg btn-warning my-2" type="submit" name="action" value="update" th:if="${ctxUpdate && !emailPath}">
     Update
   </button>
-  <button class="w-100 btn btn-lg btn-warning" type="submit" name="action" value="update" th:if="${ctxForgottenPassword || ctxChangePassword}">
+  <button class="w-100 btn btn-lg btn-warning my-2" type="submit" name="action" value="update" th:if="${ctxForgottenPassword || ctxChangePassword}">
     Submit
   </button>
+  <a th:if="${emailPath}" role="button" data-bs-toggle="modal" data-bs-target="#createModalToggle">
+    <span class="spinner-border spinner-border" id="spinner-loading" role="status" aria-hidden="true"></span>
+    <button class="w-100 btn btn-lg btn-warning my-2">Submit</button>
+  </a>
+  <div class="modal fade" id="createModalToggle" data-bs-backdrop="static" aria-hidden="true"
+       aria-labelledby="createModalLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createModalLabel">Confirm Email</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Once you've updated your email your account will be locked until the email is verified. Are you sure you want to continue?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-warning" type="submit">Update Email</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="text-center" th:if="${ctxLogin}">
     <span>You don't have an account?
     <a href="#" th:href="@{/auth/register}">Sign up</a>

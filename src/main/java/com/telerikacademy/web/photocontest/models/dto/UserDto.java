@@ -26,11 +26,11 @@ public class UserDto {
     private String lastName;
     @Pattern(regexp = "^\\S*$", message = "Spaces are not allowed",
             groups = {CreateValidationGroup.class, UpdateValidationGroup.class, ChangePasswordGroup.class,
-                    LoginValidationGroup.class, EnlistUserValidationGroup.class})
+                    LoginValidationGroup.class, EnlistUserValidationGroup.class, EmailUpdateValidation.class})
     @NotBlank(message = "Email can't be empty",
-            groups = {CreateValidationGroup.class})
+            groups = {CreateValidationGroup.class, EmailUpdateValidation.class})
     @Email(message = "Email has invalid format",
-            groups = {UpdateValidationGroup.class, CreateValidationGroup.class})
+            groups = {UpdateValidationGroup.class, CreateValidationGroup.class, EmailUpdateValidation.class})
     private String email;
     @Pattern(regexp = "^\\S*$", message = "Spaces are not allowed",
             groups = {CreateValidationGroup.class, UpdateValidationGroup.class, ChangePasswordGroup.class,

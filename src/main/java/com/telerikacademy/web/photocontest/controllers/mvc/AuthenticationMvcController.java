@@ -157,8 +157,8 @@ public class AuthenticationMvcController extends BaseMvcController {
         try {
             if (emailServices.getUrlKeys().containsKey(urlKey)) {
                 User user = emailServices.getUrlKeys().get(urlKey);
-                user.setPassword(userDTO.getPassword());
-                userServices.update(user, user);
+                User userNew = modelMapper.dtoToObject(user.getId(), userDTO);
+                userServices.update(userNew, user);
                 emailServices.clearKey(urlKey);
                 return "redirect:/auth/login";
             }

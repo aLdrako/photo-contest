@@ -59,12 +59,12 @@ public class EmailServicesImpl implements EmailServices {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(recipient.getEmail());
-        helper.setSubject("Account Confirmation");
+        helper.setSubject("Account/Email Verification");
         String uniqueUrlKey = generateString();
         helper.setText(String.format("""
                 Hello, '%s'
                 
-                In order to confirm account please open the link below!
+                In order to verify your account/email you need to open the link below!
                
                 http://localhost:8080/auth/confirmation/%s
                 
