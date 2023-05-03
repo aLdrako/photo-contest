@@ -80,7 +80,7 @@
 
       <div class="row row-cols-1 row-cols-lg-2 g-3">
         <th:block th:each="photo : ${contest.photos}">
-          <div class="col  rounded-4">
+          <div class="col rounded-4">
             <div class="card shadow-sm">
               <div class="card-header bg-warning text-dark" th:text="${photo.get('title')}">Title (design)</div>
               <img src="#" alt="#" class="img-fluid" th:src="${photo.get('photo')}" th:alt="${photo.get('title')}" />
@@ -172,11 +172,11 @@
         <h1 class="modal-title fs-5 text-warning">Enlisted Users</h1>
       </div>
       <div class="modal-footer bg-dark">
-        <div class="btn-group mb-2 w-100">
+        <div class="btn-group mb-2 w-100 flex-wrap">
           <button type="button" class="btn btn-sm btn-warning mb-1">Juries</button>
           <button type="button" class="btn btn-sm btn-outline-warning disable mb-1" th:each="jury : ${contest.juries}" th:text="${jury}">Juries (design)</button>
         </div>
-        <div class="btn-group w-100">
+        <div class="btn-group w-100 flex-wrap">
           <button type="button" class="btn btn-sm btn-warning mb-1">Participants</button>
           <button type="button" class="btn btn-sm btn-outline-warning disable mb-1" th:if="${contest.participants.isEmpty()}">None</button>
           <button type="button" class="btn btn-sm btn-outline-warning disable mb-1" th:each="participant : ${contest.participants}" th:text="${participant}">Participants (design)</button>

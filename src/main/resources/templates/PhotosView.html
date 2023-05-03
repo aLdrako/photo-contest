@@ -11,6 +11,7 @@
 <h3 class="pb-2 text-center display-2" th:text="${!photos.isEmpty() ? 'Photos' : 'No Photos'}">Photos (design)</h3>
 <div th:replace="~{fragments/photos-view :: photos-view}"></div>
 <div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: photo-view}"></script>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>
 </body>
 </html>
