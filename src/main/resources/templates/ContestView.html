@@ -132,7 +132,8 @@
 
                             <div class="btn-group jury-score">
                               <button type="button" class="btn btn-sm btn-warning">Jury</button>
-                              <button type="button" class="btn btn-sm btn-outline-warning" th:text="${jury.get('jury')}">Username (design)</button>
+                              <span class="text-warning px-1" th:if="${#strings.startsWith(jury.get('jury'), 'deleted')}">anonymous</span>
+                              <button type="button" class="btn btn-sm btn-outline-warning" th:unless="${#strings.startsWith(jury.get('jury'), 'deleted')}" th:text="${jury.get('jury')}">Username (design)</button>
                               <button type="button" class="btn btn-sm btn-outline-warning" th:text="${jury.get('score')}">Score (design)</button>
                               <button type="button" class="btn btn-sm btn-warning">Score</button>
                             </div>

@@ -119,9 +119,9 @@ INSERT INTO `cover_photos` (`contest_id`, `cover_photo`) VALUES
                                                              (7, 'https://alexgo.online/Projects/PhotoContest/photos/U0f4Ibrs75a975z.jpg'),
                                                              (10, 'https://alexgo.online/Projects/PhotoContest/photos/OWvEjYte1jhOQZ9.jpg'),
                                                              (11, 'https://alexgo.online/Projects/PhotoContest/photos/vhiBxq1BIAvTdyn.jpg'),
-                                                             (12, 'https://alexgo.online/Projects/PhotoContest/photos/frC5cEMJfrjbwF1.jpg'),
+                                                             (12, 'https://alexgo.online/Projects/PhotoContest/photos/mUsw2yweQsjETum.jpg'),
                                                              (13, 'https://alexgo.online/Projects/PhotoContest/photos/LyJrVSBRh4FvtMK.jpg'),
-                                                             (14, 'https://alexgo.online/Projects/PhotoContest/photos/eaJa6iJIKRbOm1S.jpg'),
+                                                             (14, 'https://alexgo.online/Projects/PhotoContest/photos/MRcAlv9GuIku62x.jpg'),
                                                              (15, 'https://alexgo.online/Projects/PhotoContest/photos/dK7eHghtspueyKo.jpg'),
                                                              (16, 'https://alexgo.online/Projects/PhotoContest/photos/62uOCROtFv9Wh2K.jpg');
 /*!40000 ALTER TABLE `cover_photos` ENABLE KEYS */;
