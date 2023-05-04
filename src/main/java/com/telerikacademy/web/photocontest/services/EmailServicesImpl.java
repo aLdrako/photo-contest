@@ -44,7 +44,7 @@ public class EmailServicesImpl implements EmailServices {
                 It appears that you have forgotten your password.
                 Here's a link to reset it:
                
-                http://localhost:8080/auth/changepassword/%s
+                http://localhost:8080/auth/password/%s
                 
                 Best Regards,
                 Junkies Yard Team!

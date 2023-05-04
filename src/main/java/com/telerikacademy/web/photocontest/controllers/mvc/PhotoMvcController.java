@@ -1,6 +1,7 @@
 package com.telerikacademy.web.photocontest.controllers.mvc;
 
 import com.telerikacademy.web.photocontest.exceptions.AuthorizationException;
+import com.telerikacademy.web.photocontest.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.photocontest.helpers.AuthenticationHelper;
 import com.telerikacademy.web.photocontest.helpers.FilterAndSortingHelper;
 import com.telerikacademy.web.photocontest.models.Photo;
@@ -38,7 +39,7 @@ public class PhotoMvcController extends BaseMvcController{
                                 @RequestParam Map<String, String> parameters, HttpSession session,
                                 Model model) {
         try {
-            authenticationHelper.tryGetUser(session);
+            authenticationHelper.tryGetOrganizer(session);
             FilterAndSortingHelper.Result result = getResult(parameters, pageable);
             Page<Photo> photoPage = photoServices.search(result.title(), null, null,
                     result.pageable());
@@ -47,6 +48,9 @@ public class PhotoMvcController extends BaseMvcController{
             return "PhotosView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
         }
     }
     @GetMapping("/myphotos")

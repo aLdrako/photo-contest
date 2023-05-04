@@ -1,6 +1,5 @@
 package com.telerikacademy.web.photocontest.controllers.mvc;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.telerikacademy.web.photocontest.exceptions.AuthorizationException;
 import com.telerikacademy.web.photocontest.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.photocontest.exceptions.EntityNotFoundException;
@@ -23,9 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Map;
-import java.util.Objects;
 
 @Controller
 @AllArgsConstructor
@@ -129,7 +125,7 @@ public class AuthenticationMvcController extends BaseMvcController {
             return "NotFoundView";
         }
     }
-    @GetMapping("/changepassword/{urlKey}")
+    @GetMapping("/password/{urlKey}")
     public String showChangePasswordPage(@PathVariable String urlKey, Model model) {
         try {
             if (emailServices.getUrlKeys().containsKey(urlKey)) {
@@ -144,7 +140,7 @@ public class AuthenticationMvcController extends BaseMvcController {
             return "NotFoundView";
         }
     }
-    @PostMapping("/changepassword/{urlKey}")
+    @PostMapping("/password/{urlKey}")
     public String handleChangePassword(@PathVariable String urlKey, Model model,
                                        @Validated(ChangePasswordGroup.class)
                                        @ModelAttribute("user") UserDto userDTO,
