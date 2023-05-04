@@ -15,11 +15,10 @@
                 <div class="btn-group">
                   <a th:if="${phase2}" href="#" type="button" class="btn btn-sm btn-outline-warning" th:href="@{/contests/{contestId}/photos/{photoId}/review(contestId=${contest.id},photoId=${photo.id})}">Rate</a>
                   <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#photoView">View</button>
+                  <a href="#" class="btn btn-sm btn-outline-warning" th:href="@{/contests/{id}(id=${photo.postedOn.id})}">Contest</a>
                 </div>
                 <span class="text-muted" th:if="${photo.userCreated.username.contains('deleted')}">anonymous</span>
                 <a class="link-warning" href="#" th:unless="${photo.userCreated.username.contains('deleted')}" th:href="@{/users/{id}(id=${photo.userCreated.id})}" th:text="${photo.userCreated.username}">Username (design)</a>
-              </div>
-              <div th:class="'collapse'" th:id="'collapseResults-' + ${photo.id}">
               </div>
             </div>
           </div>
